@@ -1,0 +1,33 @@
+apiVersion: nais.io/v1
+kind: Alert
+metadata:
+  name: yrkesskade-saksbehandling-backend
+  namespace: yrkesskade
+  labels:
+    team: yrkesskade
+spec:
+  receivers:
+    slack:
+      channel: yrkesskade-alerts-dev
+      prependText: "<!here> | "
+  alerts:
+  - alert: yrkesskade-saksbehandling-backend er nede
+    description: App {{ $labels.deployment }} er nede i namespace {{ $labels.namespace }}
+    expr: kube_deployment_status_replicas_available{deployment="yrkesskade-saksbehandling-backend"} == 0
+    for: 2m
+    action: "Sjekk logger for {{ $labels.deployment }}"
+    documentation: https://confluence.adeo.no/display/MAYYMYFSN/Drift+og+forvaltning
+    sla: Responder innen 1 time i kontortid
+    severity: danger
+  - alert: Mye feil i loggene
+    expr: (100 * sum by (log_app, log_namespace) (rate(logd_messages_total{log_app="yrkesskade-saksbehandling-backend",log_level=~"Warning|Error"}[3m])) / sum by (log_app, log_namespace) (rate(logd_messages_total{log_app="yrkesskade-saksbehandling-backend"}[3m]))) > 10
+    for: 3m
+    action: "Sjekk loggene for å se hvorfor det er så mye feil: `kubectl logs {{ $labels.log_pod_name }} -n {{ $labels.log_namespace }}`"
+    sla: Responder innen 1 time i kontortid
+    severity: warning
+  - alert: Økende Kafka consumer lag
+    expr: sum(delta(kafka_consumergroup_group_topic_sum_lag{group="yrkesskade-saksbehandling-backend"}[5m])) by(group, topic)/(5*60) > 0
+    for: 5m
+    description: "Økende Kafka lag på yrkesskade-saksbehandling-backend"
+    action: "Sjekk Grafana og logger"
+    severity: danger

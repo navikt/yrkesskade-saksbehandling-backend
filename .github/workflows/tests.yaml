@@ -1,0 +1,27 @@
+name: Kjør tester for yrkesskade-saksbehandling-backend
+on:
+  push:
+    branches-ignore:
+      - master
+      - dev
+env:
+  IMAGE: ghcr.io/${{ github.repository }}:${{ github.sha }}
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: compile and run tests
+        env:
+          GITHUB_USERNAME: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.READER_TOKEN }}
+        run: mvn verify --settings .m2/maven-settings.xml --file pom.xml
