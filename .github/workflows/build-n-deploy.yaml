@@ -1,0 +1,92 @@
+name: Build and deploy yrkesskade-saksbehandling-backend
+on:
+  push:
+    branches:
+      - main
+      - dev
+env:
+  IMAGE: ghcr.io/${{ github.repository }}:${{ github.sha }}
+  IMAGE_LATEST: ghcr.io/${{ github.repository }}:latest
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v2
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-maven-
+    - uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    - name: compile and run tests
+      env:
+        GITHUB_USERNAME: ${{ github.actor }}
+        GITHUB_TOKEN: ${{ secrets.READER_TOKEN }}
+      run: mvn install --settings .m2/maven-settings.xml --file pom.xml
+    - name: Login to GitHub Docker Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build and push the Docker image
+      run: docker build --pull --tag ${IMAGE} --tag {IMAGE_LATEST} . && docker push ${IMAGE} && docker push ${IMAGE_LATEST}
+  deployAppToDev:
+    if: github.ref == 'refs/heads/dev'
+    name: Deploy app to dev
+    needs: build
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Deploy to DEV
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-gcp
+          RESOURCE: .nais/nais.yaml
+          VARS: .nais/dev/vars.yaml
+  deployAlertsToDev:
+    if: github.ref == 'refs/heads/dev'
+    name: Deploy alerts to dev
+    needs: build
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Deploy alerts to DEV
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-gcp
+          RESOURCE: .nais/dev/alerts.yaml
+          VARS: .nais/dev/vars.yaml
+  deployAppToProd:
+    if: github.ref == 'refs/heads/main'
+    name: Deploy app to prod
+    needs: build
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Deploy to PROD
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: prod-gcp
+          RESOURCE: .nais/nais.yaml
+          VARS: .nais/prod/vars.yaml
+  deployAlertsToProd:
+    if: github.ref == 'refs/heads/main'
+    name: Deploy alerts to prod
+    needs: build
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Deploy alerts to PROD
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: prod-gcp
+          RESOURCE: .nais/prod/alerts.yaml
+          VARS: .nais/prod/vars.yaml
