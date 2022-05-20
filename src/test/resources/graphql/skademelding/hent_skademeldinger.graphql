@@ -1,0 +1,18 @@
+query {
+  hentSkademeldinger(skademeldingPage: {
+    page: 0
+    size: 10
+  }) {
+    skademeldingId,
+    innmelderIdentitetsnummer,
+    innmelderPaaVegneAv,
+    innmelderVirksomhetsnavn,
+    skadelidtIdentitetsnummer,
+    skadedeDeler {
+      skadetDelId {
+      	kroppsdel
+      	skadeart
+      }
+    }
+  }
+}

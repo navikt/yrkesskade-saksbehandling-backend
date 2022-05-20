@@ -4,6 +4,18 @@ spring:
     main:
       banner-mode: off
       allow-bean-definition-overriding: true
+  kafka:
+    bootstrap-servers: ${KAFKA_BROKERS}
+    client-id: yrkesskade-saksbehandling
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      group-id: yrkesskade-saksbehandling
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      properties:
+        spring.json.trusted.packages: no.nav.yrkesskade.model
+    listener:
+      ack-mode: record
   datasource:
     url: jdbc:postgresql://${YRKESSKADE_SAKSBEHANDLING_DB_HOST}:${YRKESSKADE_SAKSBEHANDLING_DB_PORT}/${YRKESSKADE_SAKSBEHANDLING_DB_DATABASE}
     username: ${YRKESSKADE_SAKSBEHANDLING_DB_USERNAME}
@@ -22,6 +34,16 @@ spring:
       hibernate:
         enable_lazy_load_no_trans: true
         ddl-auto: none
+
+graphql:
+  servlet:
+    enabled: true
+    cors-enabled: false
+    websocket:
+      enabled: false
+    mapping: /api/graphql
+    actuator-metrics: true
+
 management:
   endpoint:
     health:
@@ -36,3 +58,7 @@ management:
     export.prometheus.enabled: true
     tags:
       application: ${spring.application.name}
+
+kafka:
+  topic:
+    skademelding-innsendt: privat-yrkesskade-skademeldinginnsendt

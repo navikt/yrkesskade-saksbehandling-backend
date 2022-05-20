@@ -1,3 +1,24 @@
+KAFKA_BROKERS: http://localhost:9092
+server:
+  port: 9081
+
 spring:
+  kafka:
+    bootstrap-servers: ${KAFKA_BROKERS}
+    properties:
+      security.protocol: SASL_PLAINTEXT
+      sasl:
+        mechanism: PLAIN
+        jaas:
+          config: org.apache.kafka.common.security.plain.PlainLoginModule required username="igroup" password="itest";
+      schema.registry.url: http://localhost:8081
+    consumer:
+      group-id: srvc01
   datasource:
     url: jdbc:postgresql://localhost:5432/yrkesskade_saksbehandling
+  flyway:
+    enabled: true
+
+kafka:
+  topic:
+    skademelding-innsendt: privat-yrkesskade-skademeldinginnsendt
