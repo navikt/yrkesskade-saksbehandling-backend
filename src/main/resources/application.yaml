@@ -10,10 +10,10 @@ spring:
     consumer:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       group-id: yrkesskade-saksbehandling
-      auto-offset-reset: earliest
+      auto-offset-reset: latest
       enable-auto-commit: false
       properties:
-        spring.json.trusted.packages: no.nav.yrkesskade.model
+        spring.json.trusted.packages: no.nav.yrkesskade.saksbehandling
     listener:
       ack-mode: record
   datasource:
@@ -38,7 +38,10 @@ spring:
 graphql:
   servlet:
     enabled: true
-    cors-enabled: false
+    cors-enabled: true
+    cors:
+      allowed-origins: http://localhost:3001
+      allowed-methods: GET, HEAD, POST
     websocket:
       enabled: false
     mapping: /api/graphql
@@ -61,4 +64,5 @@ management:
 
 kafka:
   topic:
-    skademelding-innsendt: privat-yrkesskade-skademeldinginnsendt
+    aapen-oppgave-opprettet: aapen-oppgave-opprettet-v1-preprod
+    aapen-oppgave-endret: aapen-oppgave-endret-v1-preprod

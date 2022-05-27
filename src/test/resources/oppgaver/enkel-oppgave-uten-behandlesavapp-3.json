@@ -1,0 +1,23 @@
+{
+    "id": 3,
+    "tildeltEnhetsnr": "TEST",
+    "endretAvEnhetsnr": "TEST2",
+    "opprettetAvEnhetsnr": "TEST3",
+    "journalpostId": "XXX",
+    "temagruppe": "TYRK",
+    "tema": "YRK",
+    "behandlingstema": "SMTHNG",
+    "oppgavetype": "ELSE",
+    "fristFerdigstillelse": "2022-06-04",
+    "aktivDato": "2022-05-22",
+    "opprettetTidspunkt": "2022-05-22T13:49:03Z",
+    "opprettetAv": "MEG",
+    "endretAv": "INGEN",
+    "status": "OPPRETTET",
+    "statuskategori": "AAPEN",
+    "ident": {
+        "verdi": "23456789101",
+        "folkeregisterident": "23456789101"
+    },
+    "mappeId": 1
+}

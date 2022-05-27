@@ -1,0 +1,22 @@
+scalar LocalDate
+scalar LocalDateTime
+
+type Behandling {
+    behandlingId: ID!
+    oppgaveId: String
+    aktivDato: LocalDate
+    fristFerdigstillelse: LocalDate
+    opprettetTidspunkt: LocalDateTime
+    status: String
+    behandlingstema: String
+}
+
+input Page {
+    size: Int
+    page: Int
+}
+
+type Query {
+    hentBehandlinger(page: Page!): [Behandling]!
+    antallBehandlinger: Int!
+}

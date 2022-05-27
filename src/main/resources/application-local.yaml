@@ -21,4 +21,5 @@ spring:
 
 kafka:
   topic:
-    skademelding-innsendt: privat-yrkesskade-skademeldinginnsendt
+    aapen-oppgave-opprettet: aapen-oppgave-opprettet-v1-local
+    aapen-oppgave-endret: aapen-oppgave-endret-v1-local
