@@ -1,12 +1,12 @@
 scalar LocalDate
-scalar LocalDateTime
+scalar Instant
 
 type Behandling {
     behandlingId: ID!
     oppgaveId: String
     aktivDato: LocalDate
     fristFerdigstillelse: LocalDate
-    opprettetTidspunkt: LocalDateTime
+    opprettetTidspunkt: Instant
     status: String
     behandlingstema: String
 }
