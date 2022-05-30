@@ -36,7 +36,7 @@ class OppgaveHendelserTest : AbstractTest() {
         val oppgaveUtenBehandlesAvApplikasjon = oppgaveUtenBehandlesAvApplikasjonAnnetFnr()
 
         oppgaveKafkaTemplate.send(TOPIC_NAME, oppgaveUtenBehandlesAvApplikasjon)
-        oppgaveHendelser.latch.await(10000, TimeUnit.MILLISECONDS);
+        oppgaveHendelser.latch.await(20000, TimeUnit.MILLISECONDS);
         assertThat(oppgaveHendelser.payload).isNotNull
         val behandling = behandlingRepository.findByOppgaveId("3")
         assertThat(behandling).isNotNull
