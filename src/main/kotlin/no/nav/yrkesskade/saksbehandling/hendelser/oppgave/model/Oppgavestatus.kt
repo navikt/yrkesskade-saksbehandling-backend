@@ -1,6 +1,5 @@
 package no.nav.yrkesskade.saksbehandling.hendelser.oppgave.model
 
-import no.nav.yrkesskade.saksbehandling.model.Sakstatus
 import java.util.Objects
 
 enum class Oppgavestatus {
@@ -19,7 +18,7 @@ enum class Oppgavestatus {
         }
 
         fun getIdsFor(statuskategori: Oppgavestatuskategori?): List<Long?> {
-            return if (Objects.equals(Sakstatus.AAPEN, statuskategori)) {
+            return if (Objects.equals(Oppgavestatuskategori.AAPEN, statuskategori)) {
                 listOf(getIdFor(OPPRETTET), getIdFor(AAPNET), getIdFor(UNDER_BEHANDLING))
             } else {
                 listOf(getIdFor(FERDIGSTILT), getIdFor(FEILREGISTRERT))

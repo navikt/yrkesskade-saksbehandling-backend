@@ -1,10 +1,10 @@
 package no.nav.yrkesskade.saksbehandling.model
 
 enum class Dokumentkategori {
-    MEDISINKE_OPPLYSNINGER,
+    MEDISINSKE_OPPLYSNINGER,
     ARBEIDSAVTALE_HJEMMEKONTOR,
     SPESIALIST,
     SKADEFORKLARING,
-    TILLEGGSKJEMA,
+    TILLEGGSSKJEMA,
     SKADEMELDING
 }

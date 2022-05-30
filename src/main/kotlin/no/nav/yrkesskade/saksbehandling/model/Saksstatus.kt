@@ -1,6 +1,6 @@
 package no.nav.yrkesskade.saksbehandling.model
 
-enum class Sakstatus {
+enum class Saksstatus {
     AAPEN,
     LUKKET
 }

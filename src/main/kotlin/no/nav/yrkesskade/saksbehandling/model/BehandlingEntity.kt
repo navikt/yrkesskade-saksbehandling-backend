@@ -15,7 +15,7 @@ class BehandlingEntity (
     val behandlingId: Long,
 
     @Column(name = "behandlingsansvarlig_ident", nullable = true)
-    val behandlingsAnsvarligIdent: String?,
+    val behandlingsansvarligIdent: String?,
 
     @Enumerated
     @Column(name = "status", nullable = false)
@@ -57,8 +57,8 @@ class BehandlingEntity (
     val sak: SakEntity,
 
     @OneToMany(mappedBy = "behandling")
-    val dokumentMetaer: List<DokumentMetaEntity>,
+    val dokumentMetaer: List<DokumentEntity>,
 
     @OneToMany(mappedBy = "behandling")
-    val behandlingResultater: List<BehandlingResultatEntity>
+    val behandlingResultater: List<BehandlingsresultatEntity>
 )

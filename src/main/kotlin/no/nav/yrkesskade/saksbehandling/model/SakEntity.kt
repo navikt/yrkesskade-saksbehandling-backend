@@ -12,8 +12,8 @@ data class SakEntity(
     val sakId: Long,
 
     @Enumerated
-    @Column(name = "sak_status", nullable = false)
-    val sakstatus: Sakstatus,
+    @Column(name = "saksstatus", nullable = false)
+    val saksstatus: Saksstatus,
 
     @Column(name = "opprettet_tidspunkt", nullable = false)
     val opprettetTidspunkt: Instant,

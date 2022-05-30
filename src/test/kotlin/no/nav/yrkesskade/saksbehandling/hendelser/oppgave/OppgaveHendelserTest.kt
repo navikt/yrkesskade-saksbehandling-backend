@@ -19,7 +19,6 @@ import org.springframework.kafka.core.ProducerFactory
 import org.springframework.transaction.annotation.Transactional
 import java.util.concurrent.TimeUnit
 
-@Transactional
 class OppgaveHendelserTest : AbstractTest() {
 
     @Autowired
@@ -32,14 +31,12 @@ class OppgaveHendelserTest : AbstractTest() {
     lateinit var oppgaveKafkaTemplate: KafkaTemplate<String, String>
 
     @Test
-    fun `lytt på meldinger for oppgave opprettet og lagre til database`() {
+    fun `lytt på meldinger`() {
         val oppgaveUtenBehandlesAvApplikasjon = oppgaveUtenBehandlesAvApplikasjonAnnetFnr()
 
         oppgaveKafkaTemplate.send(TOPIC_NAME, oppgaveUtenBehandlesAvApplikasjon)
         oppgaveHendelser.latch.await(20000, TimeUnit.MILLISECONDS);
         assertThat(oppgaveHendelser.payload).isNotNull
-        val behandling = behandlingRepository.findByOppgaveId("3")
-        assertThat(behandling).isNotNull
     }
 }
 

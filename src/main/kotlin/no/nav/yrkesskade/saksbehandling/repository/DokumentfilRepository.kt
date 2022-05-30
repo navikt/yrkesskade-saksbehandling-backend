@@ -1,7 +1,7 @@
 package no.nav.yrkesskade.saksbehandling.repository
 
-import no.nav.yrkesskade.saksbehandling.model.DokumentFilEntity
+import no.nav.yrkesskade.saksbehandling.model.DokumentfilEntity
 import org.springframework.data.jpa.repository.JpaRepository
 
-interface DokumentfilRepository : JpaRepository<DokumentFilEntity, Long> {
+interface DokumentfilRepository : JpaRepository<DokumentfilEntity, Long> {
 }

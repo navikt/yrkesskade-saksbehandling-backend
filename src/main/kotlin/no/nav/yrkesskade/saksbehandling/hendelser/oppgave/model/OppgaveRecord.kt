@@ -7,9 +7,8 @@ import java.time.LocalDateTime
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class OppgaveRecord(
     val id: Long,
+    val ident: Ident,
     val tildeltEnhetsnr: String?,
-    val endretAvEnhetsnr: String?,
-    val opprettetAvEnhetsnr: String?,
     val journalpostId: String?,
     val temagruppe: String?,
     val tema: String,
@@ -17,12 +16,13 @@ data class OppgaveRecord(
     val oppgavetype: String,
     val fristFerdigstillelse: LocalDate,
     val aktivDato: LocalDate,
+    val behandlesAvApplikasjon: String?,
+    val mappeId: Long?,
+    val endretAvEnhetsnr: String?,
+    val opprettetAvEnhetsnr: String?,
     val opprettetTidspunkt: LocalDateTime,
     val opprettetAv: String,
     val endretAv: String?,
     val status: Oppgavestatus?,
-    val statuskategori: Oppgavestatuskategori,
-    val behandlesAvApplikasjon: String?,
-    val ident: Ident,
-    val mappeId: Long?
+    val statuskategori: Oppgavestatuskategori
 )

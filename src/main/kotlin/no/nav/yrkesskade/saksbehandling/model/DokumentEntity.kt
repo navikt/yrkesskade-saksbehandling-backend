@@ -4,14 +4,14 @@ import java.time.Instant
 import javax.persistence.*
 
 @Entity
-@Table(name = "dokument_meta")
-class DokumentMetaEntity (
+@Table(name = "dokument")
+class DokumentEntity (
     @Id
     @Column(name = "dokument_id", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val dokumentId: Long,
 
-    @Column(name = "journal_post_id", nullable = false)
+    @Column(name = "journalpost_id", nullable = false)
     val journalpostId: String,
 
     @Column(name = "dokument_navn", nullable = false)
@@ -39,5 +39,5 @@ class DokumentMetaEntity (
     val behandling: BehandlingEntity,
 
     @OneToMany(mappedBy = "dokument")
-    val filer: List<DokumentFilEntity>
+    val filer: List<DokumentfilEntity>
 )

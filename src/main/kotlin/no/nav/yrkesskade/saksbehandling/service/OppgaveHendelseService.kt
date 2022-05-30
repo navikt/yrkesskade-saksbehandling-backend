@@ -47,10 +47,10 @@ class OppgaveHendelseService(
 
     }
 
-    private fun opprettDokument(behandling: BehandlingEntity, oppgaveRecord: OppgaveRecord): DokumentMetaEntity {
+    private fun opprettDokument(behandling: BehandlingEntity, oppgaveRecord: OppgaveRecord): DokumentEntity {
         // hent dokumenter for oppgave fra SAF med journalpostId
         log.info("Oppretter dokument for behandling ${behandling.behandlingId}")
-        val dokumentMeta = DokumentMetaEntity(
+        val dokumentMeta = DokumentEntity(
             journalpostId = oppgaveRecord.journalpostId.orEmpty(),
             dokumenttype = Dokumenttype.INNKOMMET,
             dokumentId = -1, // autogenerert
@@ -75,7 +75,7 @@ class OppgaveHendelseService(
                 behandlingId = -1, // autogenerert
                 sak = sak,
                 ansvarligEnhet = oppgaveRecord.tildeltEnhetsnr,
-                behandlingsAnsvarligIdent = null,
+                behandlingsansvarligIdent = null,
                 dokumentMetaer = emptyList(),
                 status = Behandlingsstatus.IKKE_PAABEGYNT,
                 statuskategori = oppgaveRecord.statuskategori,
@@ -110,7 +110,7 @@ class OppgaveHendelseService(
                 brukerIdentifikator = oppgaveRecord.ident.folkeregisterident,
                 opprettetAv = "SYSTEM",
                 opprettetTidspunkt = Instant.now(),
-                sakstatus = Sakstatus.AAPEN,
+                saksstatus = Saksstatus.AAPEN,
                 sakstype = Sakstype.YRKESSKADE, // TEST
                 aktoerId = oppgaveRecord.ident.verdi,
                 behandlinger = emptyList(),

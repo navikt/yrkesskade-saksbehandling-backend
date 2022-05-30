@@ -4,12 +4,12 @@ import java.time.Instant
 import javax.persistence.*
 
 @Entity
-@Table(name = "behandling_resultat")
-class BehandlingResultatEntity(
+@Table(name = "behandlingsresultat")
+class BehandlingsresultatEntity(
     @Id
-    @Column(name = "behandling_resultat_id", nullable = false, updatable = false)
+    @Column(name = "behandlingsresultat_id", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val behandlingResultatId: Long,
+    val behandlingsresultatId: Long,
 
     @Column(name = "resultat_tidspunkt")
     val resultattidspunkt: Instant,
@@ -17,8 +17,8 @@ class BehandlingResultatEntity(
     @Column(name = "sted")
     val sted: String,
 
-    @Column(name = "bakgrunn_aarsak")
-    val bakgrunnAarsak: String,
+    @Column(name = "bakgrunnsaarsak")
+    val bakgrunnsaarsak: String,
 
     @Column(name = "utfyllende_beskrivelse")
     val utfyllendeBeskrivelse: String,

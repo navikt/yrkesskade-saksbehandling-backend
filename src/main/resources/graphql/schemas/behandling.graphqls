@@ -1,6 +1,16 @@
 scalar LocalDate
 scalar Instant
 
+type Sak {
+    sakId: ID!
+    brukerIdentifikator: String!
+    brukerFornavn: String
+    brukerMellomnavn: String
+    brukerEtternavn: String
+    sakstype: String
+
+}
+
 type Behandling {
     behandlingId: ID!
     oppgaveId: String
@@ -9,6 +19,7 @@ type Behandling {
     opprettetTidspunkt: Instant
     status: String
     behandlingstema: String
+    sak: Sak
 }
 
 input Page {

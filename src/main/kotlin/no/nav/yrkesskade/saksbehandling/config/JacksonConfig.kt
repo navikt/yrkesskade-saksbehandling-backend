@@ -16,7 +16,6 @@ class JacksonConfig {
     fun objectMapper(builder: Jackson2ObjectMapperBuilder): ObjectMapper {
         val objectMapper: ObjectMapper = builder.build()
         objectMapper.registerModule(JavaTimeModule())
-       // objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         return objectMapper
     }
 }

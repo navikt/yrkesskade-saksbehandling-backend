@@ -19,7 +19,7 @@ class OppgaveHendelser(
     var payload: OppgaveRecord? = null
 
     @KafkaListener(
-        id = "yrkesskade-melding-mottak",
+        id = "yrkesskade-saksbehandling-backend",
         topics = ["\${kafka.topic.aapen-oppgave-opprettet}"],
         containerFactory = "oppgaveOpprettetHendelseListenerContainerFactory",
         idIsGroup = false,
@@ -29,9 +29,9 @@ class OppgaveHendelser(
     )
     @Transactional
     fun listen(@Payload record: OppgaveRecord) {
+        payload = record
         kallMetodeMedCallId {
             oppgaveHendelseService.prosesserOppgaveOpprettetHendelse(record)
-            payload = record
             latch.countDown()
         }
     }

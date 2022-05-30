@@ -3,8 +3,8 @@ package no.nav.yrkesskade.saksbehandling.model
 import javax.persistence.*
 
 @Entity
-@Table(name = "dokument_fil")
-class DokumentFilEntity (
+@Table(name = "dokumentfil")
+class DokumentfilEntity (
     @Id
     @Column(name = "fil_id", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,5 +25,5 @@ class DokumentFilEntity (
 
     @ManyToOne
     @JoinColumn(name = "dokument_id")
-    val dokument: DokumentMetaEntity
+    val dokument: DokumentEntity
 )
