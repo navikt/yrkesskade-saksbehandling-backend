@@ -31,12 +31,14 @@ class OppgaveHendelserTest : AbstractTest() {
     lateinit var oppgaveKafkaTemplate: KafkaTemplate<String, String>
 
     @Test
-    fun `lytt på meldinger`() {
+    fun `lytt på meldinger for oppgave opprettet og lagre til database`() {
         val oppgaveUtenBehandlesAvApplikasjon = oppgaveUtenBehandlesAvApplikasjonAnnetFnr()
 
         oppgaveKafkaTemplate.send(TOPIC_NAME, oppgaveUtenBehandlesAvApplikasjon)
         oppgaveHendelser.latch.await(20000, TimeUnit.MILLISECONDS);
         assertThat(oppgaveHendelser.payload).isNotNull
+        val behandling = behandlingRepository.findByOppgaveId("3")
+        assertThat(behandling).isNotNull
     }
 }
 
