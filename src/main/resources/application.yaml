@@ -38,10 +38,7 @@ spring:
 graphql:
   servlet:
     enabled: true
-    cors-enabled: true
-    cors:
-      allowed-origins: http://localhost:3001
-      allowed-methods: GET, HEAD, POST
+    cors-enabled: false
     websocket:
       enabled: false
     mapping: /api/graphql
