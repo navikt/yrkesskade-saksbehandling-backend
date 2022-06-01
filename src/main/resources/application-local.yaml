@@ -1,3 +1,5 @@
+NAIS_CLUSTER_NAME: lokal
+
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/yrkesskade_saksbehandling

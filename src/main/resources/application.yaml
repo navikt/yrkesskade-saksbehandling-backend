@@ -36,3 +36,9 @@ management:
     export.prometheus.enabled: true
     tags:
       application: ${spring.application.name}
+funksjonsbrytere:
+  enabled: true
+  unleash:
+    uri: https://unleash.nais.io/api/
+    cluster: ${NAIS_CLUSTER_NAME}
+    applicationName: ${spring.application.name}
