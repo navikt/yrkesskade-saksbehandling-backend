@@ -28,7 +28,7 @@ spring:
       minimum-idle: 1
       data-source-properties.stringtype: unspecified # Nødvendig for å kunde sende en String til et json-felt i PostgresSql
   flyway:
-    enabled: false
+    enabled: true
   jpa:
     properties:
       hibernate:
@@ -66,3 +66,10 @@ kafka:
   topic:
     aapen-oppgave-opprettet: aapen-oppgave-opprettet-v1-preprod
     aapen-oppgave-endret: aapen-oppgave-endret-v1-preprod
+
+funksjonsbrytere:
+  enabled: true
+  unleash:
+    uri: https://unleash.nais.io/api/
+    cluster: ${NAIS_CLUSTER_NAME}
+    applicationName: ${spring.application.name}

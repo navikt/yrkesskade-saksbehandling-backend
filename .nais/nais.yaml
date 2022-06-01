@@ -12,6 +12,8 @@ spec:
       value: {{springProfile}}
     - name: GCP_PROJECT_ID
       value: {{gcpProjectId}}
+  envFrom:
+    - secret: yrkesskade-serviceaccount
   liveness:
     path: /internal/health
     port: 8080

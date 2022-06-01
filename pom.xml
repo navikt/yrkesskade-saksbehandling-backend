@@ -18,6 +18,18 @@
     </properties>
 
     <dependencies>
+        <!-- yrkesskade domain -->
+        <dependency>
+            <groupId>no.nav.yrkesskade</groupId>
+            <artifactId>featureflag</artifactId>
+            <version>${yrkesskade-felles.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.yrkesskade</groupId>
+            <artifactId>skademelding</artifactId>
+            <version>${yrkesskade-felles.version}</version>
+        </dependency>
+
         <!-- Spring -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -48,6 +60,11 @@
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <!-- GraphQL - Server -->
@@ -101,10 +118,11 @@
             <artifactId>kotlin-stdlib-jdk8</artifactId>
         </dependency>
 
+        <!-- annet -->
         <dependency>
-            <groupId>no.nav.yrkesskade</groupId>
-            <artifactId>skademelding</artifactId>
-            <version>${yrkesskade-felles.version}</version>
+            <groupId>no.finn.unleash</groupId>
+            <artifactId>unleash-client-java</artifactId>
+            <version>4.4.1</version>
         </dependency>
 
         <!-- Test -->
@@ -207,6 +225,45 @@
                             <includes>
                                 <include>**/*IT</include>
                             </includes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.8</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>jacoco-check</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>INSTRUCTION</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.60</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
                         </configuration>
                     </execution>
                 </executions>
