@@ -74,8 +74,12 @@ class FeatureToggleConfig(
     private fun lagDummyFeatureToggleService(): FeatureToggleService {
         return object : FeatureToggleService {
             override fun isEnabled(toggleId: String, defaultValue: Boolean): Boolean {
-                if (toggleId == FeatureToggles.ER_IKKE_PROD.toggleId && environment.activeProfiles.first().orEmpty() != "integration") {
+                if (toggleId == FeatureToggles.ER_IKKE_PROD.toggleId && !environment.activeProfiles.contains("integration")) {
                     return true;
+                }
+
+                if (toggleId == FeatureToggles.OPPGAVE_HENDELSER.toggleId) {
+                    return true
                 }
 
                 if (unleash.cluster == "lokal") {
@@ -103,5 +107,6 @@ interface FeatureToggleService {
 
 enum class FeatureToggles(val toggleId: String) {
     ER_IKKE_PROD("yrkesskade.er-ikke-prod"),
-    MVP("yrkesskade.saksbehandling-mvp")
+    MVP("yrkesskade.saksbehandling-mvp"),
+    OPPGAVE_HENDELSER("yrkesskade.saksbehandling.oppgave-hendelser")
 }

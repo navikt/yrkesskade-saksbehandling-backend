@@ -4,6 +4,18 @@ spring:
     main:
       banner-mode: off
       allow-bean-definition-overriding: true
+  kafka:
+    bootstrap-servers: ${KAFKA_BROKERS}
+    client-id: yrkesskade-saksbehandling
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      group-id: yrkesskade-saksbehandling
+      auto-offset-reset: latest
+      enable-auto-commit: false
+      properties:
+        spring.json.trusted.packages: no.nav.yrkesskade.saksbehandling
+    listener:
+      ack-mode: record
   datasource:
     url: jdbc:postgresql://${YRKESSKADE_SAKSBEHANDLING_DB_HOST}:${YRKESSKADE_SAKSBEHANDLING_DB_PORT}/${YRKESSKADE_SAKSBEHANDLING_DB_DATABASE}
     username: ${YRKESSKADE_SAKSBEHANDLING_DB_USERNAME}
@@ -16,12 +28,25 @@ spring:
       minimum-idle: 1
       data-source-properties.stringtype: unspecified # Nødvendig for å kunde sende en String til et json-felt i PostgresSql
   flyway:
-    enabled: false
+    enabled: true
   jpa:
     properties:
       hibernate:
         enable_lazy_load_no_trans: true
         ddl-auto: none
+
+graphql:
+  servlet:
+    enabled: true
+    cors-enabled: true
+    cors:
+      allowed-origins: '*'
+      allowed-methods: GET, HEAD, POST
+    websocket:
+      enabled: false
+    mapping: /api/graphql
+    actuator-metrics: true
+
 management:
   endpoint:
     health:
@@ -36,6 +61,12 @@ management:
     export.prometheus.enabled: true
     tags:
       application: ${spring.application.name}
+
+kafka:
+  topic:
+    aapen-oppgave-opprettet: aapen-oppgave-opprettet-v1-preprod
+    aapen-oppgave-endret: aapen-oppgave-endret-v1-preprod
+
 funksjonsbrytere:
   enabled: true
   unleash:
