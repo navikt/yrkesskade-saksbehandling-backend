@@ -3,7 +3,6 @@ package no.nav.yrkesskade.saksbehandling.hendelser.oppgave
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
 import no.nav.yrkesskade.saksbehandling.test.AbstractTest
 import no.nav.yrkesskade.saksbehandling.test.TOPIC_NAME
-import oppgaveUtenBehandlesAvApplikasjon
 import oppgaveUtenBehandlesAvApplikasjonAnnetFnr
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.serialization.StringSerializer
@@ -16,7 +15,6 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.kafka.core.DefaultKafkaProducerFactory
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.kafka.core.ProducerFactory
-import org.springframework.transaction.annotation.Transactional
 import java.util.concurrent.TimeUnit
 
 class OppgaveHendelserTest : AbstractTest() {
@@ -44,10 +42,10 @@ class OppgaveHendelserTest : AbstractTest() {
 
 
 @Configuration
-class KafkaConfig(val kafkaProperties: KafkaProperties) {
+class KafkaConfig {
 
     @Bean
-    fun producerConfigs(): Map<String, Any> {
+    fun producerConfigs(kafkaProperties: KafkaProperties): Map<String, Any> {
         val props: MutableMap<String, Any> = HashMap(kafkaProperties.buildProducerProperties())
         props[ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG] = StringSerializer::class.java
         props[ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG] = StringSerializer::class.java
@@ -55,13 +53,13 @@ class KafkaConfig(val kafkaProperties: KafkaProperties) {
     }
 
     @Bean
-    fun oppgaveProducerFactory(): ProducerFactory<String, String> {
-        return DefaultKafkaProducerFactory(producerConfigs())
+    fun oppgaveProducerFactory(producerConfigs: Map<String, Any>): ProducerFactory<String, String> {
+        return DefaultKafkaProducerFactory(producerConfigs)
     }
 
     @Bean
-    fun oppgaveKafkaTemplate(): KafkaTemplate<String, String> {
-        return KafkaTemplate(oppgaveProducerFactory())
+    fun oppgaveKafkaTemplate(oppgaveProducerFactory: ProducerFactory<String, String>): KafkaTemplate<String, String> {
+        return KafkaTemplate(oppgaveProducerFactory)
     }
 }
 
