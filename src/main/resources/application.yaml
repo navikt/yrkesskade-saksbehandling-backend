@@ -35,6 +35,12 @@ spring:
         enable_lazy_load_no_trans: true
         ddl-auto: none
 
+no.nav.security.jwt.issuer:
+  tokenx:
+    discoveryurl: ${TOKEN_X_WELL_KNOWN_URL}
+    accepted_audience: notfound
+#    cookiename: localhost-idtoken
+
 graphql:
   servlet:
     enabled: true

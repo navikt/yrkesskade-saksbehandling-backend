@@ -8,5 +8,10 @@ spring:
       group-id: yrkesskade-saksbehandling-test
     client-id: yrkesskade-saksbehandling-test
 
+TOKEN_X_ENDPOINT_URL: http://localhost:${service.wiremock.port}/oauth2/v2.0/token
+service:
+  wiremock:
+    enabled: true
+
 funksjonsbrytere:
   enabled: false
