@@ -36,8 +36,8 @@ spring:
         ddl-auto: none
 
 no.nav.security.jwt.issuer:
-  tokenx:
-    discoveryurl: ${TOKEN_X_WELL_KNOWN_URL}
+  azuread:
+    discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
     accepted_audience: notfound
 #    cookiename: localhost-idtoken
 

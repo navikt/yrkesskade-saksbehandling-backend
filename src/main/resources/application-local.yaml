@@ -4,7 +4,7 @@ KAFKA_BROKERS: http://localhost:9092
 server:
   port: 9081
 
-TOKEN_X_WELL_KNOWN_URL: https://fakedings.dev-gcp.nais.io/fake/.well-known/openid-configuration
+AZURE_APP_WELL_KNOWN_URL: https://fakedings.dev-gcp.nais.io/fake/.well-known/openid-configuration
 
 spring:
   kafka:

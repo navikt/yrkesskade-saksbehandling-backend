@@ -16,6 +16,8 @@ import javax.servlet.ServletResponse
 import javax.servlet.http.HttpServletResponse
 
 
+private const val GRAPHQL_URL = "/api/graphql"
+
 @Configuration
 class WebSecurityConfig {
 
@@ -32,7 +34,7 @@ class WebSecurityConfig {
         val jwtTokenValidationHandler = JwtTokenValidationHandler(multiIssuerConfiguration)
         return oidcTokenValidationFilterRegistrationBean.apply {
             filter = JwtTokenValidationFilter(jwtTokenValidationHandler, oidcRequestContextHolder)
-            addUrlPatterns("/api/graphql")
+            addUrlPatterns(GRAPHQL_URL)
         }
     }
 
@@ -46,7 +48,7 @@ class WebSecurityConfig {
         oidcRequestContextHolder: TokenValidationContextHolder,
     ): FilterRegistrationBean<TokenValidationFilter>? {
         return FilterRegistrationBean(TokenValidationFilter(oidcRequestContextHolder)).apply {
-            addUrlPatterns("/api/graphql")
+            addUrlPatterns(GRAPHQL_URL)
             order = Ordered.LOWEST_PRECEDENCE
         }
     }

@@ -8,10 +8,11 @@ spring:
       group-id: yrkesskade-saksbehandling-test
     client-id: yrkesskade-saksbehandling-test
 
-TOKEN_X_ENDPOINT_URL: http://localhost:${service.wiremock.port}/oauth2/v2.0/token
+AZURE_APP_WELL_KNOWN_URL: http://localhost:${mock-oauth2-server.port}/azuread/.well-known/openid-configuration
 service:
   wiremock:
     enabled: true
+    port: 10099
 
 funksjonsbrytere:
   enabled: false
