@@ -1,5 +1,6 @@
 NAIS_CLUSTER_NAME: lokal
 KAFKA_BROKERS: http://localhost:9092
+SAKSBEHANDLING_CLIENT_ID: dev-gcp:yrkesskade:yrkesskade-saksbehandling-backend
 
 server:
   port: 9081

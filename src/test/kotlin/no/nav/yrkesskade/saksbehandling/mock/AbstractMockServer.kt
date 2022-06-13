@@ -35,6 +35,19 @@ open class AbstractMockServer(private val port: Int?) {
             "expires_in": %s,
             "access_token": "%s"
         }"""
+    
+    private val AZURE_AD_CONFIG_TEMPLATE = """
+        {
+                    "issuer" : "http://localhost:{PORT}/azuread",
+                    "authorization_endpoint" : "http://localhost:{PORT}/azuread/authorize",
+                    "end_session_endpoint" : "http://localhost:{PORT}/azuread/endsession",
+                    "token_endpoint" : "http://localhost:{PORT}/azuread/token",
+                    "jwks_uri" : "http://localhost:{PORT}/azuread/jwks",
+                    "response_types_supported" : [ "query", "fragment", "form_post" ],
+                    "subject_types_supported" : [ "public" ],
+                    "id_token_signing_alg_values_supported" : [ "RS256" ]
+                }
+    """
 
     private val mockServer: WireMockServer
 
@@ -70,19 +83,5 @@ open class AbstractMockServer(private val port: Int?) {
     }
 
     private fun WireMockServer.setup() {
-
-        // Oauth2 token
-        log.info("Wiremock stub /oauth2/v2.0/token")
-        stubForAny(urlPathMatching("/oauth2/v2.0/token")) {
-            val response = String.format(
-                TOKEN_RESPONSE_TEMPLATE,
-                "test_scope",
-                Instant.now().plusSeconds(3600).getEpochSecond(),
-                30,
-                30,
-                "somerandomtoken"
-            )
-            willReturnJson(response)
-        }
     }
 }

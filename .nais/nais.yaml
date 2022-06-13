@@ -54,7 +54,12 @@ spec:
   azure:
     application:
       enabled: true
-      tenant: {{tenant}}
+    sidecar:
+      enabled: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: yrkesskade-saksbehandling
   kafka:
     pool: {{kafka_pool}}
   secureLogs:

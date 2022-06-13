@@ -1,3 +1,5 @@
+SAKSBEHANDLING_CLIENT_ID: unknown
+
 spring:
   flyway:
     enabled: true

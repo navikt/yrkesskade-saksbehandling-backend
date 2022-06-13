@@ -1,3 +1,5 @@
+SAKSBEHANDLING_CLIENT_ID: dev-gcp:yrkesskade:yrkesskade-saksbehandling-backend
+
 spring:
   application:
     name: yrkesskade-saksbehandling-backend
@@ -38,9 +40,8 @@ spring:
 no.nav.security.jwt.issuer:
   azuread:
     discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
-    accepted_audience: notfound
-#    cookiename: localhost-idtoken
-
+    accepted_audience: ${SAKSBEHANDLING_CLIENT_ID}
+    cookie_name: azure_token
 graphql:
   servlet:
     enabled: true

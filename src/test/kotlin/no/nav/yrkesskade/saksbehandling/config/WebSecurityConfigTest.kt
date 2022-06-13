@@ -1,29 +1,31 @@
 package no.nav.yrkesskade.saksbehandling.config
 
-import no.nav.security.mock.oauth2.http.post
-import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
+import no.nav.security.mock.oauth2.MockOAuth2Server
+import no.nav.security.mock.oauth2.token.DefaultOAuth2TokenCallback
+import no.nav.security.token.support.core.api.Unprotected
 import no.nav.yrkesskade.saksbehandling.test.AbstractTest
 import org.junit.jupiter.api.Test
-
-import org.junit.jupiter.api.Assertions.*
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpHeaders
-import org.springframework.http.MediaType
-import org.springframework.stereotype.Controller
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.util.*
+import java.util.List
 
-@EnableMockOAuth2Server
+
 @AutoConfigureMockMvc
 @SpringBootTest
 class WebSecurityConfigTest : AbstractTest() {
+
+    @Autowired
+    lateinit var server: MockOAuth2Server
 
     @Autowired
     lateinit var mvc: MockMvc
@@ -31,42 +33,54 @@ class WebSecurityConfigTest : AbstractTest() {
     @Test
     fun `uten token`() {
         mvc.perform(
-            MockMvcRequestBuilders.post("/api/graphql")
-                .content("""{"some": "data"}""")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.ALL))
+            MockMvcRequestBuilders.get("/api/graphql"))
                 .andExpect(status().isUnauthorized)
     }
 
     @Test
     fun `med token`() {
-        val jwt = mvc.perform(MockMvcRequestBuilders.get("/oauth2/v2.0/token"))
-            .andReturn().response.contentAsString
+        val jwt = token("azuread", "test@nav.test.no", "unknown");
 
         mvc.perform(
-            MockMvcRequestBuilders.post("/api/graphql")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer $jwt")
-                .content("""{"some": "data"}""")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.ALL))
+            MockMvcRequestBuilders.get("/api/graphql")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer $jwt"))
+            .andDo(MockMvcResultHandlers.print())
             .andExpect(status().isOk)
     }
 
     @Test
     fun `med ugyldig token`() {
+        val jwt = token("ugyldig", "test@nav.test.no", "ugyldig");
+
+        mvc.perform(
+            MockMvcRequestBuilders.get("/api/graphql")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer $jwt"))
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(status().isUnauthorized)
+    }
+
+    private fun token(issuerId: String, subject: String, audience: String): String {
+        return server.issueToken(
+            issuerId = issuerId,
+            clientId = "theclientid",
+            tokenCallback = DefaultOAuth2TokenCallback(
+                issuerId = issuerId,
+                subject = subject,
+                audience = List.of(audience),
+                claims = Collections.emptyMap(),
+                expiry = 3600L
+            )
+        ).serialize()
     }
 }
 
-@ConditionalOnProperty(
-    value = ["spring.profiles.active"],
-    havingValue = "integration",
-    matchIfMissing = false
-)
 @RestController
+@Unprotected
+@RequestMapping("/api/graphql")
 class DummyController {
 
-    @PostMapping("api/graphql")
+    @GetMapping
     fun graphqlDummyEndpoint(): String {
-        return "Response"
+        return "OKIDOKI"
     }
 }
