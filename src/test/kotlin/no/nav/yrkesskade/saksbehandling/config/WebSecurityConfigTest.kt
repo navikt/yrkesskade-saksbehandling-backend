@@ -16,12 +16,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.util.*
-import java.util.List
 
 
 @AutoConfigureMockMvc
-@SpringBootTest
 class WebSecurityConfigTest : AbstractTest() {
 
     @Autowired
@@ -66,8 +63,8 @@ class WebSecurityConfigTest : AbstractTest() {
             tokenCallback = DefaultOAuth2TokenCallback(
                 issuerId = issuerId,
                 subject = subject,
-                audience = List.of(audience),
-                claims = Collections.emptyMap(),
+                audience = listOf(audience),
+                claims = emptyMap(),
                 expiry = 3600L
             )
         ).serialize()
