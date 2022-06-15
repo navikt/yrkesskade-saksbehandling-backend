@@ -11,10 +11,6 @@ spring:
     client-id: yrkesskade-saksbehandling-test
 
 AZURE_APP_WELL_KNOWN_URL: http://localhost:${mock-oauth2-server.port}/azuread/.well-known/openid-configuration
-service:
-  wiremock:
-    enabled: true
-    port: 10099
 
 funksjonsbrytere:
   enabled: false
