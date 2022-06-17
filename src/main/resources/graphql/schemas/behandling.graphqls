@@ -3,22 +3,17 @@ scalar Instant
 
 type Sak {
     sakId: ID!
+    tema: String
     brukerIdentifikator: String!
-    brukerFornavn: String
-    brukerMellomnavn: String
-    brukerEtternavn: String
     sakstype: String
-
+    saksstatus: String
 }
 
 type Behandling {
     behandlingId: ID!
-    oppgaveId: String
-    aktivDato: LocalDate
-    fristFerdigstillelse: LocalDate
+    behandlingsfrist: Instant
     opprettetTidspunkt: Instant
     status: String
-    behandlingstema: String
     sak: Sak
 }
 
