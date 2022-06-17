@@ -1,6 +1,5 @@
 ingresses:
   - https://yrkesskade-saksbehandling-backend.dev.intern.nav.no
 springProfile: dev
-tenant: trygdeetaten.no
 kafka_pool: nav-dev
 gcpProjectId: yrkesskade-dev-6235
