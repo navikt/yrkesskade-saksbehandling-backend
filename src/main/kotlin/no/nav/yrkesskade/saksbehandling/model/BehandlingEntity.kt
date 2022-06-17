@@ -1,8 +1,6 @@
 package no.nav.yrkesskade.saksbehandling.model
 
-import no.nav.yrkesskade.saksbehandling.hendelser.oppgave.model.Oppgavestatuskategori
 import java.time.Instant
-import java.time.LocalDate
 import javax.persistence.*
 
 @Entity
@@ -14,34 +12,38 @@ class BehandlingEntity (
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val behandlingId: Long,
 
-    @Column(name = "behandlingsansvarlig_ident", nullable = true)
-    val behandlingsansvarligIdent: String?,
+    @Column(name = "tema", nullable = false)
+    val tema: String,
+
+    @Column(name = "bruker_id", nullable = false)
+    val brukerId: String,
+
+    @Column(name = "behandlende_enhet", nullable = false)
+    val behandlendeEnhet: String?,
+
+    @Column(name = "saksbehandlingsansvarlig_ident", nullable = true)
+    val saksbehandlingsansvarligIdent: String?,
+
+    @Enumerated
+    @Column(name = "behandlingstype", nullable = false)
+    val behandlingstype: Behandlingstype,
 
     @Enumerated
     @Column(name = "status", nullable = false)
     val status: Behandlingsstatus,
 
+    @Column(name = "behandlingsfrist", nullable = false)
+    val behandlingsfrist: Instant,
+
+    @Column(name = "journalpost_id", nullable = false)
+    val journalpostId: String,
+
+    @Column(name = "systemreferanse", nullable = false)
+    val systemreferanse: String,
+
     @Enumerated
-    @Column(name = "statuskategori", nullable = false)
-    val statuskategori: Oppgavestatuskategori,
-
-    @Column(name = "ansvarlig_enhet", nullable = false)
-    val ansvarligEnhet: String?,
-
-    @Column(name = "behandlingstema", nullable = false)
-    val behandlingstema: String,
-
-    @Column(name = "oppgave_id", nullable = false)
-    val oppgaveId: String,
-
-    @Column(name = "oppgave_type", nullable = false)
-    val oppgavetype: String,
-
-    @Column(name = "frist_ferdigstillelse", nullable = false)
-    val fristFerdigstillelse: LocalDate,
-
-    @Column(name = "aktiv_dato", nullable = false)
-    val aktivDato: LocalDate,
+    @Column(name = "framdriftsstatus", nullable = false)
+    val framdriftsstatus: Framdriftsstatus,
 
     @Column(name = "opprettet_tidspunkt", nullable = false)
     val opprettetTidspunkt: Instant,
@@ -55,9 +57,6 @@ class BehandlingEntity (
     @ManyToOne
     @JoinColumn(name = "sak_id")
     val sak: SakEntity,
-
-    @OneToMany(mappedBy = "behandling")
-    val dokumentMetaer: List<DokumentEntity>,
 
     @OneToMany(mappedBy = "behandling")
     val behandlingResultater: List<BehandlingsresultatEntity>

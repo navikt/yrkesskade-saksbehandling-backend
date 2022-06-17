@@ -8,5 +8,5 @@ interface BehandlingRepository : JpaRepository<BehandlingEntity, Long> {
 
     fun findBySak(sak: SakEntity): List<BehandlingEntity>
 
-    fun findByOppgaveId(oppgaveId: String): BehandlingEntity?
+    fun findByBehandlingId(behandlingId: Long): BehandlingEntity?
 }

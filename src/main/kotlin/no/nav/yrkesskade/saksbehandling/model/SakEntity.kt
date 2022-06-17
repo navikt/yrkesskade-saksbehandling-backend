@@ -11,9 +11,15 @@ data class SakEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val sakId: Long,
 
+    @Column(name = "tema", nullable = false)
+    val tema: String,
+
     @Enumerated
-    @Column(name = "saksstatus", nullable = false)
-    val saksstatus: Saksstatus,
+    @Column(name = "sakstype", nullable = false)
+    val sakstype: Sakstype,
+
+    @Column(name = "bruker_identifikator", nullable = false)
+    val brukerIdentifikator: String,
 
     @Column(name = "opprettet_tidspunkt", nullable = false)
     val opprettetTidspunkt: Instant,
@@ -21,25 +27,10 @@ data class SakEntity(
     @Column(name = "opprettet_av", nullable = false)
     val opprettetAv: String,
 
-    @Enumerated
-    @Column(name = "sakstype", nullable = false)
-    val sakstype: Sakstype,
-
-    @Column(name = "aktoerId", nullable = false)
-    val aktoerId: String,
-
-    @Column(name = "bruker_identifikator", nullable = false)
-    val brukerIdentifikator: String,
-
-    @Column(name = "bruker_fornavn", nullable = false)
-    val brukerFornavn: String,
-
-    @Column(name = "bruker_mellomnavn", nullable = true)
-    val brukerMellomnavn: String?,
-
-    @Column(name = "bruker_etternavn", nullable = false)
-    val brukerEtternavn: String,
-
     @OneToMany(mappedBy = "sak")
-    val behandlinger: List<BehandlingEntity>
+    val behandlinger: List<BehandlingEntity>,
+
+    @Enumerated
+    @Column(name = "saksstatus", nullable = false)
+    val saksstatus: Saksstatus
 )
