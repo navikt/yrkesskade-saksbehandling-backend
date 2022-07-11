@@ -1,4 +1,4 @@
-package no.nav.yrkesskade.saksbehandling.graphql
+package no.nav.yrkesskade.saksbehandling.graphql.server
 
 import graphql.kickstart.tools.GraphQLQueryResolver
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.Page
