@@ -9,12 +9,11 @@ spring:
       auto-offset-reset: earliest
       group-id: yrkesskade-saksbehandling-test
     client-id: yrkesskade-saksbehandling-test
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
 AZURE_APP_WELL_KNOWN_URL: http://localhost:${mock-oauth2-server.port}/azuread/.well-known/openid-configuration
-
-saf:
-  graphql:
-    url: stub
 
 funksjonsbrytere:
   enabled: false

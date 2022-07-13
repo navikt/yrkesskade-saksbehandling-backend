@@ -22,7 +22,7 @@ class BehandlingEntity (
     val behandlendeEnhet: String?,
 
     @Column(name = "saksbehandlingsansvarlig_ident", nullable = true)
-    val saksbehandlingsansvarligIdent: String?,
+    val saksbehandlingsansvarligIdent: String? = null,
 
     @Enumerated
     @Column(name = "behandlingstype", nullable = false)
@@ -52,11 +52,11 @@ class BehandlingEntity (
     val opprettetAv: String,
 
     @Column(name = "endret_av", nullable = true)
-    val endretAv: String?,
+    val endretAv: String? = null,
 
     @ManyToOne
-    @JoinColumn(name = "sak_id")
-    val sak: SakEntity,
+    @JoinColumn(name = "sak_id", nullable = true)
+    val sak: SakEntity? = null,
 
     @OneToMany(mappedBy = "behandling")
     val behandlingResultater: List<BehandlingsresultatEntity>
