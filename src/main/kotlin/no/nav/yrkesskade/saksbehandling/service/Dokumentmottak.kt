@@ -6,7 +6,7 @@ import no.nav.yrkesskade.saksbehandling.graphql.client.SafClient
 import no.nav.yrkesskade.saksbehandling.model.BehandlingEntity
 import no.nav.yrkesskade.saksbehandling.model.Behandlingsstatus
 import no.nav.yrkesskade.saksbehandling.model.Behandlingstype
-import no.nav.yrkesskade.saksbehandling.model.DokumentTilSaksbehandling
+import no.nav.yrkesskade.saksbehandling.model.DokumentTilSaksbehandlingHendelse
 import no.nav.yrkesskade.saksbehandling.model.Framdriftsstatus
 import no.nav.yrkesskade.saksbehandling.util.getLogger
 import no.nav.yrkesskade.saksbehandling.util.getSecureLogger
@@ -27,8 +27,9 @@ class Dokumentmottak(
         private val secureLogger = getSecureLogger()
     }
 
-    fun mottaDokument(dokumentTilSaksbehandling: DokumentTilSaksbehandling) {
+    fun mottaDokument(dokumentTilSaksbehandlingHendelse: DokumentTilSaksbehandlingHendelse) {
         // hente JP i SAF
+        val dokumentTilSaksbehandling = dokumentTilSaksbehandlingHendelse.dokumentTilSaksbehandling
         val journalpost = hentJournalpostFraSaf(dokumentTilSaksbehandling.journalpostId)
 
         // lete etter SakEntity basert på brukerId, evt. fagsakId

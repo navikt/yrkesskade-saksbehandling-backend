@@ -2,6 +2,7 @@ package no.nav.yrkesskade.saksbehandling.service
 
 import io.mockk.every
 import io.mockk.mockk
+import no.nav.yrkesskade.saksbehandling.fixtures.dokumentTilSaksbehandlingHendelse
 import no.nav.yrkesskade.saksbehandling.fixtures.journalpostResultWithBrukerAktoerid
 import no.nav.yrkesskade.saksbehandling.graphql.client.SafClient
 import no.nav.yrkesskade.saksbehandling.model.DokumentTilSaksbehandling
@@ -43,13 +44,7 @@ class DokumentmottakTest : AbstractTest() {
     @Test
     fun mottaDokument() {
         every { safClientMock.hentOppdatertJournalpost(any()) } returns journalpostResultWithBrukerAktoerid()
-        val dokumentTilSaksbehandling = DokumentTilSaksbehandling(
-            journalpostId = "1337",
-            enhet = "9999",
-            metadata = DokumentTilSaksbehandlingMetadata(UUID.randomUUID().toString())
-        )
-
-        dokumentmottak.mottaDokument(dokumentTilSaksbehandling)
+        dokumentmottak.mottaDokument(dokumentTilSaksbehandlingHendelse())
         assertThat(behandlingRepository.findAll().size).isEqualTo(1)
     }
 }

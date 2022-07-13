@@ -1,6 +1,7 @@
 package no.nav.yrkesskade.saksbehandling.hendelser
 
 import no.nav.yrkesskade.saksbehandling.model.DokumentTilSaksbehandling
+import no.nav.yrkesskade.saksbehandling.model.DokumentTilSaksbehandlingHendelse
 import no.nav.yrkesskade.saksbehandling.model.DokumentTilSaksbehandlingMetadata
 import no.nav.yrkesskade.saksbehandling.test.AbstractTest
 import org.junit.jupiter.api.Test
@@ -23,15 +24,17 @@ class DokumentTilSaksbehandlingHendelseConsumerTest : AbstractTest() {
     lateinit var topic: String
 
     @Autowired
-    lateinit var kafkaTemplate: KafkaTemplate<String, DokumentTilSaksbehandling>
+    lateinit var kafkaTemplate: KafkaTemplate<String, DokumentTilSaksbehandlingHendelse>
 
     @Test
     fun listen() {
         kafkaTemplate.send(
             topic,
-            DokumentTilSaksbehandling(
-                "1337",
-                "9999",
+            DokumentTilSaksbehandlingHendelse(
+                DokumentTilSaksbehandling(
+                    "1337",
+                    "9999",
+                ),
                 DokumentTilSaksbehandlingMetadata(UUID.randomUUID().toString())
             )
         )

@@ -1,6 +1,6 @@
 package no.nav.yrkesskade.saksbehandling.hendelser
 
-import no.nav.yrkesskade.saksbehandling.model.DokumentTilSaksbehandling
+import no.nav.yrkesskade.saksbehandling.model.DokumentTilSaksbehandlingHendelse
 import no.nav.yrkesskade.saksbehandling.service.Dokumentmottak
 import no.nav.yrkesskade.saksbehandling.util.kallMetodeMedCallId
 import org.springframework.kafka.annotation.KafkaListener
@@ -13,11 +13,11 @@ class DokumentTilSaksbehandlingHendelseConsumer(private val dokumentmottak: Doku
     @KafkaListener(
         id = "dokument-til-saksbehandling",
         topics = ["\${kafka.topic.dokument-til-saksbehandling}"],
-        containerFactory = "dokumentTilSaksbehandlingListenerContainerFactory",
+        containerFactory = "dokumentTilSaksbehandlingHendelseListenerContainerFactory",
         idIsGroup = false
     )
     @Transactional
-    fun listen(record: DokumentTilSaksbehandling) {
+    fun listen(record: DokumentTilSaksbehandlingHendelse) {
         kallMetodeMedCallId(record.metadata.callId) {
             dokumentmottak.mottaDokument(record)
         }
