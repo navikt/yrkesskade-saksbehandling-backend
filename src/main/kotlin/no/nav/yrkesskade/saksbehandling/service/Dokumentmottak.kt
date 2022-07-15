@@ -2,14 +2,23 @@ package no.nav.yrkesskade.saksbehandling.service
 
 import com.expediagroup.graphql.generated.enums.BrukerIdType
 import com.expediagroup.graphql.generated.journalpost.Journalpost
+import no.nav.yrkesskade.saksbehandling.client.BrevutsendingClient
 import no.nav.yrkesskade.saksbehandling.graphql.client.SafClient
 import no.nav.yrkesskade.saksbehandling.model.BehandlingEntity
 import no.nav.yrkesskade.saksbehandling.model.Behandlingsstatus
 import no.nav.yrkesskade.saksbehandling.model.Behandlingstype
+import no.nav.yrkesskade.saksbehandling.model.Brev
+import no.nav.yrkesskade.saksbehandling.model.BrevutsendingBestiltHendelse
+import no.nav.yrkesskade.saksbehandling.model.BrevutsendingMetadata
+import no.nav.yrkesskade.saksbehandling.model.DokumentTilSaksbehandling
 import no.nav.yrkesskade.saksbehandling.model.DokumentTilSaksbehandlingHendelse
 import no.nav.yrkesskade.saksbehandling.model.Framdriftsstatus
+import no.nav.yrkesskade.saksbehandling.model.pdf.PdfData
+import no.nav.yrkesskade.saksbehandling.model.pdf.PdfTemplate
+import no.nav.yrkesskade.saksbehandling.util.MDCConstants
 import no.nav.yrkesskade.saksbehandling.util.getLogger
 import no.nav.yrkesskade.saksbehandling.util.getSecureLogger
+import org.slf4j.MDC
 import org.springframework.stereotype.Component
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -19,7 +28,8 @@ import java.util.UUID
 class Dokumentmottak(
     private val behandlingService: BehandlingService,
     private val sakService: SakService,
-    private val safClient: SafClient
+    private val safClient: SafClient,
+    private val brevutsendingClient: BrevutsendingClient
 ) {
     companion object {
         @Suppress("JAVA_CLASS_ON_COMPANION")
@@ -53,6 +63,31 @@ class Dokumentmottak(
             sak = null,
         )
         behandlingService.lagreBehandling(behandling)
+
+        sendTilBrevutsending(dokumentTilSaksbehandling)
+    }
+
+    private fun sendTilBrevutsending(dokumentTilSaksbehandling: DokumentTilSaksbehandling) {
+        val pdfData = PdfData(
+            brevtype = "Veiledning",
+            uuid = UUID.randomUUID().toString()
+        )
+        brevutsendingClient.sendTilBrevutsending(
+            BrevutsendingBestiltHendelse(
+                brev = Brev(
+                    tittel = "Veiledningsbrev tannlegeerklæring",
+                    brevkode = "NAV 13-00.08", // avklare? fjerne?
+                    enhet = dokumentTilSaksbehandling.enhet,
+                    template = PdfTemplate.TANNLEGEERKLAERING_VEILEDNING,
+                    innhold = pdfData
+                ),
+                metadata = BrevutsendingMetadata(
+                    innkommendeJournalpostId = dokumentTilSaksbehandling.journalpostId,
+                    tidspunktBestilt = Instant.now(),
+                    navCallId = MDC.get(MDCConstants.MDC_CALL_ID)
+                )
+            )
+        )
     }
 
     /**
