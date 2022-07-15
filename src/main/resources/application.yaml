@@ -86,3 +86,5 @@ funksjonsbrytere:
     uri: https://unleash.nais.io/api/
     cluster: ${NAIS_CLUSTER_NAME}
     applicationName: ${spring.application.name}
+
+SAF_APP_CLIENT_ID: dev-fss.teamdokumenthandtering.saf
