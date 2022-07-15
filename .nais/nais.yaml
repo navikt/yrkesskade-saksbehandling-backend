@@ -63,7 +63,7 @@ spec:
       external:
         {{#each externalHosts}}
           - host: {{host}}
-            {{ #if ports}}
+            {{#if ports}}
             ports:
               {{#each ports}}
               - name: {{name}}
