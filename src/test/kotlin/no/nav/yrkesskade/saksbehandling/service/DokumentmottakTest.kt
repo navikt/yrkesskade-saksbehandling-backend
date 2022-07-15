@@ -8,11 +8,14 @@ import no.nav.yrkesskade.saksbehandling.fixtures.journalpostResultWithBrukerAkto
 import no.nav.yrkesskade.saksbehandling.graphql.client.SafClient
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
 import no.nav.yrkesskade.saksbehandling.test.AbstractTest
+import no.nav.yrkesskade.saksbehandling.util.MDCConstants
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.BeforeEach
+import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Autowired
+import java.util.UUID
 
 
 class DokumentmottakTest : AbstractTest() {
@@ -30,10 +33,12 @@ class DokumentmottakTest : AbstractTest() {
 
     private val safClientMock: SafClient = mockk()
 
-    private val brevutsendingClient: BrevutsendingClient = mockk()
+    @Autowired
+    lateinit var brevutsendingClient: BrevutsendingClient
 
     @BeforeEach
     fun setup() {
+        MDC.put(MDCConstants.MDC_CALL_ID, UUID.randomUUID().toString())
         dokumentmottak = Dokumentmottak(
             behandlingService = behandlingService,
             sakService = sakService,
