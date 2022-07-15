@@ -69,7 +69,7 @@ class Dokumentmottak(
 
     private fun sendTilBrevutsending(dokumentTilSaksbehandling: DokumentTilSaksbehandling) {
         val pdfData = PdfData(
-            brevtype = "Veiledning",
+            brevtype = "Dette er et veiledningsbrev",
             uuid = UUID.randomUUID().toString()
         )
         brevutsendingClient.sendTilBrevutsending(
@@ -78,7 +78,7 @@ class Dokumentmottak(
                     tittel = "Veiledningsbrev tannlegeerklæring",
                     brevkode = "NAV 13-00.08", // avklare? fjerne?
                     enhet = dokumentTilSaksbehandling.enhet,
-                    template = PdfTemplate.TANNLEGEERKLAERING_VEILEDNING,
+                    template = PdfTemplate.VEILEDNINGSBREV_TANNLEGEERKLAERING,
                     innhold = pdfData
                 ),
                 metadata = BrevutsendingMetadata(
