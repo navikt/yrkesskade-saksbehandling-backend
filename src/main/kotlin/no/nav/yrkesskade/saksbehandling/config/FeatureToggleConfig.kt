@@ -79,7 +79,7 @@ class FeatureToggleConfig(
                 }
 
                 if (toggleId == FeatureToggles.OPPGAVE_HENDELSER.toggleId) {
-                    return true
+                    return false
                 }
 
                 if (unleash.cluster == "lokal") {
