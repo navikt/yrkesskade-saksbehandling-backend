@@ -26,7 +26,7 @@ internal class BrevutsendingClientTest : AbstractTest() {
     fun sendTilBrevutsending() {
         val brevutsendingBestiltHendelse = brevutsendingBestiltHendelse()
         brevutsendingClient.sendTilBrevutsending(brevutsendingBestiltHendelse)
-        Mockito.verify(brevutsendingConsumer, timeout(40000L).times(1)).receive(any())
+        Mockito.verify(brevutsendingConsumer, timeout(20000L).times(1)).receive(any())
 
         Assertions.assertThat(brevutsendingConsumer.getPayload()).isEqualTo(brevutsendingBestiltHendelse)
     }

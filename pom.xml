@@ -14,7 +14,7 @@
     <name>yrkesskade-saksbehandling-backend</name>
 
     <properties>
-        <yrkesskade-felles.version>17db26cd_202207151752</yrkesskade-felles.version>
+        <yrkesskade-felles.version>c24b7cd5_202207141409</yrkesskade-felles.version>
         <graphql-kotlin.version>5.5.0</graphql-kotlin.version>
         <token-validation.version>1.3.19</token-validation.version>
     </properties>
