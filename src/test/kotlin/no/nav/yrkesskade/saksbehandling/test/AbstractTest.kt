@@ -11,7 +11,6 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.support.TestPropertySourceUtils
 
-const val TOPIC_NAME = "test-topic"
 
 @ActiveProfiles("integration")
 @SpringBootTest
@@ -32,10 +31,8 @@ abstract class AbstractTest {
                 "spring.datasource.url=" + PostgresDockerContainer.container.jdbcUrl,
                 "spring.datasource.username=" + PostgresDockerContainer.container.username,
                 "spring.datasource.password=" + PostgresDockerContainer.container.password,
-                "spring.kafka.bootstrap-servers=" + KafkaDockerContainer.container.bootstrapServers,
-                "kafka.topic.aapen-oppgave-opprettet=" + TOPIC_NAME
-            );
+                "spring.kafka.bootstrap-servers=" + KafkaDockerContainer.container.bootstrapServers
+            )
         }
     }
-
 }
