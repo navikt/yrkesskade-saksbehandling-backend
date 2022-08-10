@@ -1,6 +1,11 @@
 SAKSBEHANDLING_CLIENT_ID: unknown
 
 spring:
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
   flyway:
     enabled: true
   kafka:
@@ -30,3 +35,7 @@ no.nav.security.jwt:
           client-id: dummy-client-id
           client-secret: dummy-secret
           client-auth-method: client_secret_basic
+
+logging:
+  level:
+    sql: debug
