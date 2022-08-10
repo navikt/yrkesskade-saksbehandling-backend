@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Import
 
 @Import(GraphQLScalarsConfig::class)
 @GraphQLTest
-class BehandlingQueryTest : AbstractTest() {
+class BehandlingQueryTest {
 
     @Autowired
     lateinit var graphQLTestTemplate: GraphQLTestTemplate

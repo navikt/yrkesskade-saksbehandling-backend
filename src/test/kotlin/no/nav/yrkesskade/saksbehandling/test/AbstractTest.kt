@@ -10,6 +10,7 @@ import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.support.TestPropertySourceUtils
+import org.springframework.transaction.annotation.Transactional
 import org.testcontainers.containers.KafkaContainer
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.junit.jupiter.Container
@@ -20,6 +21,7 @@ private const val KAFKA_CONTAINER_IMAGE_NAME = "confluentinc/cp-kafka:7.0.1"
 
 private const val POSTGRES_IMAGE_NAME = "postgres:12"
 
+@Transactional
 @Testcontainers
 @ActiveProfiles("integration")
 @SpringBootTest
