@@ -10,13 +10,12 @@ import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
 import no.nav.yrkesskade.saksbehandling.test.AbstractTest
 import no.nav.yrkesskade.saksbehandling.util.MDCConstants
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Test
-
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
-import java.util.UUID
+import java.util.*
 
 
 class DokumentmottakTest : AbstractTest() {
@@ -27,15 +26,15 @@ class DokumentmottakTest : AbstractTest() {
     lateinit var behandlingService: BehandlingService
 
     @Autowired
-    lateinit var behandlingRepository: BehandlingRepository
-
-    @Autowired
     lateinit var sakService: SakService
 
     private val safClientMock: SafClient = mockk()
 
     @Autowired
     lateinit var brevutsendingClient: BrevutsendingClient
+
+    @Autowired
+    lateinit var behandlingRepository: BehandlingRepository
 
     @BeforeEach
     fun setup() {
@@ -46,6 +45,12 @@ class DokumentmottakTest : AbstractTest() {
             safClient = safClientMock,
             brevutsendingClient = brevutsendingClient
         )
+        klargjorDatabase()
+    }
+
+    @Transactional
+    fun klargjorDatabase() {
+        behandlingRepository.deleteAll()
     }
 
     @Test
