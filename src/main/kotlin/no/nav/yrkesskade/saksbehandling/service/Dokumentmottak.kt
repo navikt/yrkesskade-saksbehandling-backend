@@ -20,6 +20,8 @@ import no.nav.yrkesskade.saksbehandling.util.getLogger
 import no.nav.yrkesskade.saksbehandling.util.getSecureLogger
 import org.slf4j.MDC
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.UUID
@@ -37,6 +39,7 @@ class Dokumentmottak(
         private val secureLogger = getSecureLogger()
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     fun mottaDokument(dokumentTilSaksbehandlingHendelse: DokumentTilSaksbehandlingHendelse) {
         // hente JP i SAF
         val dokumentTilSaksbehandling = dokumentTilSaksbehandlingHendelse.dokumentTilSaksbehandling

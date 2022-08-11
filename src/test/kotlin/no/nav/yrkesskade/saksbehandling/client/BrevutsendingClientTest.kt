@@ -10,23 +10,24 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.timeout
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
+import java.util.concurrent.CountDownLatch
 
 internal class BrevutsendingClientTest : AbstractTest() {
 
     @Autowired
     lateinit var brevutsendingClient: BrevutsendingClient
 
-    @SpyBean
+    @Autowired
     private lateinit var brevutsendingConsumer: BrevutsendingConsumer
 
     @Test
     fun sendTilBrevutsending() {
         val brevutsendingBestiltHendelse = brevutsendingBestiltHendelse()
         brevutsendingClient.sendTilBrevutsending(brevutsendingBestiltHendelse)
-        Mockito.verify(brevutsendingConsumer, timeout(20000L).times(1)).receive(any())
+
+        brevutsendingConsumer.getLatch().await()
 
         Assertions.assertThat(brevutsendingConsumer.getPayload()).isEqualTo(brevutsendingBestiltHendelse)
     }
@@ -36,11 +37,14 @@ internal class BrevutsendingClientTest : AbstractTest() {
 class BrevutsendingConsumer {
 
     private lateinit var payload: BrevutsendingBestiltHendelse
+    private val latch = CountDownLatch(1)
 
     @KafkaListener(topics = ["\${kafka.topic.brevutsending-bestilt}"])
     fun receive(record: BrevutsendingBestiltHendelse) {
         payload = record
+        latch.countDown()
     }
 
     fun getPayload() = payload
+    fun getLatch() = latch
 }

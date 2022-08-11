@@ -13,12 +13,7 @@ class BrevutsendingClient(
     private val kafkaTemplate: KafkaTemplate<String, BrevutsendingBestiltHendelse>
 ) {
 
-    fun sendTilBrevutsending(
-        brevutsendingBestiltHendelse: BrevutsendingBestiltHendelse
-    ): BrevutsendingBestiltHendelse {
-        val future: ListenableFuture<SendResult<String, BrevutsendingBestiltHendelse>> =
-            kafkaTemplate.send(topic, brevutsendingBestiltHendelse)
-        val resultat = future.get()
-        return resultat.producerRecord.value()
+    fun sendTilBrevutsending(brevutsendingBestiltHendelse: BrevutsendingBestiltHendelse) {
+        kafkaTemplate.send(topic, brevutsendingBestiltHendelse).get()
     }
 }

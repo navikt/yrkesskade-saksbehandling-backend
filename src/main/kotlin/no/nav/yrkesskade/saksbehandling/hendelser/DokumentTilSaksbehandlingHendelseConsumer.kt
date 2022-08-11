@@ -5,6 +5,7 @@ import no.nav.yrkesskade.saksbehandling.service.Dokumentmottak
 import no.nav.yrkesskade.saksbehandling.util.kallMetodeMedCallId
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 
 @Component
@@ -16,7 +17,7 @@ class DokumentTilSaksbehandlingHendelseConsumer(private val dokumentmottak: Doku
         containerFactory = "dokumentTilSaksbehandlingHendelseListenerContainerFactory",
         idIsGroup = false
     )
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     fun listen(record: DokumentTilSaksbehandlingHendelse) {
         kallMetodeMedCallId(record.metadata.callId) {
             dokumentmottak.mottaDokument(record)
