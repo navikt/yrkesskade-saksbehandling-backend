@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
 import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 
 internal class BrevutsendingClientTest : AbstractTest() {
 
@@ -27,7 +28,7 @@ internal class BrevutsendingClientTest : AbstractTest() {
         val brevutsendingBestiltHendelse = brevutsendingBestiltHendelse()
         brevutsendingClient.sendTilBrevutsending(brevutsendingBestiltHendelse)
 
-        brevutsendingConsumer.getLatch().await()
+        brevutsendingConsumer.getLatch().await(10000, TimeUnit.MILLISECONDS)
 
         Assertions.assertThat(brevutsendingConsumer.getPayload()).isEqualTo(brevutsendingBestiltHendelse)
     }

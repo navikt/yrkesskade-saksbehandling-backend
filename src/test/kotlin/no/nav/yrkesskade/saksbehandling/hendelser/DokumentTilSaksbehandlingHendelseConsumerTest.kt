@@ -5,67 +5,87 @@ import no.nav.yrkesskade.saksbehandling.graphql.client.SafClient
 import no.nav.yrkesskade.saksbehandling.model.DokumentTilSaksbehandling
 import no.nav.yrkesskade.saksbehandling.model.DokumentTilSaksbehandlingHendelse
 import no.nav.yrkesskade.saksbehandling.model.DokumentTilSaksbehandlingMetadata
-import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
-import no.nav.yrkesskade.saksbehandling.service.BehandlingService
+import no.nav.yrkesskade.saksbehandling.service.Dokumentmottak
 import no.nav.yrkesskade.saksbehandling.test.AbstractTest
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-
-import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.kotlin.any
-import org.mockito.kotlin.timeout
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Import
+import org.springframework.context.annotation.Primary
+import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.core.DefaultKafkaProducerFactory
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.kafka.core.ProducerFactory
+import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import java.util.UUID
+import java.util.*
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 
 @Import(KafkaTestConfig::class)
-@Transactional
 class DokumentTilSaksbehandlingHendelseConsumerTest : AbstractTest() {
 
-    @SpyBean
-    lateinit var consumer: DokumentTilSaksbehandlingHendelseConsumer
+    @Autowired
+    lateinit var consumer: DokumentTilSaksbehandlingHendelseConsumerForTest
 
     @MockBean
     lateinit var safClient: SafClient
 
-    @Value("\${kafka.topic.dokument-til-saksbehandling}")
-    lateinit var topic: String
+    val topic = "dokument-til-saksbehandling-hendelse-test"
 
     @Autowired
     lateinit var kafkaTemplate: KafkaTemplate<String, DokumentTilSaksbehandlingHendelse>
-
-    @SpyBean
-    lateinit var behandlingRepository: BehandlingRepository
 
     @Test
     fun listen() {
         `when`(safClient.hentOppdatertJournalpost(any())).thenReturn(journalpostResultWithBrukerAktoerid())
 
-        kafkaTemplate.send(
-            topic,
-            DokumentTilSaksbehandlingHendelse(
-                DokumentTilSaksbehandling(
-                    "1337",
-                    "9999",
-                ),
-                DokumentTilSaksbehandlingMetadata(UUID.randomUUID().toString())
-            )
+        val payload = DokumentTilSaksbehandlingHendelse(
+            DokumentTilSaksbehandling(
+                "1337",
+                "9999",
+            ),
+            DokumentTilSaksbehandlingMetadata(UUID.randomUUID().toString())
         )
 
-        Mockito.verify(behandlingRepository, timeout(60000L).times(1)).save(any())
-        Mockito.verify(consumer, timeout(60000L).times(1)).listen(any())
-        Assertions.assertThat(behandlingRepository.findAll().size).isEqualTo(1)
+        kafkaTemplate.send(
+            topic,
+            payload
+        )
+
+        // vent på at oppgavene i consumer blir fullført før vi gjennomfører testene
+        consumer.latch.await(10000, TimeUnit.MILLISECONDS)
+       // Thread.sleep(1000)
+        assertThat(consumer.payload).isEqualTo(payload)
+        //Mockito.verify(consumer, timeout(60000L).times(1)).listen(any())
+    }
+}
+
+@Primary
+@Component
+class DokumentTilSaksbehandlingHendelseConsumerForTest(
+    dokumentmottak: Dokumentmottak
+) : DokumentTilSaksbehandlingHendelseConsumer(dokumentmottak) {
+
+    val latch = CountDownLatch(1)
+    lateinit var payload: DokumentTilSaksbehandlingHendelse
+
+    @KafkaListener(
+        topics = ["dokument-til-saksbehandling-hendelse-test"],
+        containerFactory = "dokumentTilSaksbehandlingHendelseListenerContainerFactory"
+    )
+    @Transactional
+    override fun listen(record: DokumentTilSaksbehandlingHendelse) {
+        super.listen(record)
+        payload = record
+        latch.countDown()
     }
 }
 

@@ -39,7 +39,7 @@ class Dokumentmottak(
         private val secureLogger = getSecureLogger()
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional
     fun mottaDokument(dokumentTilSaksbehandlingHendelse: DokumentTilSaksbehandlingHendelse) {
         // hente JP i SAF
         val dokumentTilSaksbehandling = dokumentTilSaksbehandlingHendelse.dokumentTilSaksbehandling

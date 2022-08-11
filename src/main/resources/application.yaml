@@ -20,6 +20,7 @@ spring:
       enable-auto-commit: false
       properties:
         spring.json.trusted.packages: no.nav.yrkesskade.saksbehandling.model
+        isolation.level: read_committed
     listener:
       ack-mode: record
   datasource:
