@@ -33,7 +33,7 @@ no.nav.security.jwt:
   issuer:
     azuread:
       discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
-      accepted_audience: ${AZURE_APP_CLIENT_ID}
+      accepted_audience: ${SAKSBEHANDLING_CLIENT_ID}
   client:
     registration:
       saf-maskintilmaskin:
