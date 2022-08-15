@@ -4,6 +4,7 @@ import no.nav.security.token.support.core.configuration.MultiIssuerConfiguration
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import no.nav.security.token.support.core.validation.JwtTokenValidationHandler
 import no.nav.security.token.support.filter.JwtTokenValidationFilter
+import no.nav.yrkesskade.saksbehandling.util.getLogger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
@@ -15,6 +16,7 @@ import javax.servlet.Filter
 import javax.servlet.FilterChain
 import javax.servlet.ServletRequest
 import javax.servlet.ServletResponse
+import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 
@@ -59,12 +61,16 @@ class WebSecurityConfig {
 
 
 class TokenValidationFilter(val oidcRequestContextHolder: TokenValidationContextHolder, val environment: Environment) : Filter {
+
+    val logger = getLogger(TokenValidationFilter::class.java)
+
     override fun doFilter(servletRequest: ServletRequest, servletResponse: ServletResponse, filterChain: FilterChain) {
         if (environment.activeProfiles.contains("local") && servletRequest.parameterMap.containsKey("codegen")) {
             // Vi er i local kjøring og utfører en kodegenering av skjema.
             filterChain.doFilter(servletRequest, servletResponse)
             return
         }
+        logger.info("Tokens: ${(servletRequest as HttpServletRequest).getHeader("Authorization")}")
         if (!oidcRequestContextHolder.tokenValidationContext.hasValidToken()) {
             (servletResponse as HttpServletResponse).sendError(HttpStatus.UNAUTHORIZED.value())
         } else {
