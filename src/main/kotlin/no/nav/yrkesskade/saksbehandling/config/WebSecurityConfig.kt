@@ -75,7 +75,8 @@ class TokenValidationFilter(val oidcRequestContextHolder: TokenValidationContext
 
         if (headerNames != null) {
             while (headerNames.hasMoreElements()) {
-                logger.info("Header:  ${httpRequest.getHeader(headerNames.nextElement())}")
+                val headerName = headerNames.nextElement()
+                logger.info("Header $headerName:  ${httpRequest.getHeader(headerName)}")
             }
         }
         if (!oidcRequestContextHolder.tokenValidationContext.hasValidToken()) {
