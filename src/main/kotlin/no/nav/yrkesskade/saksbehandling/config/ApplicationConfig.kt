@@ -5,8 +5,11 @@ import no.nav.security.token.support.spring.api.EnableJwtTokenValidation
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.context.annotation.Configuration
 
+
 @EnableOAuth2Client
-@EnableJwtTokenValidation
+@EnableJwtTokenValidation(
+    ignore = ["org.springframework", "org.springdoc"]
+)
 @ConfigurationPropertiesScan
 @Configuration
 class ApplicationConfig

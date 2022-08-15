@@ -1,4 +1,8 @@
-SAKSBEHANDLING_CLIENT_ID: api://prod-gcp:yrkesskade:yrkesskade-saksbehandling-backend/.default
+SAKSBEHANDLING_CLIENT_ID: prod-gcp:yrkesskade:yrkesskade-saksbehandling-backend
+
+server:
+  servlet:
+    context-path: /api
 
 spring:
   application:
@@ -56,7 +60,7 @@ graphql:
       allowed-methods: GET, HEAD, POST
     websocket:
       enabled: false
-    mapping: /api/graphql
+    mapping: /graphql
     actuator-metrics: true
 
 management:
