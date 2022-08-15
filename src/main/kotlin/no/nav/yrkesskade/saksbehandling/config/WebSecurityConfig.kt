@@ -70,6 +70,7 @@ class TokenValidationFilter(val oidcRequestContextHolder: TokenValidationContext
             filterChain.doFilter(servletRequest, servletResponse)
             return
         }
+        logger.info("Headers: ${(servletRequest as HttpServletRequest).headerNames}")
         logger.info("Tokens: ${(servletRequest as HttpServletRequest).getHeader("Authorization")}")
         if (!oidcRequestContextHolder.tokenValidationContext.hasValidToken()) {
             (servletResponse as HttpServletResponse).sendError(HttpStatus.UNAUTHORIZED.value())
