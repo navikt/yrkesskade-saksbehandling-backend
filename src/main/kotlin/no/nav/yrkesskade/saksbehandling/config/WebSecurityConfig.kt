@@ -5,13 +5,13 @@ import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import no.nav.security.token.support.core.validation.JwtTokenValidationHandler
 import no.nav.security.token.support.filter.JwtTokenValidationFilter
 import no.nav.yrkesskade.saksbehandling.util.getLogger
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.Ordered
 import org.springframework.core.env.Environment
 import org.springframework.http.HttpStatus
+import java.util.*
 import javax.servlet.Filter
 import javax.servlet.FilterChain
 import javax.servlet.ServletRequest
@@ -70,8 +70,14 @@ class TokenValidationFilter(val oidcRequestContextHolder: TokenValidationContext
             filterChain.doFilter(servletRequest, servletResponse)
             return
         }
-        logger.info("Headers: ${(servletRequest as HttpServletRequest).headerNames}")
-        logger.info("Tokens: ${(servletRequest as HttpServletRequest).getHeader("Authorization")}")
+        val httpRequest = servletRequest as HttpServletRequest
+        val headerNames: Enumeration<String> = httpRequest.headerNames
+
+        if (headerNames != null) {
+            while (headerNames.hasMoreElements()) {
+                logger.info("Header:  ${httpRequest.getHeader(headerNames.nextElement())}")
+            }
+        }
         if (!oidcRequestContextHolder.tokenValidationContext.hasValidToken()) {
             (servletResponse as HttpServletResponse).sendError(HttpStatus.UNAUTHORIZED.value())
         } else {
