@@ -1,5 +1,6 @@
 SAKSBEHANDLING_CLIENT_ID: prod-gcp:yrkesskade:yrkesskade-saksbehandling-backend
 
+
 server:
   servlet:
     context-path: /api
@@ -60,7 +61,7 @@ graphql:
       allowed-methods: GET, HEAD, POST
     websocket:
       enabled: false
-    mapping: /graphql
+    mapping: /api/graphql
     actuator-metrics: true
 
 management:
@@ -80,8 +81,8 @@ management:
 
 kafka:
   topic:
-    dokument-til-saksbehandling: yrkesskade.privat-yrkesskade-dokument-til-saksbehandling
-    brevutsending-bestilt: yrkesskade.privat-yrkesskade-brevutsending-bestilt
+    dokument-til-saksbehandling: privat-yrkesskade-dokument-til-saksbehandling
+    brevutsending-bestilt: privat-yrkesskade-brevutsending-bestilt
 
 saf.graphql.url: https://saf.dev-fss-pub.nais.io/graphql
 
