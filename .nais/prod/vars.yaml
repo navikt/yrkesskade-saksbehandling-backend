@@ -2,3 +2,4 @@ ingresses:
   - https://yrkesskade-saksbehandling-backend.intern.nav.no
 springProfile: prod
 kafka_pool: nav-prod
+tenant: nav.no

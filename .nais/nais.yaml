@@ -54,8 +54,7 @@ spec:
   azure:
     application:
       enabled: true
-    sidecar:
-      enabled: true
+      tenant: {{tenant}}
   accessPolicy:
     inbound:
       rules:
