@@ -1,4 +1,4 @@
-SAKSBEHANDLING_CLIENT_ID: api://prod-gcp.yrkesskade.yrkesskade-saksbehandling-backend/.default
+SAKSBEHANDLING_CLIENT_ID: ${AZURE_APP_CLIENT_ID}
 
 spring:
   application:
