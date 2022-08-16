@@ -1,4 +1,4 @@
-SAKSBEHANDLING_CLIENT_ID: api://dev-gcp.yrkesskade.yrkesskade-saksbehandling-backend/.default
+SAKSBEHANDLING_CLIENT_ID: ${AZURE_APP_CLIENT_ID} #api://dev-gcp.yrkesskade.yrkesskade-saksbehandling-backend/.default
 TENANT_ID: 966ac572-f5b7-4bbe-aa88-c76419c0f851         # trygdeetaten.no
 
 spring:
