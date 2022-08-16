@@ -5,3 +5,4 @@ externalHosts:
 springProfile: dev
 kafka_pool: nav-dev
 gcpProjectId: yrkesskade-dev-6235
+tenant: trygdeetaten.no
