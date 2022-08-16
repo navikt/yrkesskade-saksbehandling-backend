@@ -55,26 +55,13 @@ spec:
     application:
       enabled: true
       tenant: {{tenant}}
-    sidecar:
-      enabled: true
   accessPolicy:
-    outbound:
-      rules:
-        - application: yrkesskade-saksbehandling
     inbound:
       rules:
         - application: yrkesskade-saksbehandling
       external:
         {{#each externalHosts}}
           - host: {{host}}
-            {{#if ports}}
-            ports:
-              {{#each ports}}
-              - name: {{name}}
-                port: {{port}}
-                protocol: {{protocol}}
-              {{/each}}
-            {{/if}}
         {{/each}}
   kafka:
     pool: {{kafka_pool}}
