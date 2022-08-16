@@ -58,6 +58,9 @@ spec:
     sidecar:
       enabled: true
   accessPolicy:
+    outbound:
+      rules:
+        - application: yrkesskade-saksbehandling
     inbound:
       rules:
         - application: yrkesskade-saksbehandling
