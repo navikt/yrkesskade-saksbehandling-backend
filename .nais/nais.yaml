@@ -56,7 +56,7 @@ spec:
       enabled: true
       tenant: {{tenant}}
     sidecar:
-      enabled: false
+      enabled: true
   accessPolicy:
     inbound:
       rules:
