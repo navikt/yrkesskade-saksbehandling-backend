@@ -14,3 +14,19 @@ AZURE_APP_WELL_KNOWN_URL: http://localhost:${mock-oauth2-server.port}/azuread/.w
 
 funksjonsbrytere:
   enabled: false
+
+no.nav.security.jwt:
+  issuer:
+    azuread:
+      discovery-url: http://localhost:${mock-oauth2-server.port}/azuread/.well-known/openid-configuration
+      accepted_audience: aad-client-id
+  client:
+    registration:
+      saf-maskintilmaskin:
+        token-endpoint-url: http://localhost:${mock-oauth2-server.port}/azuread/token
+        grant-type: client_credentials
+        scope: saf
+        authentication:
+          client-id: dummy-client-id
+          client-secret: dummy-secret
+          client-auth-method: client_secret_basic

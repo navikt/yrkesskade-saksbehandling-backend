@@ -17,8 +17,6 @@ type Behandling {
     aktivDato: LocalDate
     fristFerdigstillelse: LocalDate
     opprettetTidspunkt: Instant
-    behandlingstype: String!
-    saksbehandlingsansvarligIdent: String
     status: String
     behandlingstema: String
     sak: Sak
