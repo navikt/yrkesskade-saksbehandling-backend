@@ -1,4 +1,4 @@
-SAKSBEHANDLING_CLIENT_ID: dev-gcp:yrkesskade:yrkesskade-saksbehandling-backend
+SAKSBEHANDLING_CLIENT_ID: ${AZURE_APP_CLIENT_ID}
 
 spring:
   application:
@@ -11,8 +11,9 @@ spring:
     client-id: yrkesskade-saksbehandling
     consumer:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       group-id: yrkesskade-saksbehandling
-      auto-offset-reset: latest
+      auto-offset-reset: earliest
       enable-auto-commit: false
       properties:
         spring.json.trusted.packages: no.nav.yrkesskade.saksbehandling
@@ -39,9 +40,10 @@ spring:
 
 no.nav.security.jwt.issuer:
   azuread:
-    discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
+    discovery-url: ${AZURE_APP_WELL_KNOWN_URL}
     accepted_audience: ${SAKSBEHANDLING_CLIENT_ID}
     cookie_name: azure_token
+
 graphql:
   servlet:
     enabled: true
@@ -71,8 +73,10 @@ management:
 
 kafka:
   topic:
-    aapen-oppgave-opprettet: aapen-oppgave-opprettet-v1-preprod
-    aapen-oppgave-endret: aapen-oppgave-endret-v1-preprod
+    dokument-til-saksbehandling: privat-yrkesskade-dokument-til-saksbehandling
+    brevutsending-bestilt: privat-yrkesskade-brevutsending-bestilt
+
+saf.graphql.url: https://saf.dev-fss-pub.nais.io/graphql
 
 funksjonsbrytere:
   enabled: true
@@ -80,3 +84,5 @@ funksjonsbrytere:
     uri: https://unleash.nais.io/api/
     cluster: ${NAIS_CLUSTER_NAME}
     applicationName: ${spring.application.name}
+
+SAF_APP_CLIENT_ID: dev-fss.teamdokumenthandtering.saf
