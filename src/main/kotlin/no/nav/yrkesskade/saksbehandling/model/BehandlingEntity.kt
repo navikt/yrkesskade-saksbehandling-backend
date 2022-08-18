@@ -1,5 +1,6 @@
 package no.nav.yrkesskade.saksbehandling.model
 
+import com.expediagroup.graphql.generated.enums.BrukerIdType
 import java.time.Instant
 import javax.persistence.*
 
@@ -17,6 +18,10 @@ class BehandlingEntity (
 
     @Column(name = "bruker_id", nullable = false)
     val brukerId: String,
+
+    @Enumerated
+    @Column(name = "bruker_id_type", nullable = false)
+    val brukerIdType: BrukerIdType,
 
     @Column(name = "behandlende_enhet", nullable = false)
     val behandlendeEnhet: String?,
@@ -37,6 +42,9 @@ class BehandlingEntity (
 
     @Column(name = "journalpost_id", nullable = false)
     val journalpostId: String,
+
+    @Column(name = "dokumentkategori", nullable = false)
+    val dokumentkategori: String,
 
     @Column(name = "systemreferanse", nullable = false)
     val systemreferanse: String,
