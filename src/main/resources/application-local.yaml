@@ -33,6 +33,8 @@ kafka:
   topic:
     dokument-til-saksbehandling: privat-yrkesskade-dokument-til-saksbehandling
     brevutsending-bestilt: privat-yrkesskade-brevutsending-bestilt
+    aapen-oppgave-opprettet: aapen-oppgave-opprettet-v1-local
+    aapen-oppgave-endret: aapen-oppgave-endret-v1-local
 
 no.nav.security.jwt:
   client:

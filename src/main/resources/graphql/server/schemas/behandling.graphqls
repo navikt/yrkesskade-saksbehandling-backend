@@ -26,5 +26,6 @@ input Page {
 
 type Query {
     hentBehandlinger(page: Page!): [Behandling]!
+    hentEgneBehandlinger(page: Page!): [Behandling]!
     antallBehandlinger: Int!
 }
