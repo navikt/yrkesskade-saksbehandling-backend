@@ -7,7 +7,6 @@ import no.nav.yrkesskade.saksbehandling.test.AbstractTest
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpHeaders
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
@@ -36,7 +35,7 @@ class WebSecurityConfigTest : AbstractTest() {
 
     @Test
     fun `med token`() {
-        val jwt = token("azuread", "test@nav.test.no", "unknown");
+        val jwt = token("azuread", "test@nav.test.no", "aad-client-id");
 
         mvc.perform(
             MockMvcRequestBuilders.get("/api/graphql")

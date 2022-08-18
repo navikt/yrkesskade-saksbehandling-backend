@@ -1,6 +1,8 @@
 NAIS_CLUSTER_NAME: lokal
 KAFKA_BROKERS: http://localhost:9092
-SAKSBEHANDLING_CLIENT_ID: dev-gcp:yrkesskade:yrkesskade-saksbehandling-backend
+SAKSBEHANDLING_CLIENT_ID: dev-gcp.yrkesskade.yrkesskade-saksbehandling-backend
+AUTH_SERVER: https://fakedings.dev-gcp.nais.io/fake
+AZURE_APP_JWK: local
 
 server:
   port: 9081
@@ -24,10 +26,23 @@ spring:
   flyway:
     enabled: true
 
+
 funksjonsbrytere:
   enabled: false
 
 kafka:
   topic:
-    aapen-oppgave-opprettet: aapen-oppgave-opprettet-v1-local
-    aapen-oppgave-endret: aapen-oppgave-endret-v1-local
+    dokument-til-saksbehandling: privat-yrkesskade-dokument-til-saksbehandling
+    brevutsending-bestilt: privat-yrkesskade-brevutsending-bestilt
+
+no.nav.security.jwt:
+  client:
+    registration:
+      saf-maskintilmaskin:
+        token-endpoint-url: ${AUTH_SERVER}/aad
+        grant-type: client_credentials
+        scope: saf
+        authentication:
+          client-id: dummy-client-id
+          client-secret: dummy-secret
+          client-auth-method: client_secret_basic
