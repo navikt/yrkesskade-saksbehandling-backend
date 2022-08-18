@@ -38,11 +38,22 @@ spring:
         enable_lazy_load_no_trans: true
         ddl-auto: none
 
-no.nav.security.jwt.issuer:
-  azuread:
-    discovery-url: ${AZURE_APP_WELL_KNOWN_URL}
-    accepted_audience: ${SAKSBEHANDLING_CLIENT_ID}
-    cookie_name: azure_token
+no.nav.security.jwt:
+  issuer:
+    azuread:
+      discovery-url: ${AZURE_APP_WELL_KNOWN_URL}
+      accepted_audience: ${SAKSBEHANDLING_CLIENT_ID}
+      cookie_name: azure_token
+  client:
+    registration:
+      saf-maskintilmaskin:
+        token-endpoint-url: https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token
+        grant-type: client_credentials
+        scope: api://${SAF_APP_CLIENT_ID}/.default
+        authentication:
+          client-id: ${AZURE_APP_CLIENT_ID}
+          client-jwk: ${AZURE_APP_JWK}
+          client-auth-method: private_key_jwt
 
 graphql:
   servlet:
@@ -55,6 +66,7 @@ graphql:
       enabled: false
     mapping: /api/graphql
     actuator-metrics: true
+    async-mode-enabled: false
 
 management:
   endpoint:
