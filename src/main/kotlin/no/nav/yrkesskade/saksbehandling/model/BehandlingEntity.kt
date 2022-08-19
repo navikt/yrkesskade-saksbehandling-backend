@@ -15,11 +15,11 @@ class BehandlingEntity (
     val behandlingId: Long,
 
     @Column(name = "behandlingsansvarlig_ident", nullable = true)
-    val behandlingsansvarligIdent: String?,
+    var behandlingsansvarligIdent: String?,
 
     @Enumerated
     @Column(name = "status", nullable = false)
-    val status: Behandlingsstatus,
+    var status: Behandlingsstatus,
 
     @Enumerated
     @Column(name = "statuskategori", nullable = false)
