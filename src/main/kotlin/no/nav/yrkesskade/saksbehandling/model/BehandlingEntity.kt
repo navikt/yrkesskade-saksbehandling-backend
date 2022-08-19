@@ -19,7 +19,7 @@ class BehandlingEntity (
     @Column(name = "bruker_id", nullable = false)
     val brukerId: String,
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(name = "bruker_id_type", nullable = false)
     val brukerIdType: BrukerIdType,
 
