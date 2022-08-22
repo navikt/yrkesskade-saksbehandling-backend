@@ -38,7 +38,7 @@ class BehandlingService(
         val behandling = behandlingRepository.findById(behandlingId).orElseThrow()
         val oppdatertBehandling = behandling.copy(
             status = Behandlingsstatus.UNDER_BEHANDLING,
-            behandlingsansvarligIdent = autentisertBruker.preferredUsername
+            saksbehandlingsansvarligIdent = autentisertBruker.preferredUsername
         )
 
         return behandlingRepository.save(oppdatertBehandling)

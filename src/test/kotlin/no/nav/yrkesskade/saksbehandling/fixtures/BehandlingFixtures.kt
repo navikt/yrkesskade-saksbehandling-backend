@@ -19,7 +19,7 @@ fun genererBehandling(behandlingId: Long, behandlingsansvarligIdent: String?, be
         brukerIdType = BrukerIdType.AKTOERID,
         behandlendeEnhet = "9999",
         sak = sak,
-        saksbehandlingsansvarligIdent = "213341",
+        saksbehandlingsansvarligIdent = behandlingsansvarligIdent,
         behandlingstype = Behandlingstype.VEILEDNING,
         behandlingsfrist = Instant.now().plus(30, ChronoUnit.DAYS),
         journalpostId = "213123123",

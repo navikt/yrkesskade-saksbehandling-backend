@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.data.domain.Pageable
 import org.springframework.transaction.annotation.Transactional
 
 @Transactional
@@ -56,7 +55,7 @@ class BehandlingServiceTest : AbstractTest() {
         assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
 
         val lagretBehandling = behandlingService.overtaBehandling(behandling.behandlingId)
-        assertThat(lagretBehandling.behandlingsansvarligIdent).isEqualTo("test")
+        assertThat(lagretBehandling.saksbehandlingsansvarligIdent).isEqualTo("test")
         assertThat(lagretBehandling.status).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING)
         assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
     }
