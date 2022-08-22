@@ -43,7 +43,7 @@ class BehandlingRepositoryTest : AbstractTest() {
 
         behandlingRepository.save(behandling)
 
-        val behandlinger = behandlingRepository.findByBehandlingsansvarligIdent("test", Pageable.ofSize(10))
+        val behandlinger = behandlingRepository.findBySaksbehandlingsansvarligIdent("test", Pageable.ofSize(10))
         assertThat(behandlinger.size).isEqualTo(1)
     }
 
@@ -54,7 +54,7 @@ class BehandlingRepositoryTest : AbstractTest() {
 
         behandlingRepository.save(behandling)
 
-        val behandlinger = behandlingRepository.findByBehandlingsansvarligIdent("test", Pageable.ofSize(10))
+        val behandlinger = behandlingRepository.findBySaksbehandlingsansvarligIdent("test", Pageable.ofSize(10))
         assertThat(behandlinger.size).isEqualTo(1)
     }
 
@@ -65,7 +65,7 @@ class BehandlingRepositoryTest : AbstractTest() {
 
         behandlingRepository.save(behandling)
 
-        val behandlinger = behandlingRepository.findByBehandlingsansvarligIdent("test", Pageable.ofSize(10))
+        val behandlinger = behandlingRepository.findBySaksbehandlingsansvarligIdent("test", Pageable.ofSize(10))
         assertThat(behandlinger.size).isEqualTo(0)
     }
 }

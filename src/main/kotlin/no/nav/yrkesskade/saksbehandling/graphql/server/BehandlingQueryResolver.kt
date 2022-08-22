@@ -19,7 +19,7 @@ class BehandlingQueryResolver(
         behandlingRepository.findAll(PageRequest.of(page.page, page.size))
 
     fun hentEgneBehandlinger(page: Page): List<BehandlingEntity> {
-        return behandlingRepository.findByBehandlingsansvarligIdent(autentisertBruker.preferredUsername, PageRequest.of(page.page, page.size))
+        return behandlingRepository.findBySaksbehandlingsansvarligIdent(autentisertBruker.preferredUsername, PageRequest.of(page.page, page.size))
     }
 
     fun antallBehandlinger() = behandlingRepository.count()

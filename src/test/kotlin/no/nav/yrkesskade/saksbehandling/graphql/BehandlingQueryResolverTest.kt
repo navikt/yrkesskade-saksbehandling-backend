@@ -43,7 +43,7 @@ class BehandlingQueryResolverTest : AbstractTest() {
     fun `hent egne behandlinger`() {
         val behandling = genererBehandling(1, "test", Behandlingsstatus.UNDER_BEHANDLING, genererSak())
         Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
-        Mockito.`when`(behandlingRepository.findByBehandlingsansvarligIdent(any(), any())).thenReturn(listOf(behandling))
+        Mockito.`when`(behandlingRepository.findBySaksbehandlingsansvarligIdent(any(), any())).thenReturn(listOf(behandling))
 
         val response = graphQLTestTemplate.postForResource("graphql/hent_egne_behandlinger.graphql")
         assertThat(response.statusCode.is2xxSuccessful).isTrue

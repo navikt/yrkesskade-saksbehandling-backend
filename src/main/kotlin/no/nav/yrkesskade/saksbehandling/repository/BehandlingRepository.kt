@@ -10,7 +10,6 @@ interface BehandlingRepository : JpaRepository<BehandlingEntity, Long> {
     fun findBySak(sak: SakEntity): List<BehandlingEntity>
 
     fun findByBehandlingId(behandlingId: Long): BehandlingEntity?
-    fun findByOppgaveId(oppgaveId: String): BehandlingEntity?
 
-    fun findByBehandlingsansvarligIdent(ident: String, pageable: Pageable): List<BehandlingEntity>
+    fun findBySaksbehandlingsansvarligIdent(ident: String, pageable: Pageable): List<BehandlingEntity>
 }

@@ -1,28 +1,31 @@
 package no.nav.yrkesskade.saksbehandling.fixtures
 
-import no.nav.yrkesskade.saksbehandling.hendelser.oppgave.model.Oppgavestatuskategori
+import com.expediagroup.graphql.generated.enums.BrukerIdType
+import com.expediagroup.graphql.generated.enums.Tema
 import no.nav.yrkesskade.saksbehandling.model.*
 import java.time.Instant
-import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 
 fun genererBehandling(behandlingId: Long, behandlingsansvarligIdent: String?, behandlingstatus: Behandlingsstatus, sak: SakEntity) : BehandlingEntity {
     return BehandlingEntity(
-        aktivDato = LocalDate.now(),
         behandlingId = behandlingId,
-        dokumentMetaer = emptyList(),
         opprettetAv = "test",
         endretAv = null,
-        oppgaveId = "1",
-        oppgavetype = "test",
-        ansvarligEnhet = "test_enhet",
         behandlingResultater = emptyList(),
-        behandlingsansvarligIdent = behandlingsansvarligIdent,
         opprettetTidspunkt = Instant.now(),
-        statuskategori = Oppgavestatuskategori.AAPEN,
         status = behandlingstatus,
-        fristFerdigstillelse = LocalDate.now().plusDays(10),
-        behandlingstema = "test",
-        sak = sak
+        tema = Tema.YRK.name,
+        brukerId = "12345",
+        brukerIdType = BrukerIdType.AKTOERID,
+        behandlendeEnhet = "9999",
+        sak = sak,
+        saksbehandlingsansvarligIdent = "213341",
+        behandlingstype = Behandlingstype.VEILEDNING,
+        behandlingsfrist = Instant.now().plus(30, ChronoUnit.DAYS),
+        journalpostId = "213123123",
+        dokumentkategori = "enFinKategori",
+        systemreferanse = "referanse",
+        framdriftsstatus = Framdriftsstatus.IKKE_PAABEGYNT
     )
 }
 
@@ -34,10 +37,7 @@ fun genererSak() : SakEntity {
         opprettetAv = "test",
         sakstype = Sakstype.YRKESSYKDOM,
         behandlinger = emptyList(),
-        aktoerId = "012345678910",
         brukerIdentifikator = "012345678910",
-        brukerFornavn = "Test",
-        brukerMellomnavn = null,
-        brukerEtternavn = "Testesen"
+        tema = Tema.YRK.name
     )
 }
