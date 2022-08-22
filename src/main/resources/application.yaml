@@ -42,11 +42,12 @@ spring:
         enable_lazy_load_no_trans: true
         ddl-auto: none
 
-no.nav.security.jwt.issuer:
-  azuread:
-    discovery-url: ${AZURE_APP_WELL_KNOWN_URL}
-    accepted_audience: ${SAKSBEHANDLING_CLIENT_ID}
-    cookie_name: azure_token
+no.nav.security.jwt:
+  issuer:
+    azuread:
+      discovery-url: ${AZURE_APP_WELL_KNOWN_URL}
+      accepted_audience: ${SAKSBEHANDLING_CLIENT_ID}
+      cookie_name: azure_token
 
 graphql:
   servlet:
@@ -59,6 +60,7 @@ graphql:
       enabled: false
     mapping: /api/graphql
     actuator-metrics: true
+    async-mode-enabled: false
 
 management:
   endpoint:

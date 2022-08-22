@@ -37,6 +37,11 @@ kafka:
     aapen-oppgave-endret: aapen-oppgave-endret-v1-local
 
 no.nav.security.jwt:
+  issuer:
+    azuread:
+      discovery-url: ${AZURE_APP_WELL_KNOWN_URL}
+      accepted_audience: ${SAKSBEHANDLING_CLIENT_ID}
+      cookie_name: auth_token
   client:
     registration:
       saf-maskintilmaskin:

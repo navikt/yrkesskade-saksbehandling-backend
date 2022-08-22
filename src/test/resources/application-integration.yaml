@@ -1,4 +1,5 @@
 SAKSBEHANDLING_CLIENT_ID: unknown
+AZURE_APP_WELL_KNOWN_URL: http://localhost:${mock-oauth2-server.port}/azuread/.well-known/openid-configuration
 
 spring:
   flyway:
@@ -9,8 +10,6 @@ spring:
       auto-offset-reset: earliest
       group-id: yrkesskade-saksbehandling-test
     client-id: yrkesskade-saksbehandling-test
-
-AZURE_APP_WELL_KNOWN_URL: http://localhost:${mock-oauth2-server.port}/azuread/.well-known/openid-configuration
 
 funksjonsbrytere:
   enabled: false

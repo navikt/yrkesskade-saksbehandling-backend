@@ -57,7 +57,7 @@ class Dokumentmottak(
             behandlendeEnhet = dokumentTilSaksbehandling.enhet,
             behandlingstype = Behandlingstype.VEILEDNING,
             status = Behandlingsstatus.IKKE_PAABEGYNT,
-            behandlingsfrist = Instant.now().plus(2, ChronoUnit.DAYS),
+            behandlingsfrist = Instant.now().plus(30, ChronoUnit.DAYS),
             journalpostId = dokumentTilSaksbehandling.journalpostId,
             dokumentkategori = " ",
             systemreferanse = UUID.randomUUID().toString(),
@@ -83,7 +83,7 @@ class Dokumentmottak(
                     tittel = "Veiledningsbrev tannlegeerklæring",
                     brevkode = "NAV 13-00.08", // avklare? fjerne?
                     enhet = dokumentTilSaksbehandling.enhet,
-                    template = PdfTemplate.TANNLEGEERKLAERING_VEILEDNING,
+                    template = PdfTemplate.VEILEDNINGSBREV_TANNLEGEERKLAERING,
                     innhold = pdfData
                 ),
                 metadata = BrevutsendingMetadata(
