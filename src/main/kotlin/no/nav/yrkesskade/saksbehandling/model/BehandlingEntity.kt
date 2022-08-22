@@ -7,7 +7,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "behandling")
-class BehandlingEntity (
+data class BehandlingEntity (
 
     @Id
     @Column(name = "behandling_id", nullable = false, updatable = false)
@@ -15,11 +15,11 @@ class BehandlingEntity (
     val behandlingId: Long,
 
     @Column(name = "behandlingsansvarlig_ident", nullable = true)
-    var behandlingsansvarligIdent: String?,
+    val behandlingsansvarligIdent: String?,
 
     @Enumerated
     @Column(name = "status", nullable = false)
-    var status: Behandlingsstatus,
+    val status: Behandlingsstatus,
 
     @Enumerated
     @Column(name = "statuskategori", nullable = false)

@@ -3,6 +3,8 @@ package no.nav.yrkesskade.saksbehandling.graphql
 import com.graphql.spring.boot.test.GraphQLTest
 import com.graphql.spring.boot.test.GraphQLTestTemplate
 import no.nav.yrkesskade.saksbehandling.config.GraphQLScalarsConfig
+import no.nav.yrkesskade.saksbehandling.fixtures.genererBehandling
+import no.nav.yrkesskade.saksbehandling.fixtures.genererSak
 import no.nav.yrkesskade.saksbehandling.hendelser.oppgave.model.Oppgavestatuskategori
 import no.nav.yrkesskade.saksbehandling.model.*
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
@@ -26,46 +28,16 @@ class BehandlingMutationResolverTest : AbstractTest() {
     lateinit var graphQLTestTemplate: GraphQLTestTemplate
 
     @Autowired
-    lateinit var behandlingService: BehandlingService
-
-    @Autowired
     lateinit var behandlingRepository: BehandlingRepository
 
-    private val aapenBehandling: BehandlingEntity = BehandlingEntity(
-        behandlingId = 1,
-        behandlingstema = "test",
-        status = Behandlingsstatus.IKKE_PAABEGYNT,
-        statuskategori = Oppgavestatuskategori.AAPEN,
-        aktivDato = LocalDate.now(),
-        fristFerdigstillelse = LocalDate.now().plusDays(10),
-        opprettetAv = "test",
-        opprettetTidspunkt = Instant.now(),
-        behandlingResultater = emptyList(),
-        behandlingsansvarligIdent = null,
-        ansvarligEnhet = null,
-        oppgaveId = "test",
-        oppgavetype = "test-oppgave",
-        endretAv = "test",
-        sak = SakEntity(
-            sakId = 1,
-            saksstatus = Saksstatus.AAPEN,
-            opprettetTidspunkt = Instant.now(),
-            opprettetAv = "test",
-            sakstype = Sakstype.YRKESSYKDOM,
-            aktoerId = "test",
-            brukerIdentifikator = "test",
-            brukerFornavn = "Test",
-            brukerEtternavn = "Testesen",
-            behandlinger = emptyList(),
-            brukerMellomnavn = null
-        ),
-        dokumentMetaer = emptyList()
-    )
+    private val aapenBehandling: BehandlingEntity = genererBehandling(1L, "test", Behandlingsstatus.IKKE_PAABEGYNT, genererSak())
 
     @Test
     fun `overta behandling - behandling eksisterer`() {
         Mockito.`when`(behandlingRepository.findById(any())).thenReturn(Optional.of(aapenBehandling))
-
+        Mockito.`when`(behandlingRepository.save(any())).thenAnswer{
+            it.arguments.first()
+        }
         val response = graphQLTestTemplate.postForResource("graphql/overta-behandling.graphql")
         assertThat(response.statusCode.is2xxSuccessful).isTrue
         assertThat(response.get("$.data.overtaBehandling.status")).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING.name)

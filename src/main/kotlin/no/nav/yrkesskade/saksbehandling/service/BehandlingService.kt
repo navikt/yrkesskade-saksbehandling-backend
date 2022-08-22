@@ -22,13 +22,11 @@ class BehandlingService(
     }
     fun overtaBehandling(behandlingId: Long): BehandlingEntity {
         val behandling = behandlingRepository.findById(behandlingId).orElseThrow()
+        val oppdatertBehandling = behandling.copy(
+            status = Behandlingsstatus.UNDER_BEHANDLING,
+            behandlingsansvarligIdent = autentisertBruker.preferredUsername
+        )
 
-        behandling.also {
-            it.status = Behandlingsstatus.UNDER_BEHANDLING
-            it.behandlingsansvarligIdent = autentisertBruker.preferredUsername // bytt ut med brukerens ident
-            behandlingRepository.save(it)
-        }
-
-        return behandling
+        return behandlingRepository.save(oppdatertBehandling)
     }
 }
