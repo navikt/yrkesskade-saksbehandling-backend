@@ -1,4 +1,5 @@
 SAKSBEHANDLING_CLIENT_ID: unknown
+AZURE_APP_WELL_KNOWN_URL: http://localhost:${mock-oauth2-server.port}/azuread/.well-known/openid-configuration
 
 spring:
   flyway:
@@ -10,15 +11,13 @@ spring:
       group-id: yrkesskade-saksbehandling-test
     client-id: yrkesskade-saksbehandling-test
 
-AZURE_APP_WELL_KNOWN_URL: http://localhost:${mock-oauth2-server.port}/azuread/.well-known/openid-configuration
-
 funksjonsbrytere:
   enabled: false
 
 no.nav.security.jwt:
   issuer:
     azuread:
-      discoveryurl: http://localhost:${mock-oauth2-server.port}/azuread/.well-known/openid-configuration
+      discovery-url: http://localhost:${mock-oauth2-server.port}/azuread/.well-known/openid-configuration
       accepted_audience: aad-client-id
   client:
     registration:

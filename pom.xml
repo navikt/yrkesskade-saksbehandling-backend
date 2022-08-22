@@ -17,7 +17,8 @@
         <yrkesskade-felles.version>17db26cd_202207151752</yrkesskade-felles.version>
         <graphql-kotlin.version>5.5.0</graphql-kotlin.version>
         <token-validation.version>1.3.19</token-validation.version>
-    </properties>
+        <springdoc-openapi-ui.version>1.6.7</springdoc-openapi-ui.version>
+   </properties>
 
     <dependencies>
         <!-- yrkesskade domain -->
@@ -87,6 +88,16 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>${springdoc-openapi-ui.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-kotlin</artifactId>
+            <version>${springdoc-openapi-ui.version}</version>
         </dependency>
 
         <!-- GraphQL - Server -->
@@ -207,6 +218,12 @@
             <version>1.12.5</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>4.6.1</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -321,7 +338,7 @@
                                         <limit>
                                             <counter>INSTRUCTION</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.20</minimum>
+                                            <minimum>0.67</minimum>
                                         </limit>
                                     </limits>
                                 </rule>

@@ -1,4 +1,5 @@
-SAKSBEHANDLING_CLIENT_ID: dev-gcp:yrkesskade:yrkesskade-saksbehandling-backend
+SAKSBEHANDLING_CLIENT_ID: ${AZURE_APP_CLIENT_ID}
+TENANT_ID: 966ac572-f5b7-4bbe-aa88-c76419c0f851
 
 spring:
   application:
@@ -42,11 +43,13 @@ spring:
         enable_lazy_load_no_trans: true
         ddl-auto: none
 
-no.nav.security.jwt.issuer:
-  azuread:
-    discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
-    accepted_audience: ${SAKSBEHANDLING_CLIENT_ID}
-    cookie_name: azure_token
+no.nav.security.jwt:
+  issuer:
+    azuread:
+      discovery-url: ${AZURE_APP_WELL_KNOWN_URL}
+      accepted_audience: ${SAKSBEHANDLING_CLIENT_ID}
+      cookie_name: azure_token
+
 graphql:
   servlet:
     enabled: true
@@ -58,6 +61,7 @@ graphql:
       enabled: false
     mapping: /api/graphql
     actuator-metrics: true
+    async-mode-enabled: false
 
 management:
   endpoint:
@@ -76,8 +80,10 @@ management:
 
 kafka:
   topic:
-    dokument-til-saksbehandling: yrkesskade.privat-yrkesskade-dokument-til-saksbehandling
-    brevutsending-bestilt: yrkesskade.privat-yrkesskade-brevutsending-bestilt
+    dokument-til-saksbehandling: privat-yrkesskade-dokument-til-saksbehandling
+    brevutsending-bestilt: privat-yrkesskade-brevutsending-bestilt
+    aapen-oppgave-opprettet: aapen-oppgave-opprettet-v1-preprod
+    aapen-oppgave-endret: aapen-oppgave-endret-v1-preprod
 
 saf.graphql.url: https://saf.dev-fss-pub.nais.io/graphql
 

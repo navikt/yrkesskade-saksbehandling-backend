@@ -4,4 +4,5 @@ externalHosts:
   - host: saf.dev-fss-pub.nais.io
 springProfile: dev
 kafka_pool: nav-dev
+tenant: trygdeetaten.no
 gcpProjectId: yrkesskade-dev-6235
