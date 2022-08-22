@@ -1,0 +1,6 @@
+mutation {
+    overtaBehandling(behandlingId: 1) {
+        behandlingId,
+        status
+    }
+}
