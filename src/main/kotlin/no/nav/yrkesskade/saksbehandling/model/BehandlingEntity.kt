@@ -7,7 +7,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "behandling")
-class BehandlingEntity (
+data class BehandlingEntity (
 
     @Id
     @Column(name = "behandling_id", nullable = false, updatable = false)

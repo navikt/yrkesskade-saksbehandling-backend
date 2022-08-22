@@ -8,27 +8,29 @@ import no.nav.yrkesskade.saksbehandling.fixtures.genererSak
 import no.nav.yrkesskade.saksbehandling.model.Behandlingsstatus
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
 import no.nav.yrkesskade.saksbehandling.security.AutentisertBruker
+import no.nav.yrkesskade.saksbehandling.service.BehandlingService
 import no.nav.yrkesskade.saksbehandling.test.AbstractTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.mockito.kotlin.any
-import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.Import
 
-@Import(value = [GraphQLScalarsConfig::class])
+@Import(value = [GraphQLScalarsConfig::class, GraphQLConfig::class])
 @GraphQLTest
 class BehandlingQueryResolverTest : AbstractTest() {
 
     @Autowired
     lateinit var graphQLTestTemplate: GraphQLTestTemplate
 
-    @MockBean
+    @Autowired
+    lateinit var behandlingService: BehandlingService
+
+    @Autowired
     lateinit var behandlingRepository: BehandlingRepository
 
-    @MockBean
+    @Autowired
     lateinit var autentisertBruker: AutentisertBruker
     
     @Test

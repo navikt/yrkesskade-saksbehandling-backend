@@ -32,3 +32,7 @@ type Query {
     hentEgneBehandlinger(page: Page!): [Behandling]!
     antallBehandlinger: Int!
 }
+
+type Mutation {
+    overtaBehandling(behandlingId: ID!): Behandling
+}
