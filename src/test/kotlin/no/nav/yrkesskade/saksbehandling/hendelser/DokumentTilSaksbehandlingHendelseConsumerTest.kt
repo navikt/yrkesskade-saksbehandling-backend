@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.mockito.kotlin.any
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -29,6 +28,8 @@ import java.util.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
+const val TOPIC = "dokument-til-saksbehandling-hendelse-test"
+
 @Import(KafkaTestConfig::class)
 class DokumentTilSaksbehandlingHendelseConsumerTest : AbstractTest() {
 
@@ -37,8 +38,6 @@ class DokumentTilSaksbehandlingHendelseConsumerTest : AbstractTest() {
 
     @MockBean
     lateinit var safClient: SafClient
-
-    val topic = "dokument-til-saksbehandling-hendelse-test"
 
     @Autowired
     lateinit var kafkaTemplate: KafkaTemplate<String, DokumentTilSaksbehandlingHendelse>
@@ -56,15 +55,13 @@ class DokumentTilSaksbehandlingHendelseConsumerTest : AbstractTest() {
         )
 
         kafkaTemplate.send(
-            topic,
+            TOPIC,
             payload
         )
 
         // vent på at oppgavene i consumer blir fullført før vi gjennomfører testene
         consumer.latch.await(10000, TimeUnit.MILLISECONDS)
-       // Thread.sleep(1000)
         assertThat(consumer.payload).isEqualTo(payload)
-        //Mockito.verify(consumer, timeout(60000L).times(1)).listen(any())
     }
 }
 
@@ -78,7 +75,7 @@ class DokumentTilSaksbehandlingHendelseConsumerForTest(
     lateinit var payload: DokumentTilSaksbehandlingHendelse
 
     @KafkaListener(
-        topics = ["dokument-til-saksbehandling-hendelse-test"],
+        topics = [TOPIC],
         containerFactory = "dokumentTilSaksbehandlingHendelseListenerContainerFactory"
     )
     @Transactional
