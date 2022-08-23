@@ -1,0 +1,6 @@
+mutation {
+    leggTilbakeBehandling(behandlingId: 1) {
+        behandlingId,
+        status
+    }
+}

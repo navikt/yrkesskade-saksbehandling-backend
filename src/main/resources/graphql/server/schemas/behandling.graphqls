@@ -13,7 +13,13 @@ type Behandling {
     behandlingId: ID!
     behandlingsfrist: Instant
     opprettetTidspunkt: Instant
+    behandlingstype: String!
+    saksbehandlingsansvarligIdent: String
+    dokumentkategori: String
+    brukerId: String
+    brukerIdType: String
     status: String
+    framdriftsstatus: String
     sak: Sak
 }
 
@@ -30,4 +36,5 @@ type Query {
 
 type Mutation {
     overtaBehandling(behandlingId: ID!): Behandling
+    leggTilbakeBehandling(behandlingId: ID!): Behandling
 }
