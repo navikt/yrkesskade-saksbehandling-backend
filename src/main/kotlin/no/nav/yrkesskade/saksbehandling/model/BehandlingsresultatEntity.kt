@@ -11,6 +11,10 @@ class BehandlingsresultatEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val behandlingsresultatId: Long,
 
+    @Enumerated
+    @Column(name = "resultat")
+    val resultat: Behandlingsresultat,
+
     @Column(name = "resultat_tidspunkt")
     val resultattidspunkt: Instant,
 

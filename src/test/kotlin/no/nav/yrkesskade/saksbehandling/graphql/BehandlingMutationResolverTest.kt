@@ -5,10 +5,8 @@ import com.graphql.spring.boot.test.GraphQLTestTemplate
 import no.nav.yrkesskade.saksbehandling.config.GraphQLScalarsConfig
 import no.nav.yrkesskade.saksbehandling.fixtures.genererBehandling
 import no.nav.yrkesskade.saksbehandling.fixtures.genererSak
-import no.nav.yrkesskade.saksbehandling.hendelser.oppgave.model.Oppgavestatuskategori
 import no.nav.yrkesskade.saksbehandling.model.*
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
-import no.nav.yrkesskade.saksbehandling.service.BehandlingService
 import no.nav.yrkesskade.saksbehandling.test.AbstractTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -16,8 +14,6 @@ import org.mockito.Mockito
 import org.mockito.kotlin.any
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
-import java.time.Instant
-import java.time.LocalDate
 import java.util.*
 
 @Import(value = [GraphQLScalarsConfig::class, GraphQLConfig::class])

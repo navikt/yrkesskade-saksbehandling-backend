@@ -1,0 +1,20 @@
+query($journalpostId: String!) {
+  journalpost(journalpostId: $journalpostId) {
+    journalpostId
+    journalstatus
+    journalposttype
+    tema
+    journalfoerendeEnhet
+    behandlingstema
+    kanal
+    dokumenter {
+      tittel
+      brevkode
+    }
+    bruker {
+      id
+      type
+    }
+    datoOpprettet
+  }
+}

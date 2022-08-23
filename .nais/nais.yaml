@@ -58,6 +58,18 @@ spec:
     inbound:
       rules:
         - application: yrkesskade-saksbehandling
+      external:
+        {{#each externalHosts}}
+          - host: {{host}}
+            {{#if ports}}
+            ports:
+              {{#each ports}}
+              - name: {{name}}
+                port: {{port}}
+                protocol: {{protocol}}
+              {{/each}}
+            {{/if}}
+        {{/each}}
   kafka:
     pool: {{kafka_pool}}
   secureLogs:

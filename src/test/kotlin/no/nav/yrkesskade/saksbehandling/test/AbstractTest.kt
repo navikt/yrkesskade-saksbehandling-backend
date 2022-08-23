@@ -10,9 +10,9 @@ import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.support.TestPropertySourceUtils
+import org.springframework.transaction.annotation.Transactional
 
-const val TOPIC_NAME = "test-topic"
-
+@Transactional
 @ActiveProfiles("integration")
 @SpringBootTest
 @DirtiesContext
@@ -32,10 +32,8 @@ abstract class AbstractTest {
                 "spring.datasource.url=" + PostgresDockerContainer.container.jdbcUrl,
                 "spring.datasource.username=" + PostgresDockerContainer.container.username,
                 "spring.datasource.password=" + PostgresDockerContainer.container.password,
-                "spring.kafka.bootstrap-servers=" + KafkaDockerContainer.container.bootstrapServers,
-                "kafka.topic.aapen-oppgave-opprettet=" + TOPIC_NAME
-            );
+                "spring.kafka.bootstrap-servers=" + KafkaDockerContainer.container.bootstrapServers
+            )
         }
     }
-
 }

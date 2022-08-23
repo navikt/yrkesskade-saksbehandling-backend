@@ -10,6 +10,9 @@ spring:
   kafka:
     bootstrap-servers: ${KAFKA_BROKERS}
     client-id: yrkesskade-saksbehandling
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     consumer:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
@@ -17,7 +20,8 @@ spring:
       auto-offset-reset: earliest
       enable-auto-commit: false
       properties:
-        spring.json.trusted.packages: no.nav.yrkesskade.saksbehandling
+        spring.json.trusted.packages: no.nav.yrkesskade.saksbehandling.model
+        isolation.level: read_committed
     listener:
       ack-mode: record
   datasource:
