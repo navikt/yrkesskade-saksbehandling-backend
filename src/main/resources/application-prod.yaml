@@ -26,6 +26,9 @@ funksjonsbrytere:
 
 kafka:
   topic:
+    dokument-til-saksbehandling:
+      name: privat-yrkesskade-dokument-til-saksbehandling
+      auto-startup: false
     aapen-oppgave-opprettet: aapen-oppgave-opprettet-v1-local
     aapen-oppgave-endret: aapen-oppgave-endret-v1-local
 

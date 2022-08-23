@@ -12,9 +12,10 @@ class DokumentTilSaksbehandlingHendelseConsumer(private val dokumentmottak: Doku
 
     @KafkaListener(
         id = "dokument-til-saksbehandling",
-        topics = ["\${kafka.topic.dokument-til-saksbehandling}"],
+        topics = ["\${kafka.topic.dokument-til-saksbehandling.name}"],
         containerFactory = "dokumentTilSaksbehandlingHendelseListenerContainerFactory",
-        idIsGroup = false
+        idIsGroup = false,
+        autoStartup = "\${kafka.topic.dokument-til-saksbehandling.auto-startup:true}"
     )
     @Transactional
     fun listen(record: DokumentTilSaksbehandlingHendelse) {

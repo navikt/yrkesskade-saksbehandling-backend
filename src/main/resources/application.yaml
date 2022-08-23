@@ -80,7 +80,8 @@ management:
 
 kafka:
   topic:
-    dokument-til-saksbehandling: privat-yrkesskade-dokument-til-saksbehandling
+    dokument-til-saksbehandling:
+      name: privat-yrkesskade-dokument-til-saksbehandling
     brevutsending-bestilt: privat-yrkesskade-brevutsending-bestilt
     aapen-oppgave-opprettet: aapen-oppgave-opprettet-v1-preprod
     aapen-oppgave-endret: aapen-oppgave-endret-v1-preprod
