@@ -79,8 +79,11 @@ management:
 
 kafka:
   topic:
-    dokument-til-saksbehandling: yrkesskade.privat-yrkesskade-dokument-til-saksbehandling
-    brevutsending-bestilt: yrkesskade.privat-yrkesskade-brevutsending-bestilt
+    dokument-til-saksbehandling:
+      name: privat-yrkesskade-dokument-til-saksbehandling
+    brevutsending-bestilt: privat-yrkesskade-brevutsending-bestilt
+    aapen-oppgave-opprettet: aapen-oppgave-opprettet-v1-preprod
+    aapen-oppgave-endret: aapen-oppgave-endret-v1-preprod
 
 saf.graphql.url: https://saf.dev-fss-pub.nais.io/graphql
 

@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional
 
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Transactional
 class BehandlingRepositoryTest : AbstractTest() {
 
     @Autowired
