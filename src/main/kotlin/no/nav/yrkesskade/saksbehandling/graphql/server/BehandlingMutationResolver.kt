@@ -1,4 +1,4 @@
-package no.nav.yrkesskade.saksbehandling.graphql
+package no.nav.yrkesskade.saksbehandling.graphql.server
 
 import graphql.kickstart.tools.GraphQLMutationResolver
 import no.nav.yrkesskade.saksbehandling.model.BehandlingEntity
@@ -11,4 +11,5 @@ class BehandlingMutationResolver(
 ) : GraphQLMutationResolver {
 
     fun overtaBehandling(behandlingId: Long) : BehandlingEntity = behandlingService.overtaBehandling(behandlingId)
+    fun leggTilbakeBehandling(behandlingId: Long) : BehandlingEntity = behandlingService.leggTilbakeBehandling(behandlingId)
 }
