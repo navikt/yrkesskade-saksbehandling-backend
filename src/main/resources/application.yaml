@@ -61,6 +61,8 @@ graphql:
     mapping: /api/graphql
     actuator-metrics: true
     async-mode-enabled: false
+  tools:
+    schema-location-pattern: "**/server/schemas/*.graphqls"
 
 management:
   endpoint:
