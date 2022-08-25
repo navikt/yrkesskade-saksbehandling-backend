@@ -23,6 +23,36 @@ type Behandling {
     sak: Sak
 }
 
+type DetaljertBehandling {
+    behandlingId: ID!,
+    tema: String
+    brukerId: String
+    brukerIdType: String
+    behandlendeEnhet: String
+    saksbehandlingsansvarligIdent: String
+    behandlingstype: String
+    status: String
+    behandlingsfrist: Instant
+    journalpostId: String
+    dokumentkategori: String
+    systemreferanse: String
+    framdriftsstatus: String
+    opprettetTidspunkt: Instant
+    opprettetAv: String
+    endretAv: String
+    sak: Sak
+    behandlingResultater: [String]
+    dokumenter: [DokumentInfo]
+}
+
+type DokumentInfo {
+    dokumentinfoId: ID!
+    tittel: String
+    type: String
+    opprettetTidspunkt: Instant
+    status: String
+}
+
 input Page {
     size: Int
     page: Int
@@ -32,6 +62,7 @@ type Query {
     hentBehandlinger(page: Page!): [Behandling]!
     hentEgneBehandlinger(page: Page!): [Behandling]!
     antallBehandlinger: Int!
+    hentBehandling(behandlingId: ID!): DetaljertBehandling
 }
 
 type Mutation {

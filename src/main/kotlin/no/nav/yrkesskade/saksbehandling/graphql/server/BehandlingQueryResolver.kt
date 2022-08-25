@@ -1,5 +1,6 @@
 package no.nav.yrkesskade.saksbehandling.graphql
 
+import DetaljertBehandling
 import graphql.kickstart.tools.GraphQLQueryResolver
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.Page
 import no.nav.yrkesskade.saksbehandling.model.BehandlingEntity
@@ -16,6 +17,10 @@ class BehandlingQueryResolver(
 
     fun hentEgneBehandlinger(page: Page): List<BehandlingEntity> {
         return behandlingService.hentEgneBehandlinger(PageRequest.of(page.page, page.size))
+    }
+
+    fun hentBehandling(behandlingId: Long) : DetaljertBehandling {
+        return behandlingService.hentBehandling(behandlingId)
     }
 
     fun antallBehandlinger() = behandlingService.hentAntallBehandlinger()

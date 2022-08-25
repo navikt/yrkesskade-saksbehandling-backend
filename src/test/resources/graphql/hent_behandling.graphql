@@ -1,0 +1,8 @@
+query {
+  hentBehandling(behandlingId: 1) {
+    behandlingId
+    dokumenter {
+        tittel
+    }
+  }
+}

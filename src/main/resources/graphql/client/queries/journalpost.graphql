@@ -8,6 +8,7 @@ query($journalpostId: String!) {
     behandlingstema
     kanal
     dokumenter {
+      dokumentInfoId
       tittel
       brevkode
     }

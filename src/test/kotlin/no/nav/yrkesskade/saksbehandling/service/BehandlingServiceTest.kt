@@ -1,7 +1,11 @@
 package no.nav.yrkesskade.saksbehandling.service
 
+import com.expediagroup.graphql.generated.Journalpost
+import io.mockk.coEvery
 import no.nav.yrkesskade.saksbehandling.fixtures.genererBehandling
 import no.nav.yrkesskade.saksbehandling.fixtures.genererSak
+import no.nav.yrkesskade.saksbehandling.fixtures.okRespons
+import no.nav.yrkesskade.saksbehandling.graphql.client.SafClient
 import no.nav.yrkesskade.saksbehandling.model.Behandlingsstatus
 import no.nav.yrkesskade.saksbehandling.model.SakEntity
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
@@ -12,17 +16,20 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.mockito.ArgumentMatchers.*
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.domain.Pageable
 import org.springframework.transaction.annotation.Transactional
 
-@Transactional
 class BehandlingServiceTest : AbstractTest() {
 
     @MockBean
     lateinit var autentisertBruker: AutentisertBruker
+
+    @MockBean
+    lateinit var safClient: SafClient
 
     @Autowired
     lateinit var behandlingService: BehandlingService
@@ -67,6 +74,26 @@ class BehandlingServiceTest : AbstractTest() {
 
         val egneBehandlinger = behandlingService.hentEgneBehandlinger(Pageable.ofSize(10))
         assertThat(egneBehandlinger.size).isEqualTo(1)
+    }
+
+    @Test
+    fun `hent behandling`() {
+        Mockito.`when`(safClient.hentOppdatertJournalpost(anyString())).thenReturn(okRespons().data)
+        Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
+        val behandling = behandlingRepository.save(genererBehandling(1L, "test", Behandlingsstatus.IKKE_PAABEGYNT, sak))
+
+        val detaljertBehandling = behandlingService.hentBehandling(behandling.behandlingId)
+        assertThat(detaljertBehandling.dokumenter.size).isEqualTo(1)
+    }
+
+    @Test
+    fun `hent behandling som ikke finnes`() {
+        Mockito.`when`(safClient.hentOppdatertJournalpost(anyString())).thenReturn(okRespons().data)
+        Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
+
+        assertThrows<NoSuchElementException> {
+            behandlingService.hentBehandling(1)
+        }
     }
 
     @Test
