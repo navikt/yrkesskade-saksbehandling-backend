@@ -22,6 +22,7 @@ fun gyldigJournalpostMedAktoerId(): com.expediagroup.graphql.generated.journalpo
         behandlingstema = null,
         dokumenter = listOf(
             DokumentInfo(
+                "dokument-test-id",
                 "Melding om yrkesskade eller yrkessykdom som er påført under tjeneste på skip eller under fiske/fangst",
                 "NAV 13-07.08"
             )
