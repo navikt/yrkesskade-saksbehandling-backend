@@ -46,6 +46,7 @@ type DetaljertBehandling {
 }
 
 type DokumentInfo {
+    dokumentinfoId: ID!
     tittel: String
     type: String
     opprettetTidspunkt: Instant
