@@ -38,13 +38,16 @@ class BehandlingService(
         val behandling = behandlingRepository.findById(behandlingId).orElseThrow()
 
         val journalpostResult = safClient.hentOppdatertJournalpost(behandling.journalpostId)
-        val dokumenter = if (journalpostResult != null ) {
-            val journalpost = journalpostResult.journalpost!!
+        val dokumenter = if (journalpostResult?.journalpost?.dokumenter != null) {
+            val journalpost = journalpostResult.journalpost
             journalpost.dokumenter!!.map {
                 val dokument = it!!
-                DokumentInfo(tittel = dokument.tittel.orEmpty(), opprettetTidspunkt = journalpost.datoOpprettet, status = journalpost.journalstatus!!.name, type = journalpost.journalposttype!!.name)
+                val journalstatus = if (journalpost.journalstatus != null) journalpost.journalstatus.name  else "Status ikke satt"
+                val journalposttype = if (journalpost.journalposttype != null) journalpost.journalposttype.name else "Type ikke satt"
+
+                DokumentInfo(tittel = dokument.tittel.orEmpty(), opprettetTidspunkt = journalpost.datoOpprettet, status = journalstatus, type = journalposttype)
             }
-        } else emptyList<DokumentInfo>()
+        } else emptyList()
 
         return DetaljertBehandling(
             behandlingId = behandling.behandlingId,
