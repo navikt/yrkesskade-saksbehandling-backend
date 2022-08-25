@@ -45,7 +45,7 @@ class BehandlingService(
                 val journalstatus = if (journalpost.journalstatus != null) journalpost.journalstatus.name  else "Status ikke satt"
                 val journalposttype = if (journalpost.journalposttype != null) journalpost.journalposttype.name else "Type ikke satt"
 
-                DokumentInfo(tittel = dokument.tittel.orEmpty(), opprettetTidspunkt = journalpost.datoOpprettet, status = journalstatus, type = journalposttype)
+                DokumentInfo(dokumentinfoId = dokument.dokumentInfoId, tittel = dokument.tittel.orEmpty(), opprettetTidspunkt = journalpost.datoOpprettet, status = journalstatus, type = journalposttype)
             }
         } else emptyList()
 
