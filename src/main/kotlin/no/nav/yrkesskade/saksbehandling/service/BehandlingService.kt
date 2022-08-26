@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.ZoneOffset
 
 @Service
 class BehandlingService(
@@ -44,7 +45,8 @@ class BehandlingService(
                 val journalstatus = if (journalpost.journalstatus != null) journalpost.journalstatus.name  else "Status ikke satt"
                 val journalposttype = if (journalpost.journalposttype != null) journalpost.journalposttype.name else "Type ikke satt"
 
-                DokumentInfo(dokumentinfoId = dokument.dokumentInfoId, tittel = dokument.tittel.orEmpty(), opprettetTidspunkt = journalpost.datoOpprettet, status = journalstatus, type = journalposttype)
+                DokumentInfo(dokumentinfoId = dokument.dokumentInfoId, tittel = dokument.tittel.orEmpty(), opprettetTidspunkt = journalpost.datoOpprettet.toInstant(
+                    ZoneOffset.UTC), status = journalstatus, type = journalposttype)
             }
         } else emptyList()
 

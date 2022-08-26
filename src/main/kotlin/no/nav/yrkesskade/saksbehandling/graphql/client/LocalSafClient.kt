@@ -18,11 +18,7 @@ import java.time.LocalDateTime
 @Component
 @Qualifier("safClient")
 @Profile("local")
-class LocalSafClient(
-    @Value("\${saf.graphql.url}") private val safGraphqlUrl: String,
-    @Value("\${spring.application.name}") applicationName: String,
-    private val tokenUtil: TokenUtil
-) : ISafClient {
+class LocalSafClient() : ISafClient {
 
     private val journalposter = listOf(
         genererJournalpost("1")
