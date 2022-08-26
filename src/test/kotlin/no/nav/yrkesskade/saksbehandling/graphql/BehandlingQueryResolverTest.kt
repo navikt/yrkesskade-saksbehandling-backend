@@ -5,7 +5,6 @@ import com.graphql.spring.boot.test.GraphQLTestTemplate
 import no.nav.yrkesskade.saksbehandling.config.GraphQLScalarsConfig
 import no.nav.yrkesskade.saksbehandling.fixtures.genererBehandling
 import no.nav.yrkesskade.saksbehandling.fixtures.genererSak
-import no.nav.yrkesskade.saksbehandling.graphql.client.SafClient
 import no.nav.yrkesskade.saksbehandling.model.Behandlingsstatus
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
 import no.nav.yrkesskade.saksbehandling.security.AutentisertBruker
@@ -34,7 +33,7 @@ class BehandlingQueryResolverTest : AbstractTest() {
 
     @Autowired
     lateinit var autentisertBruker: AutentisertBruker
-    
+
     @Test
     fun `hent antall behandlinger`() {
         Mockito.`when`(behandlingRepository.count()).thenReturn(1)
