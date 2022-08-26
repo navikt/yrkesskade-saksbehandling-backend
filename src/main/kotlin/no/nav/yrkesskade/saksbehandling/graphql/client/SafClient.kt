@@ -9,7 +9,9 @@ import no.nav.yrkesskade.saksbehandling.util.TokenUtil
 import no.nav.yrkesskade.saksbehandling.util.getLogger
 import no.nav.yrkesskade.saksbehandling.util.getSecureLogger
 import org.slf4j.MDC
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.annotation.Profile
 import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Component
 
@@ -18,11 +20,13 @@ import org.springframework.stereotype.Component
  * Klient for å hente oppdatert journalpost fra saf (Sak og arkiv fasade)
  */
 @Component
+@Qualifier("safClient")
+@Profile("!local")
 class SafClient(
     @Value("\${saf.graphql.url}") private val safGraphqlUrl: String,
     @Value("\${spring.application.name}") val applicationName: String,
     private val tokenUtil: TokenUtil
-) {
+) : ISafClient {
 
     companion object {
         @Suppress("JAVA_CLASS_ON_COMPANION")
@@ -32,7 +36,7 @@ class SafClient(
 
     private val client = GraphQLWebClient(url = safGraphqlUrl)
 
-    fun hentOppdatertJournalpost(journalpostId: String): Journalpost.Result? {
+    override fun hentOppdatertJournalpost(journalpostId: String): Journalpost.Result? {
         val token = tokenUtil.getAppAccessTokenWithSafScope()
         logger.info("Hentet token for Saf")
         val journalpostQuery = Journalpost(Journalpost.Variables(journalpostId))

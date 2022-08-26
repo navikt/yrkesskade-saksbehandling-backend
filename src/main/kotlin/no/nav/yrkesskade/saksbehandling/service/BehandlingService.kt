@@ -1,25 +1,24 @@
 package no.nav.yrkesskade.saksbehandling.service
 
 import DetaljertBehandling
-import com.expediagroup.graphql.generated.Journalpost
-import no.nav.yrkesskade.saksbehandling.graphql.client.SafClient
+import no.nav.yrkesskade.saksbehandling.graphql.client.ISafClient
 import no.nav.yrkesskade.saksbehandling.model.BehandlingEntity
 import no.nav.yrkesskade.saksbehandling.model.Behandlingsstatus
 import no.nav.yrkesskade.saksbehandling.model.DokumentInfo
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
 import no.nav.yrkesskade.saksbehandling.security.AutentisertBruker
 import no.nav.yrkesskade.saksbehandling.util.getLogger
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.lang.IllegalStateException
 
 @Service
 class BehandlingService(
     private val autentisertBruker: AutentisertBruker,
     private val behandlingRepository: BehandlingRepository,
-    private val safClient: SafClient
+    @Qualifier("safClient") private val safClient: ISafClient
 ) {
 
     companion object {

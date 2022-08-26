@@ -3,6 +3,7 @@ package no.nav.yrkesskade.saksbehandling.service
 import com.expediagroup.graphql.generated.enums.BrukerIdType
 import com.expediagroup.graphql.generated.journalpost.Journalpost
 import no.nav.yrkesskade.saksbehandling.client.BrevutsendingClient
+import no.nav.yrkesskade.saksbehandling.graphql.client.ISafClient
 import no.nav.yrkesskade.saksbehandling.graphql.client.SafClient
 import no.nav.yrkesskade.saksbehandling.model.BehandlingEntity
 import no.nav.yrkesskade.saksbehandling.model.Behandlingsstatus
@@ -19,6 +20,7 @@ import no.nav.yrkesskade.saksbehandling.util.MDCConstants
 import no.nav.yrkesskade.saksbehandling.util.getLogger
 import no.nav.yrkesskade.saksbehandling.util.getSecureLogger
 import org.slf4j.MDC
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -30,7 +32,7 @@ import java.util.UUID
 class Dokumentmottak(
     private val behandlingService: BehandlingService,
     private val sakService: SakService,
-    private val safClient: SafClient,
+    @Qualifier("safClient") private val safClient: ISafClient,
     private val brevutsendingClient: BrevutsendingClient
 ) {
     companion object {
