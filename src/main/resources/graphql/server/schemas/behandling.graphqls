@@ -49,7 +49,7 @@ type DokumentInfo {
     dokumentinfoId: ID!
     tittel: String
     type: String
-    opprettetTidspunkt: Instant
+    opprettetTidspunkt: Instant!
     status: String
 }
 
