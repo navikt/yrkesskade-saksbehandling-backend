@@ -86,7 +86,9 @@ kafka:
     aapen-oppgave-opprettet: aapen-oppgave-opprettet-v1-preprod
     aapen-oppgave-endret: aapen-oppgave-endret-v1-preprod
 
-saf.graphql.url: https://saf.dev-fss-pub.nais.io/graphql
+saf:
+  rest.url: https://saf-q1.dev.intern.nav.no/
+  graphql.url: https://saf.dev-fss-pub.nais.io/graphql
 
 funksjonsbrytere:
   enabled: true

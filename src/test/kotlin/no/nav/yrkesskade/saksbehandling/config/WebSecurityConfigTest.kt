@@ -35,7 +35,7 @@ class WebSecurityConfigTest : AbstractTest() {
 
     @Test
     fun `med token`() {
-        val jwt = token("azuread", "test@nav.test.no", "aad-client-id");
+        val jwt = token("azuread", "test@nav.test.no", "aad-client-id")
 
         mvc.perform(
             MockMvcRequestBuilders.get("/api/graphql")

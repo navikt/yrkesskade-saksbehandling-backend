@@ -24,23 +24,6 @@ private const val GRAPHQL_URL = "/api/graphql"
 class WebSecurityConfig {
 
     /**
-     * Filter som fyller en [TokenValidationContextHolder] med en kontekst som gir info om hvilke gyldige tokens
-     * som ligger i requestet.
-     */
-    @Bean
-    fun graphqlOidcTokenValidationContextFilter(
-        multiIssuerConfiguration: MultiIssuerConfiguration,
-        oidcRequestContextHolder: TokenValidationContextHolder,
-        oidcTokenValidationFilterRegistrationBean: FilterRegistrationBean<JwtTokenValidationFilter>
-    ): FilterRegistrationBean<JwtTokenValidationFilter>? {
-        val jwtTokenValidationHandler = JwtTokenValidationHandler(multiIssuerConfiguration)
-        return oidcTokenValidationFilterRegistrationBean.apply {
-            filter = JwtTokenValidationFilter(jwtTokenValidationHandler, oidcRequestContextHolder)
-            addUrlPatterns(GRAPHQL_URL)
-        }
-    }
-
-    /**
      * Filter som tar en ferdigutfylt [TokenValidationContextHolder] (fra [graphqlOidcTokenValidationContextFilter])
      * og returnerer 401 unauthorized dersom det ikke foreligger gyldig token.
      * Filteret har lavest presedens og vil dermed alltid kjøre etter [graphqlOidcTokenValidationContextFilter].
