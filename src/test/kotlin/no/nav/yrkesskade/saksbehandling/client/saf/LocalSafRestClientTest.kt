@@ -6,18 +6,16 @@ import org.junit.jupiter.api.assertThrows
 
 internal class LocalSafRestClientTest {
 
-    val localSafRestClient = LocalSafRestClient()
-
     @Test
     fun `hent dokument`() {
-        val dokumentSomBase64 = localSafRestClient.hentDokument("1","1")
+        val dokumentSomBase64 = LocalSafRestClient().hentDokument("1","1")
         assertThat(dokumentSomBase64).isNotNull
     }
 
     @Test
     fun `hent dokument som kaster Exception`() {
         assertThrows<SafException> {
-            localSafRestClient.hentDokument("-1", "1")
+            LocalSafRestClient().hentDokument("-1", "1")
         }
     }
 }
