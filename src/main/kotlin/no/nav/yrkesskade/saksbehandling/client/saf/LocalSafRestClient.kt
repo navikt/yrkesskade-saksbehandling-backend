@@ -7,11 +7,11 @@ import java.util.*
 
 @Component
 @Qualifier("safRestClient")
-@Profile("local")
+@Profile("local || integration")
 class LocalSafRestClient : ISafRestClient {
 
     override fun hentDokument(journalpostId: String, dokumentinfoId: String): String {
-        if (journalpostId.equals("-1")) {
+        if (journalpostId == "-1") {
             throw SafException("Kunne ikke finne journalpost med id $journalpostId")
         }
 
