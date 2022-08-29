@@ -8,14 +8,17 @@ internal class LocalSafRestClientTest {
 
     @Test
     fun `hent dokument`() {
-        val dokumentSomBase64 = LocalSafRestClient().hentDokument("1","1")
+        val localSafRestClient = LocalSafRestClient()
+        assertThat(localSafRestClient).isNotNull
+        val dokumentSomBase64 = localSafRestClient.hentDokument("1","1")
         assertThat(dokumentSomBase64).isNotNull
     }
 
     @Test
     fun `hent dokument som kaster Exception`() {
+        val localSafRestClient = LocalSafRestClient()
         assertThrows<SafException> {
-            LocalSafRestClient().hentDokument("-1", "1")
+            localSafRestClient.hentDokument("-1", "1")
         }
     }
 }
