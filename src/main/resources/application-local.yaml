@@ -3,11 +3,10 @@ KAFKA_BROKERS: http://localhost:9092
 SAKSBEHANDLING_CLIENT_ID: api://dev-gcp.yrkesskade.yrkesskade-saksbehandling-backend/.default
 AUTH_SERVER: https://fakedings.dev-gcp.nais.io/fake
 AZURE_APP_JWK: local
+AZURE_APP_WELL_KNOWN_URL: https://fakedings.dev-gcp.nais.io/fake/.well-known/openid-configuration
 
 server:
   port: 9081
-
-AZURE_APP_WELL_KNOWN_URL: https://fakedings.dev-gcp.nais.io/fake/.well-known/openid-configuration
 
 spring:
   kafka:

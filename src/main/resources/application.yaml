@@ -1,5 +1,4 @@
 SAKSBEHANDLING_CLIENT_ID: ${AZURE_APP_CLIENT_ID}
-TENANT_ID: 966ac572-f5b7-4bbe-aa88-c76419c0f851
 
 spring:
   application:
@@ -62,6 +61,8 @@ graphql:
     mapping: /api/graphql
     actuator-metrics: true
     async-mode-enabled: false
+  tools:
+    schema-location-pattern: "**/server/schemas/*.graphqls"
 
 management:
   endpoint:
@@ -81,12 +82,14 @@ management:
 kafka:
   topic:
     dokument-til-saksbehandling:
-      name: privat-yrkesskade-dokument-til-saksbehandling
-    brevutsending-bestilt: privat-yrkesskade-brevutsending-bestilt
+      name: yrkesskade.privat-yrkesskade-dokument-til-saksbehandling
+    brevutsending-bestilt: yrkesskade.privat-yrkesskade-brevutsending-bestilt
     aapen-oppgave-opprettet: aapen-oppgave-opprettet-v1-preprod
     aapen-oppgave-endret: aapen-oppgave-endret-v1-preprod
 
-saf.graphql.url: https://saf.dev-fss-pub.nais.io/graphql
+saf:
+  rest.url: https://saf-q1.dev.intern.nav.no/
+  graphql.url: https://saf.dev-fss-pub.nais.io/graphql
 
 funksjonsbrytere:
   enabled: true

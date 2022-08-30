@@ -16,7 +16,7 @@ fun brevutsendingBestiltHendelse(): BrevutsendingBestiltHendelse {
             enhet = "9999",
             template = PdfTemplate.VEILEDNINGSBREV_TANNLEGEERKLAERING,
             innhold = PdfData(
-                brevtype = "Dette er et veiledningsbrev",
+                brevtype = "brevtype",
                 uuid = UUID.randomUUID().toString()
             )
         ),

@@ -76,7 +76,7 @@ class Dokumentmottak(
 
     private fun sendTilBrevutsending(dokumentTilSaksbehandling: DokumentTilSaksbehandling) {
         val pdfData = PdfData(
-            brevtype = "Dette er et veiledningsbrev",
+            brevtype = "Veiledning",
             uuid = UUID.randomUUID().toString()
         )
         brevutsendingClient.sendTilBrevutsending(

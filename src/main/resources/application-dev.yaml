@@ -1,4 +1,4 @@
-SAKSBEHANDLING_CLIENT_ID: dev-gcp:yrkesskade:yrkesskade-saksbehandling-backend
+SAKSBEHANDLING_CLIENT_ID: ${AZURE_APP_CLIENT_ID}
 TENANT_ID: 966ac572-f5b7-4bbe-aa88-c76419c0f851         # trygdeetaten.no
 
 spring:
@@ -27,15 +27,11 @@ funksjonsbrytere:
 kafka:
   topic:
     dokument-til-saksbehandling:
-      name: privat-yrkesskade-dokument-til-saksbehandling
+      name: yrkesskade.privat-yrkesskade-dokument-til-saksbehandling
     aapen-oppgave-opprettet: aapen-oppgave-opprettet-v1-local
     aapen-oppgave-endret: aapen-oppgave-endret-v1-local
 
 no.nav.security.jwt:
-  issuer:
-    azuread:
-      discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
-      accepted_audience: ${AZURE_APP_CLIENT_ID}
   client:
     registration:
       saf-maskintilmaskin:
