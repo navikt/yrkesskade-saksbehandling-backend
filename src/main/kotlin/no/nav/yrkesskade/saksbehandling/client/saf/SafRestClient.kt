@@ -43,6 +43,7 @@ private val tokenUtil: TokenUtil) : ISafRestClient
             .path("/rest/hentdokument")
             .path(journalpostId)
             .path(dokumentinfoId)
+            .path("ARKIV") // denne er ARKIV for PDF-dokumenter eller potensielt ORIGINAL for XML-Søknader
             .request(MediaType.APPLICATION_OCTET_STREAM)
             .header(HttpHeaders.AUTHORIZATION, "Bearer $token")
             .header("Nav-Callid", MDC.get(MDCConstants.MDC_CALL_ID))
