@@ -2,6 +2,8 @@ ingresses:
   - https://yrkesskade-saksbehandling-backend.dev.intern.nav.no
 externalHosts:
   - host: saf.dev-fss-pub.nais.io
+outboundExternalHosts:
+  - host: saf.dev-fss-pub.nais.io
 springProfile: dev
 kafka_pool: nav-dev
 tenant: trygdeetaten.no
