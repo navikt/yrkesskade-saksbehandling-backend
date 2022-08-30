@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Profile
 import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Component
+import java.util.*
 import javax.ws.rs.client.ClientBuilder
 import javax.ws.rs.core.MediaType
 import javax.ws.rs.core.Response
@@ -55,6 +56,7 @@ private val tokenUtil: TokenUtil) : ISafRestClient
         }
 
         logger.info("Hentet dokument for journalpost for id $journalpostId og med dokumentinfoId $dokumentinfoId")
-        return response.readEntity(String::class.java)
+        val bytes = response.readEntity(ByteArray::class.java)
+        return Base64.getEncoder().encodeToString(bytes)
     }
 }
