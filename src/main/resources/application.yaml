@@ -88,7 +88,7 @@ kafka:
     aapen-oppgave-endret: aapen-oppgave-endret-v1-preprod
 
 saf:
-  rest.url: https://saf-q1.dev.intern.nav.no/
+  rest.url: https://saf.dev-fss-pub.nais.io/
   graphql.url: https://saf.dev-fss-pub.nais.io/graphql
 
 funksjonsbrytere:
