@@ -84,6 +84,12 @@ class BehandlingService(
     @Transactional
     fun overtaBehandling(behandlingId: Long): BehandlingEntity {
         val behandling = behandlingRepository.findById(behandlingId).orElseThrow()
+
+        // sjekk at behandling ikke allerede tilhører en annen saksbehandler
+        if (behandling.saksbehandlingsansvarligIdent != null && behandling.saksbehandlingsansvarligIdent != autentisertBruker.preferredUsername) {
+            throw BehandlingException("Behandling tilhører en annen saksbehandler")
+        }
+
         val oppdatertBehandling = behandling.copy(
             status = Behandlingsstatus.UNDER_BEHANDLING,
             saksbehandlingsansvarligIdent = autentisertBruker.preferredUsername
