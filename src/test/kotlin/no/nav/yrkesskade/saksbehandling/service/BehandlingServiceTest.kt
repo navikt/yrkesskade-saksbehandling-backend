@@ -111,6 +111,19 @@ class BehandlingServiceTest : AbstractTest() {
     }
 
     @Test
+    fun `overta behandling som tilhører en annen saksbehandler`() {
+        Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("todd")
+        var behandling = genererBehandling(1L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak)
+        behandling = behandlingRepository.save(behandling)
+        assertThat(behandling.status).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING)
+        assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
+
+        assertThrows<BehandlingException> {
+            behandlingService.overtaBehandling(behandling.behandlingId)
+        }
+    }
+
+    @Test
     fun `legg tilbake behandling for behandling som ikke har en saksbehandler`() {
         Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
         var behandling = genererBehandling(1L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak)
