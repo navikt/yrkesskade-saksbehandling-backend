@@ -87,7 +87,7 @@ class BehandlingService(
 
         // sjekk at behandling ikke allerede tilhører en annen saksbehandler
         if (behandling.saksbehandlingsansvarligIdent != null && behandling.saksbehandlingsansvarligIdent != autentisertBruker.preferredUsername) {
-            throw BehandlingException("Behandling $behandlingId tilhører en annen saksbehandler")
+            throw BehandlingException("Behandling tilhører en annen saksbehandler")
         }
 
         val oppdatertBehandling = behandling.copy(

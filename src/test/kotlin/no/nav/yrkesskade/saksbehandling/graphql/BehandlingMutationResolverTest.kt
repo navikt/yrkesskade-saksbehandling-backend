@@ -52,7 +52,7 @@ class BehandlingMutationResolverTest : AbstractTest() {
         }
         val response = graphQLTestTemplate.postForResource("graphql/overta_behandling.graphql")
         assertThat(response.statusCode.is2xxSuccessful).isTrue
-        assertThat(response.get("$.errors[0].message")).contains("Behandling ${paabegyntBehandling.behandlingId} tilhører en annen saksbehandler")
+        assertThat(response.get("$.errors[0].message")).contains("Behandling tilhører en annen saksbehandler")
     }
 
     @Test
