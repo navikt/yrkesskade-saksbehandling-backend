@@ -31,6 +31,7 @@ class BehandlingMutationResolverTest : AbstractTest() {
     lateinit var autentisertBruker: AutentisertBruker
 
     private val aapenBehandling: BehandlingEntity = genererBehandling(1L, null, Behandlingsstatus.IKKE_PAABEGYNT, genererSak())
+    private val paabegyntBehandling: BehandlingEntity = genererBehandling(1L, "test", Behandlingsstatus.UNDER_BEHANDLING, genererSak())
 
     @Test
     fun `overta behandling - behandling eksisterer`() {
@@ -41,6 +42,17 @@ class BehandlingMutationResolverTest : AbstractTest() {
         val response = graphQLTestTemplate.postForResource("graphql/overta_behandling.graphql")
         assertThat(response.statusCode.is2xxSuccessful).isTrue
         assertThat(response.get("$.data.overtaBehandling.status")).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING.name)
+    }
+
+    @Test
+    fun `overta behandling - behandling tilhører annend behandler`() {
+        Mockito.`when`(behandlingRepository.findById(any())).thenReturn(Optional.of(paabegyntBehandling))
+        Mockito.`when`(behandlingRepository.save(any())).thenAnswer{
+            it.arguments.first()
+        }
+        val response = graphQLTestTemplate.postForResource("graphql/overta_behandling.graphql")
+        assertThat(response.statusCode.is2xxSuccessful).isTrue
+        assertThat(response.get("$.errors[0].message")).contains("Behandling ${paabegyntBehandling.behandlingId} tilhører en annen saksbehandler")
     }
 
     @Test
