@@ -62,6 +62,20 @@ spec:
         {{#each externalHosts}}
           - host: {{host}}
         {{/each}}
+    outbound:
+      external:
+        - host: unleash.nais.io
+        {{#each outboundExternalHosts}}
+        - host: {{host}}
+        {{#if ports}}
+          ports:
+          {{#each ports}}
+            - name: {{name}}
+              port: {{port}}
+              protocol: {{protocol}}
+          {{/each}}
+        {{/if}}
+      {{/each}}
   kafka:
     pool: {{kafka_pool}}
   secureLogs:
