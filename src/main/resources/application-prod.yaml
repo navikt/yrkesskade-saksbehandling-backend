@@ -50,3 +50,4 @@ rolle:
   kode7: 9ec6487d-f37a-4aad-a027-cd221c1ac32b
 
 YRKESSKADE_DOKGEN_API_URL: https://yrkesskade-dokgen.intern.nav.no
+YRKESSKADE_KODEVERK_API_URL: https://yrkesskade-kodeverk.intern.nav.no

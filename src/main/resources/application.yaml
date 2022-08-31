@@ -98,6 +98,10 @@ funksjonsbrytere:
     cluster: ${NAIS_CLUSTER_NAME}
     applicationName: ${spring.application.name}
 
+kodeverk:
+  cache:
+    gyldigTidMinutter: 60
+
 SAF_APP_CLIENT_ID: dev-fss.teamdokumenthandtering.saf
 YRKESSKADE_DOKGEN_API_URL: https://yrkesskade-dokgen.dev.intern.nav.no
-
+YRKESSKADE_KODEVERK_API_URL: https://yrkesskade-kodeverk.dev.intern.nav.no

@@ -60,3 +60,4 @@ rolle:
   kode7: ea930b6b-9397-44d9-b9e6-f4cf527a632a
 
 YRKESSKADE_DOKGEN_API_URL: http://localhost:5914
+YRKESSKADE_KODEVERK_API_URL: http://localhost:8080

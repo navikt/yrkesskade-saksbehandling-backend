@@ -30,6 +30,11 @@
         </dependency>
         <dependency>
             <groupId>no.nav.yrkesskade</groupId>
+            <artifactId>kodeverk</artifactId>
+            <version>${yrkesskade-felles.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.yrkesskade</groupId>
             <artifactId>saksbehandling</artifactId>
             <version>${yrkesskade-felles.version}</version>
         </dependency>
