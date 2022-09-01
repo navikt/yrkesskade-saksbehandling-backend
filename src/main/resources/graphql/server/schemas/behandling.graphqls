@@ -67,5 +67,6 @@ type Query {
 
 type Mutation {
     overtaBehandling(behandlingId: ID!): Behandling
+    ferdigstillBehandling(behandlingId: ID!): Behandling
     leggTilbakeBehandling(behandlingId: ID!): Behandling
 }

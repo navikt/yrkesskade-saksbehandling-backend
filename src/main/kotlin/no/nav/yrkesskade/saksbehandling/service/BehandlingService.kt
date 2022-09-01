@@ -99,6 +99,28 @@ class BehandlingService(
     }
 
     @Transactional
+    fun ferdigstillBehandling(behandlingId: Long) : BehandlingEntity {
+        val behandling = behandlingRepository.findById(behandlingId).orElseThrow()
+
+        // kan kun ferdigstille behandling som har status UNDER_BEHANDLING
+        if (behandling.status != Behandlingsstatus.UNDER_BEHANDLING) {
+            throw BehandlingException("Kan ikke ferdigstille behandling. Behandling har status ${behandling.status}")
+        }
+
+        // sjekk at behandling ikke allerede tilhører en annen saksbehandler
+        if (behandling.saksbehandlingsansvarligIdent != autentisertBruker.preferredUsername) {
+            throw BehandlingException("Behandling tilhører en annen saksbehandler")
+        }
+
+        val oppdatertBehandling = behandling.copy(
+            status = Behandlingsstatus.FERDIG,
+            saksbehandlingsansvarligIdent = autentisertBruker.preferredUsername
+        )
+
+        return behandlingRepository.save(oppdatertBehandling)
+    }
+
+    @Transactional
     fun leggTilbakeBehandling(behandlingId: Long): BehandlingEntity {
         val behandling = behandlingRepository.findById(behandlingId).orElseThrow()
 
