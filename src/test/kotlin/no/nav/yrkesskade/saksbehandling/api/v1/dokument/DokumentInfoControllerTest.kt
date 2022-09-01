@@ -53,10 +53,11 @@ class DokumentInfoControllerTest : AbstractTest() {
             MockMvcRequestBuilders.get(DOKUMENT_INFO_PATH, "1", "1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding(Charsets.UTF_8)
-        ).andDo(MockMvcResultHandlers.print())   .andExpect(MockMvcResultMatchers.status().is4xxClientError)
+        ).andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().is4xxClientError)
     }
 
-    private fun token(issuerId: String, subject: String, audience: String): String {
+    private fun token(issuerId: String, subject: String, audience: String, vararg grupper: String = arrayOf("saksbehandler")): String {
         return server.issueToken(
             issuerId = issuerId,
             clientId = "theclientid",
@@ -64,7 +65,7 @@ class DokumentInfoControllerTest : AbstractTest() {
                 issuerId = issuerId,
                 subject = subject,
                 audience = listOf(audience),
-                claims = emptyMap(),
+                claims = mapOf("groups" to grupper),
                 expiry = 3600L
             )
         ).serialize()

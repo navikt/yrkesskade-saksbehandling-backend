@@ -43,3 +43,8 @@ no.nav.security.jwt:
           client-id: ${AZURE_APP_CLIENT_ID}
           client-jwk: ${AZURE_APP_JWK}
           client-auth-method: private_key_jwt
+
+rolle:
+  saksbehandler: 70bc7d4d-1cb3-4240-8f02-1a1b46d9e7a3
+  kode6: ad7b87a6-9180-467c-affc-20a566b0fec0
+  kode7: 9ec6487d-f37a-4aad-a027-cd221c1ac32b
