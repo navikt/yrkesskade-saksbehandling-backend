@@ -1,0 +1,9 @@
+{
+  "innkommendeJournalpostId": "1",
+  "brevtype": "test",
+  "tittel": "test",
+  "brevkode": "test",
+  "enhet": "test",
+  "template": "VEILEDNINGSBREV_TANNLEGEERKLAERING",
+  "innhold": "Dette er en test"
+}
