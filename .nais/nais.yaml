@@ -56,9 +56,11 @@ spec:
       enabled: true
       claims:
         groups:
-          {{#each azure.groups as |group|}}
-             - id: {{group}}
-          {{/each}}
+          - id: "de44052d-b062-4497-89a2-0c85b935b808"  # 0000-GA-GOSYS_UTVIDET
+          - id: "ea930b6b-9397-44d9-b9e6-f4cf527a632a"  # 0000-GA-Fortrolig_Adresse
+          - id: "5ef775f2-61f8-4283-bf3d-8d03f428aa14"  # 0000-GA-Strengt_Fortrolig_Adresse
+          - id: "044d1494-7e95-4392-86b1-555f4aa6d5c5"  # 0000-ga-eessi-clerk-yrkesskade
+          - id: "3db683fb-ba0d-4d1a-aa92-153b101d9c88"  # 0000-GA-EnGangIAaret
   accessPolicy:
     inbound:
       rules:
