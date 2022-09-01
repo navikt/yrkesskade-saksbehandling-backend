@@ -23,7 +23,7 @@ class BrevController(
 ) {
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun mottaBrev(@Parameter(description = "brev data som skal opprettes og distribueres") @RequestBody brev: BrevDto): ResponseEntity<Void>  {
+    fun opprettBrev(@Parameter(description = "brev data som skal opprettes og distribueres") @RequestBody brev: BrevDto): ResponseEntity<Void>  {
 
         val pdfData = PdfData(
             brevtype = brev.brevtype,
