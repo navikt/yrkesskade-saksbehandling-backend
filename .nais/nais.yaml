@@ -54,6 +54,11 @@ spec:
   azure:
     application:
       enabled: true
+      claims:
+        groups:
+          {{#each azure.groups as |group|}}
+             - id: {{group}}
+          {{/each}}
   accessPolicy:
     inbound:
       rules:
