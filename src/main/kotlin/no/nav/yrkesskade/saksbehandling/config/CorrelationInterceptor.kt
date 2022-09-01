@@ -30,14 +30,11 @@ class CorrelationInterceptor : HandlerInterceptor {
                                  response: HttpServletResponse,
                                  handler: Any,
                                  ex: Exception?) {
-        response.addHeader(CORRELATION_ID_HEADER_NAME, MDC.get(MDC_CALL_ID))
+        response.addHeader(MDC_CALL_ID, MDC.get(MDC_CALL_ID))
     }
 
     private fun getCorrelationIdFromHeaderOrCreateNew(request: HttpServletRequest): String {
-        return request.getHeader(CORRELATION_ID_HEADER_NAME) ?: UUID.randomUUID().toString()
+        return request.getHeader(MDC_CALL_ID) ?: UUID.randomUUID().toString()
     }
 
-    companion object {
-        const val CORRELATION_ID_HEADER_NAME = "Nav-CallId"
-    }
 }
