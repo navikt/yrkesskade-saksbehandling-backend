@@ -4,16 +4,7 @@ import com.expediagroup.graphql.generated.enums.BrukerIdType
 import com.expediagroup.graphql.generated.journalpost.Journalpost
 import no.nav.yrkesskade.saksbehandling.client.BrevutsendingClient
 import no.nav.yrkesskade.saksbehandling.graphql.client.ISafClient
-import no.nav.yrkesskade.saksbehandling.graphql.client.SafClient
-import no.nav.yrkesskade.saksbehandling.model.BehandlingEntity
-import no.nav.yrkesskade.saksbehandling.model.Behandlingsstatus
-import no.nav.yrkesskade.saksbehandling.model.Behandlingstype
-import no.nav.yrkesskade.saksbehandling.model.Brev
-import no.nav.yrkesskade.saksbehandling.model.BrevutsendingBestiltHendelse
-import no.nav.yrkesskade.saksbehandling.model.BrevutsendingMetadata
-import no.nav.yrkesskade.saksbehandling.model.DokumentTilSaksbehandling
-import no.nav.yrkesskade.saksbehandling.model.DokumentTilSaksbehandlingHendelse
-import no.nav.yrkesskade.saksbehandling.model.Framdriftsstatus
+import no.nav.yrkesskade.saksbehandling.model.*
 import no.nav.yrkesskade.saksbehandling.model.pdf.PdfData
 import no.nav.yrkesskade.saksbehandling.model.pdf.PdfTemplate
 import no.nav.yrkesskade.saksbehandling.util.MDCConstants
@@ -22,11 +13,10 @@ import no.nav.yrkesskade.saksbehandling.util.getSecureLogger
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 import java.time.temporal.ChronoUnit
-import java.util.UUID
+import java.util.*
 
 @Component
 class Dokumentmottak(
