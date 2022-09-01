@@ -2,9 +2,7 @@ package no.nav.yrkesskade.saksbehandling.service
 
 import com.expediagroup.graphql.generated.Journalpost
 import io.mockk.coEvery
-import no.nav.yrkesskade.saksbehandling.fixtures.genererBehandling
-import no.nav.yrkesskade.saksbehandling.fixtures.genererSak
-import no.nav.yrkesskade.saksbehandling.fixtures.okRespons
+import no.nav.yrkesskade.saksbehandling.fixtures.*
 import no.nav.yrkesskade.saksbehandling.graphql.client.SafClient
 import no.nav.yrkesskade.saksbehandling.model.Behandlingsstatus
 import no.nav.yrkesskade.saksbehandling.model.SakEntity
@@ -87,6 +85,26 @@ class BehandlingServiceTest : AbstractTest() {
     }
 
     @Test
+    fun `hent behandling som ikke har journalpost med dokumenter`() {
+        Mockito.`when`(safClient.hentOppdatertJournalpost(anyString())).thenReturn(okResponsUtenDokumenter().data)
+        Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
+        val behandling = behandlingRepository.save(genererBehandling(1L, "test", Behandlingsstatus.IKKE_PAABEGYNT, sak))
+
+        val detaljertBehandling = behandlingService.hentBehandling(behandling.behandlingId)
+        assertThat(detaljertBehandling.dokumenter.size).isEqualTo(0)
+    }
+
+    @Test
+    fun `hent behandling som ikke har en oppdatert journalpost`() {
+        Mockito.`when`(safClient.hentOppdatertJournalpost(anyString())).thenReturn(errorRespons().data)
+        Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
+        val behandling = behandlingRepository.save(genererBehandling(1L, "test", Behandlingsstatus.IKKE_PAABEGYNT, sak))
+
+        val detaljertBehandling = behandlingService.hentBehandling(behandling.behandlingId)
+        assertThat(detaljertBehandling.dokumenter.size).isEqualTo(0)
+    }
+
+    @Test
     fun `hent behandling som ikke finnes`() {
         Mockito.`when`(safClient.hentOppdatertJournalpost(anyString())).thenReturn(okRespons().data)
         Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
@@ -158,5 +176,45 @@ class BehandlingServiceTest : AbstractTest() {
         assertThat(lagretBehandling.saksbehandlingsansvarligIdent).isNull()
         assertThat(lagretBehandling.status).isEqualTo(Behandlingsstatus.IKKE_PAABEGYNT)
         assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
+    }
+
+    @Test
+    fun `ferdigstill behandling`() {
+        Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
+        var behandling = genererBehandling(1L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak)
+        behandling = behandlingRepository.save(behandling)
+        assertThat(behandling.status).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING)
+        assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
+
+        val lagretBehandling = behandlingService.ferdigstillBehandling(behandling.behandlingId)
+        assertThat(lagretBehandling.saksbehandlingsansvarligIdent).isEqualTo("test")
+        assertThat(lagretBehandling.status).isEqualTo(Behandlingsstatus.FERDIG)
+        assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
+    }
+
+    @Test
+    fun `ferdigstill behandling som tilhører en annen saksbehandler`() {
+        Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("todd")
+        var behandling = genererBehandling(1L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak)
+        behandling = behandlingRepository.save(behandling)
+        assertThat(behandling.status).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING)
+        assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
+
+        assertThrows<BehandlingException> {
+            behandlingService.ferdigstillBehandling(behandling.behandlingId)
+        }
+    }
+
+    @Test
+    fun `ferdigstill behandling som som ikke er under behandling`() {
+        Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
+        var behandling = genererBehandling(1L, "test", Behandlingsstatus.IKKE_PAABEGYNT, sak)
+        behandling = behandlingRepository.save(behandling)
+        assertThat(behandling.status).isEqualTo(Behandlingsstatus.IKKE_PAABEGYNT)
+        assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
+
+        assertThrows<BehandlingException> {
+            behandlingService.ferdigstillBehandling(behandling.behandlingId)
+        }
     }
 }

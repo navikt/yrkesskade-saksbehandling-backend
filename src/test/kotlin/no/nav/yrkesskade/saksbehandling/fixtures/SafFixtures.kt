@@ -26,3 +26,11 @@ fun okRespons(): GraphQLClientResponse<Journalpost.Result> {
         extensions = emptyMap()
     )
 }
+
+fun okResponsUtenDokumenter(): GraphQLClientResponse<Journalpost.Result> {
+    return JacksonGraphQLResponse(
+        data = Journalpost.Result(gyldigJournalpostMedAktoerIdUtenDokumenter()),
+        errors = null,
+        extensions = emptyMap()
+    )
+}

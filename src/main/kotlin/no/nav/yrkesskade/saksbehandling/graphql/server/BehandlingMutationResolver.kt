@@ -11,5 +11,7 @@ class BehandlingMutationResolver(
 ) : GraphQLMutationResolver {
 
     fun overtaBehandling(behandlingId: Long) : BehandlingEntity = behandlingService.overtaBehandling(behandlingId)
+
+    fun ferdigstillBehandling(behandlingId: Long) : BehandlingEntity = behandlingService.ferdigstillBehandling(behandlingId)
     fun leggTilbakeBehandling(behandlingId: Long) : BehandlingEntity = behandlingService.leggTilbakeBehandling(behandlingId)
 }
