@@ -1,6 +1,12 @@
 package no.nav.yrkesskade.saksbehandling.util.kodeverk
 
+import no.nav.yrkesskade.saksbehandling.model.Behandlingsstatus
 import no.nav.yrkesskade.saksbehandling.model.Behandlingstype
+import no.nav.yrkesskade.saksbehandling.model.Framdriftsstatus
+
+private const val TYPE_BEHANDLINGSTYPE = "behandlingstype"
+private const val TYPE_BEHANDLINGSSTATUS = "behandlingsstatus"
+private const val TYPE_FRAMDRIFTSSTATUS = "framdriftsstatus"
 
 class KodeverdiMapper(val kodeverkHolder: KodeverkHolder) {
 
@@ -16,7 +22,26 @@ class KodeverdiMapper(val kodeverkHolder: KodeverkHolder) {
             Behandlingstype.TILBAKEKREVING -> "tilbakekreving"
             Behandlingstype.VEILEDNING -> "veiledning"
         }
-        return kodeverkHolder.mapKodeTilVerdi(kode, "behandlingstype")
+        return kodeverkHolder.mapKodeTilVerdi(kode, TYPE_BEHANDLINGSTYPE)
+    }
+
+    fun mapBehandlingsstatus(status: Behandlingsstatus): String {
+        val kode = when (status) {
+            Behandlingsstatus.IKKE_PAABEGYNT -> "ikkePaabegynt"
+            Behandlingsstatus.UNDER_BEHANDLING -> "underBehandling"
+            Behandlingsstatus.FERDIG -> "ferdig"
+        }
+        return kodeverkHolder.mapKodeTilVerdi(kode, TYPE_BEHANDLINGSSTATUS)
+    }
+
+    fun mapFramdriftsstatus(framdriftsstatus: Framdriftsstatus): String {
+        val kode = when (framdriftsstatus) {
+            Framdriftsstatus.IKKE_PAABEGYNT -> "ikkePaabegynt"
+            Framdriftsstatus.UNDER_ARBEID -> "underArbeid"
+            Framdriftsstatus.PAA_VENT -> "paaVent"
+            Framdriftsstatus.AVVENTER_SVAR -> "avventerSvar"
+        }
+        return kodeverkHolder.mapKodeTilVerdi(kode, TYPE_FRAMDRIFTSSTATUS)
     }
 
 }

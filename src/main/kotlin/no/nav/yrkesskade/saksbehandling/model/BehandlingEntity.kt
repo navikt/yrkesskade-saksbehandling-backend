@@ -1,6 +1,8 @@
 package no.nav.yrkesskade.saksbehandling.model
 
 import com.expediagroup.graphql.generated.enums.BrukerIdType
+import no.nav.yrkesskade.saksbehandling.model.dto.BehandlingDto
+import no.nav.yrkesskade.saksbehandling.util.kodeverk.KodeverdiMapper
 import java.time.Instant
 import javax.persistence.*
 
@@ -68,4 +70,29 @@ data class BehandlingEntity (
 
     @OneToMany(mappedBy = "behandling")
     val behandlingResultater: List<BehandlingsresultatEntity>
-)
+) {
+
+    fun toBehandlingDto(kodeverdiMapper: KodeverdiMapper): BehandlingDto {
+        return BehandlingDto(
+            behandlingId,
+            tema,
+            brukerId,
+            brukerIdType,
+            behandlendeEnhet,
+            saksbehandlingsansvarligIdent,
+            kodeverdiMapper.mapBehandlingstype(behandlingstype),
+            kodeverdiMapper.mapBehandlingsstatus(status),
+            behandlingsfrist,
+            journalpostId,
+            dokumentkategori,
+            systemreferanse,
+            kodeverdiMapper.mapFramdriftsstatus(framdriftsstatus),
+            opprettetTidspunkt,
+            opprettetAv,
+            endretAv,
+            sak,
+            behandlingResultater
+        )
+    }
+
+}
