@@ -29,3 +29,10 @@ no.nav.security.jwt:
           client-id: dummy-client-id
           client-secret: dummy-secret
           client-auth-method: client_secret_basic
+
+rolle:
+  saksbehandler: saksbehandler
+  kode6: kode6
+  kode7: kode7
+
+YRKESSKADE_DOKGEN_API_URL: http://localhost:5914

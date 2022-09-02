@@ -10,7 +10,6 @@ tenant: nav.no
 gcpProjectId: yrkesskade-prod-453b
 azure:
   groups:
-    - id: "73ff0e76-f2b1-4586-8387-b33f15617381"  # 0000-GA-GOSYS_UTVIDET egen ansatt
     - id: "9ec6487d-f37a-4aad-a027-cd221c1ac32b"  # 0000-GA-Fortrolig_Adresse
     - id: "ad7b87a6-9180-467c-affc-20a566b0fec0"  # 0000-GA-Strengt_Fortrolig_Adresse
     - id: "70bc7d4d-1cb3-4240-8f02-1a1b46d9e7a3"  # 0000-ga-eessi-clerk-yrkesskade

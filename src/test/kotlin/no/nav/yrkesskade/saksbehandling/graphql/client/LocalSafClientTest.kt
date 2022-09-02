@@ -11,6 +11,6 @@ internal class LocalSafClientTest {
         val journalpost = safClient.hentOppdatertJournalpost("1")
         assertThat(journalpost).isNotNull
         assertThat(journalpost!!.journalpost).isNotNull
-        assertThat(journalpost!!.journalpost!!.journalpostId).isEqualTo("1")
+        assertThat(journalpost.journalpost!!.journalpostId).isEqualTo("1")
     }
 }
