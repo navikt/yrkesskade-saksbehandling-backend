@@ -13,3 +13,16 @@ fun behandlingstyper(): Map<String, KodeverdiDto> = mapOf(
     "tilbakekreving" to KodeverdiDto("tilbakekreving", "Tilbakekreving"),
     "veiledning" to KodeverdiDto("veiledning", "Veiledning")
 )
+
+fun behandlingsstatus(): Map<String, KodeverdiDto> = mapOf(
+    "ikkePaabegynt" to KodeverdiDto("ikkePaabegynt", "Ikke påbegynt"),
+    "underBehandling" to KodeverdiDto("underBehandling", "Under behandling"),
+    "ferdig" to KodeverdiDto("ferdig", "Ferdig"),
+)
+
+fun framdriftsstatus(): Map<String, KodeverdiDto> = mapOf(
+    "ikkePaabegynt" to KodeverdiDto("ikkePaabegynt", "Ikke påbegynt"),
+    "underArbeid" to KodeverdiDto("underArbeid", "Under arbeid"),
+    "paaVent" to KodeverdiDto("paaVent", "På vent"),
+    "avventerSvar" to KodeverdiDto("avventerSvar", "Avventer svar")
+)
