@@ -68,4 +68,6 @@ data class BehandlingEntity (
 
     @OneToMany(mappedBy = "behandling")
     val behandlingResultater: List<BehandlingsresultatEntity>
-)
+) {
+
+}
