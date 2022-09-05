@@ -1,4 +1,4 @@
-package no.nav.yrkesskade.saksbehandling.client
+package no.nav.yrkesskade.saksbehandling.client.kodeverk
 
 import no.nav.yrkesskade.kodeverk.model.KodeverdiDto
 import no.nav.yrkesskade.kodeverk.model.KodeverdiResponsDto

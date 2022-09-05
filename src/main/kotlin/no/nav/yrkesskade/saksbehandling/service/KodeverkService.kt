@@ -1,7 +1,7 @@
 package no.nav.yrkesskade.saksbehandling.service
 
 import no.nav.yrkesskade.kodeverk.model.KodeverdiDto
-import no.nav.yrkesskade.saksbehandling.client.Kodeverkklient
+import no.nav.yrkesskade.saksbehandling.client.kodeverk.Kodeverkklient
 import no.nav.yrkesskade.saksbehandling.model.dto.KodeverkTidData
 import no.nav.yrkesskade.saksbehandling.model.dto.KodeverkTypeKategori
 import org.slf4j.LoggerFactory

@@ -5,7 +5,7 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
 import no.nav.yrkesskade.kodeverk.model.KodeverdiDto
-import no.nav.yrkesskade.saksbehandling.client.Kodeverkklient
+import no.nav.yrkesskade.saksbehandling.client.kodeverk.Kodeverkklient
 import no.nav.yrkesskade.saksbehandling.fixtures.behandlingstyper
 import no.nav.yrkesskade.saksbehandling.model.dto.KodeverkTidData
 import no.nav.yrkesskade.saksbehandling.model.dto.KodeverkTypeKategori
