@@ -1,10 +1,6 @@
 package no.nav.yrkesskade.saksbehandling.config
 
-import no.nav.security.token.support.core.configuration.MultiIssuerConfiguration
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
-import no.nav.security.token.support.core.validation.JwtTokenValidationHandler
-import no.nav.security.token.support.filter.JwtTokenValidationFilter
-import no.nav.yrkesskade.saksbehandling.util.getLogger
 import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -16,7 +12,6 @@ import javax.servlet.Filter
 import javax.servlet.FilterChain
 import javax.servlet.ServletRequest
 import javax.servlet.ServletResponse
-import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 
@@ -45,23 +40,13 @@ class WebSecurityConfig {
 
 class TokenValidationFilter(val oidcRequestContextHolder: TokenValidationContextHolder, val environment: Environment) : Filter {
 
-    val logger = getLogger(TokenValidationFilter::class.java)
-
     override fun doFilter(servletRequest: ServletRequest, servletResponse: ServletResponse, filterChain: FilterChain) {
         if (environment.activeProfiles.contains("local") && servletRequest.parameterMap.containsKey("codegen")) {
             // Vi er i local kjøring og utfører en kodegenering av skjema.
             filterChain.doFilter(servletRequest, servletResponse)
             return
         }
-        val httpRequest = servletRequest as HttpServletRequest
-        val headerNames: Enumeration<String> = httpRequest.headerNames
 
-        if (headerNames != null) {
-            while (headerNames.hasMoreElements()) {
-                val headerName = headerNames.nextElement()
-                logger.info("Header $headerName:  ${httpRequest.getHeader(headerName)}")
-            }
-        }
         if (!oidcRequestContextHolder.tokenValidationContext.hasValidToken()) {
             (servletResponse as HttpServletResponse).sendError(HttpStatus.UNAUTHORIZED.value())
         } else {

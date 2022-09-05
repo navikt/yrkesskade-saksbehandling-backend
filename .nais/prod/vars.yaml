@@ -1,7 +1,15 @@
 ingresses:
   - https://yrkesskade-saksbehandling-backend.intern.nav.no
+externalHosts:
+  - host: saf.prod-fss-pub.nais.io
 outboundExternalHosts:
   - host: saf.prod-fss-pub.nais.io
 springProfile: prod
 kafka_pool: nav-prod
 tenant: nav.no
+gcpProjectId: yrkesskade-prod-453b
+azure:
+  groups:
+    - id: "9ec6487d-f37a-4aad-a027-cd221c1ac32b"  # 0000-GA-Fortrolig_Adresse
+    - id: "ad7b87a6-9180-467c-affc-20a566b0fec0"  # 0000-GA-Strengt_Fortrolig_Adresse
+    - id: "70bc7d4d-1cb3-4240-8f02-1a1b46d9e7a3"  # 0000-ga-eessi-clerk-yrkesskade
