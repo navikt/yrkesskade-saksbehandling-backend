@@ -92,7 +92,8 @@ class BehandlingService(
 
         val oppdatertBehandling = behandling.copy(
             status = Behandlingsstatus.UNDER_BEHANDLING,
-            saksbehandlingsansvarligIdent = autentisertBruker.preferredUsername
+            saksbehandlingsansvarligIdent = autentisertBruker.preferredUsername,
+            endretAv = autentisertBruker.preferredUsername
         )
 
         return behandlingRepository.save(oppdatertBehandling)
@@ -114,7 +115,8 @@ class BehandlingService(
 
         val oppdatertBehandling = behandling.copy(
             status = Behandlingsstatus.FERDIG,
-            saksbehandlingsansvarligIdent = autentisertBruker.preferredUsername
+            saksbehandlingsansvarligIdent = autentisertBruker.preferredUsername,
+            endretAv = autentisertBruker.preferredUsername
         )
 
         return behandlingRepository.save(oppdatertBehandling)
@@ -133,7 +135,7 @@ class BehandlingService(
             throw IllegalStateException("$brukerIdent er ikke saksbehandler for behandling ${behandling.behandlingId}")
         }
 
-        val oppdatertBehandling = behandling.copy(status = Behandlingsstatus.IKKE_PAABEGYNT, saksbehandlingsansvarligIdent = null)
+        val oppdatertBehandling = behandling.copy(status = Behandlingsstatus.IKKE_PAABEGYNT, saksbehandlingsansvarligIdent = null, endretAv = autentisertBruker.preferredUsername)
 
         return behandlingRepository.save(oppdatertBehandling)
     }
