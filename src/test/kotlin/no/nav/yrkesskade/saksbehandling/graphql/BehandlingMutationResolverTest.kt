@@ -66,6 +66,50 @@ class BehandlingMutationResolverTest : AbstractTest() {
     }
 
     @Test
+    fun `ferdigstill behandling - behandling eksisterer`() {
+        Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
+        Mockito.`when`(behandlingRepository.findById(any())).thenReturn(Optional.of(paabegyntBehandling))
+        Mockito.`when`(behandlingRepository.save(any())).thenAnswer{
+            it.arguments.first()
+        }
+        val response = graphQLTestTemplate.postForResource("graphql/ferdigstill_behandling.graphql")
+        assertThat(response.statusCode.is2xxSuccessful).isTrue
+        assertThat(response.get("$.data.ferdigstillBehandling.status")).isEqualTo(Behandlingsstatus.FERDIG.name)
+    }
+
+    @Test
+    fun `ferdigstill behandling - behandling eksisterer ikke`() {
+        Mockito.`when`(behandlingRepository.findById(any())).thenReturn(null)
+
+        val response = graphQLTestTemplate.postForResource("graphql/ferdigstill_behandling.graphql")
+        assertThat(response.statusCode.is2xxSuccessful).isTrue
+        assertThat(response.get("$.errors.length()")).isEqualTo("1")
+        assertThat(response.get("$.data.ferdigstillBehandling")).isNull()
+    }
+
+    @Test
+    fun `ferdigstill behandling - behandling tilhører annend behandler`() {
+        Mockito.`when`(behandlingRepository.findById(any())).thenReturn(Optional.of(paabegyntBehandling))
+        Mockito.`when`(behandlingRepository.save(any())).thenAnswer{
+            it.arguments.first()
+        }
+        val response = graphQLTestTemplate.postForResource("graphql/ferdigstill_behandling.graphql")
+        assertThat(response.statusCode.is2xxSuccessful).isTrue
+        assertThat(response.get("$.errors[0].message")).contains("Behandling tilhører en annen saksbehandler")
+    }
+
+    @Test
+    fun `ferdigstill behandling - behandling har feil status`() {
+        Mockito.`when`(behandlingRepository.findById(any())).thenReturn(Optional.of(aapenBehandling))
+        Mockito.`when`(behandlingRepository.save(any())).thenAnswer{
+            it.arguments.first()
+        }
+        val response = graphQLTestTemplate.postForResource("graphql/ferdigstill_behandling.graphql")
+        assertThat(response.statusCode.is2xxSuccessful).isTrue
+        assertThat(response.get("$.errors[0].message")).contains("Kan ikke ferdigstille behandling. Behandling har status ${aapenBehandling.status}")
+    }
+
+    @Test
     fun `legg tilbake behandling`() {
         val behandling = genererBehandling(1, "test", Behandlingsstatus.UNDER_BEHANDLING, genererSak())
         Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")

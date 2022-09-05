@@ -92,7 +92,31 @@ class BehandlingService(
 
         val oppdatertBehandling = behandling.copy(
             status = Behandlingsstatus.UNDER_BEHANDLING,
-            saksbehandlingsansvarligIdent = autentisertBruker.preferredUsername
+            saksbehandlingsansvarligIdent = autentisertBruker.preferredUsername,
+            endretAv = autentisertBruker.preferredUsername
+        )
+
+        return behandlingRepository.save(oppdatertBehandling)
+    }
+
+    @Transactional
+    fun ferdigstillBehandling(behandlingId: Long) : BehandlingEntity {
+        val behandling = behandlingRepository.findById(behandlingId).orElseThrow()
+
+        // kan kun ferdigstille behandling som har status UNDER_BEHANDLING
+        if (behandling.status != Behandlingsstatus.UNDER_BEHANDLING) {
+            throw BehandlingException("Kan ikke ferdigstille behandling. Behandling har status ${behandling.status}")
+        }
+
+        // sjekk at behandling ikke allerede tilhører en annen saksbehandler
+        if (behandling.saksbehandlingsansvarligIdent != autentisertBruker.preferredUsername) {
+            throw BehandlingException("Behandling tilhører en annen saksbehandler")
+        }
+
+        val oppdatertBehandling = behandling.copy(
+            status = Behandlingsstatus.FERDIG,
+            saksbehandlingsansvarligIdent = autentisertBruker.preferredUsername,
+            endretAv = autentisertBruker.preferredUsername
         )
 
         return behandlingRepository.save(oppdatertBehandling)
@@ -111,7 +135,7 @@ class BehandlingService(
             throw IllegalStateException("$brukerIdent er ikke saksbehandler for behandling ${behandling.behandlingId}")
         }
 
-        val oppdatertBehandling = behandling.copy(status = Behandlingsstatus.IKKE_PAABEGYNT, saksbehandlingsansvarligIdent = null)
+        val oppdatertBehandling = behandling.copy(status = Behandlingsstatus.IKKE_PAABEGYNT, saksbehandlingsansvarligIdent = null, endretAv = autentisertBruker.preferredUsername)
 
         return behandlingRepository.save(oppdatertBehandling)
     }
