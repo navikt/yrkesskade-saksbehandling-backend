@@ -61,30 +61,6 @@ class Dokumentmottak(
         )
         behandlingService.lagreBehandling(behandling)
 
-        sendTilBrevutsending(dokumentTilSaksbehandling)
-    }
-
-    private fun sendTilBrevutsending(dokumentTilSaksbehandling: DokumentTilSaksbehandling) {
-        val pdfData = PdfData(
-            brevtype = "Veiledning",
-            uuid = UUID.randomUUID().toString()
-        )
-        brevutsendingClient.sendTilBrevutsending(
-            BrevutsendingBestiltHendelse(
-                brev = Brev(
-                    tittel = "Veiledningsbrev tannlegeerklæring",
-                    brevkode = "NAV 13-00.08", // avklare? fjerne?
-                    enhet = dokumentTilSaksbehandling.enhet,
-                    template = PdfTemplate.VEILEDNINGSBREV_TANNLEGEERKLAERING,
-                    innhold = pdfData
-                ),
-                metadata = BrevutsendingMetadata(
-                    innkommendeJournalpostId = dokumentTilSaksbehandling.journalpostId,
-                    tidspunktBestilt = Instant.now(),
-                    navCallId = MDC.get(MDCConstants.MDC_CALL_ID)
-                )
-            )
-        )
     }
 
     /**

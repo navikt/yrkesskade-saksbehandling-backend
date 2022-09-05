@@ -25,21 +25,14 @@ class BrevController(
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun opprettBrev(@Parameter(description = "brev data som skal opprettes og distribueres") @RequestBody brev: BrevDto): ResponseEntity<Void>  {
 
-        val pdfData = PdfData(
-            brevtype = brev.brevtype,
-            uuid = UUID.randomUUID().toString()
-        )
 
-        val brevTilBrevutsending = Brev(
-            tittel = brev.tittel,
-            brevkode = brev.brevkode,
-            enhet = brev.enhet,
-            template = brev.template,
-            innhold = pdfData
-        )
-
-        brevService.sendTilBrevutsending(brevTilBrevutsending, brev.innkommendeJournalpostId)
+        brevService.sendTilBrevutsending(brev.brev, brev.innkommendeJournalpostId)
 
         return ResponseEntity.accepted().build()
+    }
+
+    @PostMapping(path = ["/generer"], consumes = [MediaType.APPLICATION_JSON_VALUE])
+    fun genererForhaandsvisning(@Parameter(description = "brev data som skal brukes til å generere PDF") @RequestBody brev: Brev) : String {
+        return brevService.genererBrev(brev)
     }
 }

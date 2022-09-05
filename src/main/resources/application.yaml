@@ -99,3 +99,5 @@ funksjonsbrytere:
     applicationName: ${spring.application.name}
 
 SAF_APP_CLIENT_ID: dev-fss.teamdokumenthandtering.saf
+YRKESSKADE_DOKGEN_API_URL: https://yrkesskade-dokgen.dev.intern.nav.no
+

@@ -34,3 +34,5 @@ rolle:
   saksbehandler: saksbehandler
   kode6: kode6
   kode7: kode7
+
+YRKESSKADE_DOKGEN_API_URL: http://localhost:5914
