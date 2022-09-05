@@ -16,7 +16,6 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.lang.IllegalStateException
 import java.time.ZoneOffset
 
 @Service
@@ -83,7 +82,7 @@ class BehandlingService(
     fun hentBehandlingDtos(page: Pageable): Page<BehandlingDto> {
         val behandlingEntities = behandlingRepository.findAll(page)
         val kodeverkHolder = KodeverkHolder.init(kodeverkService = kodeverkService)
-        return behandlingEntities.map { it.toBehandlingDto(KodeverdiMapper(kodeverkHolder)) }
+        return behandlingEntities.map { BehandlingDto.fromEntity(it, KodeverdiMapper(kodeverkHolder)) }
     }
 
     fun hentAntallBehandlinger(): Long = behandlingRepository.count()
