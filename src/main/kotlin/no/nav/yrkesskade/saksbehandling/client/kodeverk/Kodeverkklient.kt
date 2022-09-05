@@ -2,7 +2,9 @@ package no.nav.yrkesskade.saksbehandling.client.kodeverk
 
 import no.nav.yrkesskade.kodeverk.model.KodeverdiDto
 import no.nav.yrkesskade.kodeverk.model.KodeverdiResponsDto
+import no.nav.yrkesskade.saksbehandling.util.MDCConstants
 import org.slf4j.LoggerFactory
+import org.slf4j.MDC
 import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
@@ -31,10 +33,10 @@ class Kodeverkklient(
         val uriPath = if (kategori.isNullOrBlank()) "api/v1/kodeverk/typer/$type/kodeverdier" else "api/v1/kodeverk/typer/$type/kategorier/$kategori/kodeverdier"
         val kodeverdiRespons = kodeverkWebClient.get()
             .uri { uriBuilder -> uriBuilder.path(uriPath).build() }
+            .header("Nav-Callid", MDC.get(MDCConstants.MDC_CALL_ID))
             .retrieve()
             .bodyToMono<KodeverdiResponsDto>()
             .block() ?: KodeverdiResponsDto(emptyMap())
-        // TODO: YSMOD-161 - Send med callid i header for enklere feilsøking
 
         return kodeverdiRespons.kodeverdierMap.orEmpty()
     }
