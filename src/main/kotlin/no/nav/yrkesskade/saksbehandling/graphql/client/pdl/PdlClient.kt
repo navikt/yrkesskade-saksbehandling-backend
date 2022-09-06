@@ -47,7 +47,6 @@ class PdlClient(
      */
     override fun hentIdenter(ident: String, grupper: List<IdentGruppe>, historikk: Boolean): HentIdenter.Result? {
         val token = tokenUtil.getAppAccessOnBehalfOfTokenWithPdlScope()
-        logger.info("Hentet token for Pdl")
         val hentIdenterQuery = HentIdenter(
             HentIdenter.Variables(
                 ident = ident,
@@ -90,7 +89,6 @@ class PdlClient(
 
     private fun hentPersonResult(fodselsnummer: String): HentPerson.Result? {
         val token = tokenUtil.getAppAccessOnBehalfOfTokenWithPdlScope()
-        logger.info("Hentet token for Pdl")
         val hentPersonQuery = HentPerson(HentPerson.Variables(fodselsnummer))
 
         val personResult: HentPerson.Result?
@@ -119,7 +117,6 @@ class PdlClient(
 
     private fun hentAdresse(matrikkelId: Long): HentAdresse.Result? {
         val token = tokenUtil.getAppAccessOnBehalfOfTokenWithPdlScope()
-        logger.info("Hentet token for Pdl")
         val hentAdresseQuery = HentAdresse(HentAdresse.Variables(matrikkelId))
 
         val adresseResult: HentAdresse.Result?

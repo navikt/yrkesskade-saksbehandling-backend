@@ -20,6 +20,10 @@ class LocalPdlClient : IPdlClient {
     }
 
     override fun hentPerson(foedselsnummer: String): Person? {
+        if (foedselsnummer.isEmpty() || foedselsnummer == "NA") {
+            return null
+        }
+
         val faker = Faker(Random(foedselsnummer.hashCode().toLong()))
 
         return Person(
