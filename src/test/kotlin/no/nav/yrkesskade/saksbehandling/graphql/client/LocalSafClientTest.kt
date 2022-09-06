@@ -1,5 +1,6 @@
 package no.nav.yrkesskade.saksbehandling.graphql.client
 
+import no.nav.yrkesskade.saksbehandling.graphql.client.saf.LocalSafClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

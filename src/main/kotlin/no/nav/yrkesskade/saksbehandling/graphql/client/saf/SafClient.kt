@@ -1,4 +1,4 @@
-package no.nav.yrkesskade.saksbehandling.graphql.client
+package no.nav.yrkesskade.saksbehandling.graphql.client.saf
 
 import com.expediagroup.graphql.client.spring.GraphQLWebClient
 import com.expediagroup.graphql.client.types.GraphQLClientResponse

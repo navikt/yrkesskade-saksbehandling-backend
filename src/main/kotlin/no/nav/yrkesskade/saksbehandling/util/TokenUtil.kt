@@ -15,4 +15,10 @@ class TokenUtil(
         val response = oAuth2AccessTokenService.getAccessToken(clientProperties)
         return response.accessToken
     }
+
+    fun getAppAccessOnBehalfOfTokenWithPdlScope(): String {
+        val clientProperties = clientConfigurationProperties.registration["pdl-onbehalfof"]
+        val response = oAuth2AccessTokenService.getAccessToken(clientProperties)
+        return response.accessToken
+    }
 }

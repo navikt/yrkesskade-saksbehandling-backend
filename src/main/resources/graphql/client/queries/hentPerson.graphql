@@ -1,0 +1,39 @@
+query($ident: ID!) {
+    hentPerson(ident: $ident) {
+    	adressebeskyttelse {
+      	    gradering
+        },
+    	navn {
+            fornavn,
+            mellomnavn,
+            etternavn,
+            forkortetNavn
+        },
+        doedsfall {
+          doedsdato
+        },
+        kjoenn {
+          kjoenn
+        }
+    	bostedsadresse {
+            vegadresse {
+                matrikkelId
+            },
+            matrikkeladresse {
+                matrikkelId,
+            },
+            ukjentBosted {
+                bostedskommune
+            },
+            utenlandskAdresse {
+                adressenavnNummer
+                bygningEtasjeLeilighet
+                postboksNummerNavn
+                postkode
+                bySted
+                regionDistriktOmraade
+                landkode
+            }
+        }
+    }
+}

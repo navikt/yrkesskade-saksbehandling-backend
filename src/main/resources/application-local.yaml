@@ -53,6 +53,22 @@ no.nav.security.jwt:
           client-id: dummy-client-id
           client-secret: dummy-secret
           client-auth-method: client_secret_basic
+      pdl-onbehalfof:
+        token-endpoint-url: ${AUTH_SERVER}/aad
+        grant-type: urn:ietf:params:oauth:grant-type:jwt-bearer
+        scope: pdl
+        authentication:
+          client-id: dummy-client-id
+          client-secret: dummy-secret
+          client-auth-method: client_secret_basic
+      pdl-clientcredentials:
+        token-endpoint-url: ${AUTH_SERVER}/aad
+        grant-type: client_credentials
+        scope: pdl
+        authentication:
+          client-id: dummy-client-id
+          client-secret: dummy-secret
+          client-auth-method: client_secret_basic
 
 rolle:
   saksbehandler: 044d1494-7e95-4392-86b1-555f4aa6d5c5
@@ -60,3 +76,5 @@ rolle:
   kode7: ea930b6b-9397-44d9-b9e6-f4cf527a632a
 
 YRKESSKADE_DOKGEN_API_URL: http://localhost:5914
+YRKESSKADE_KODEVERK_API_URL: http://localhost:8080
+PDL_URL: https://pdl-api.default

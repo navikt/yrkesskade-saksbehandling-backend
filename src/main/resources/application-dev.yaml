@@ -1,5 +1,6 @@
 SAKSBEHANDLING_CLIENT_ID: ${AZURE_APP_CLIENT_ID}
 TENANT_ID: 966ac572-f5b7-4bbe-aa88-c76419c0f851         # trygdeetaten.no
+PDL_SCOPE: api://dev-fss.pdl.pdl-api/.default
 
 spring:
   kafka:
@@ -21,15 +22,6 @@ spring:
           password: ${KAFKA_CREDSTORE_PASSWORD}
         key.password: ${KAFKA_CREDSTORE_PASSWORD}
 
-funksjonsbrytere:
-  enabled: false
-
-kafka:
-  topic:
-    dokument-til-saksbehandling:
-      name: yrkesskade.privat-yrkesskade-dokument-til-saksbehandling
-    aapen-oppgave-opprettet: aapen-oppgave-opprettet-v1-local
-    aapen-oppgave-endret: aapen-oppgave-endret-v1-local
 
 no.nav.security.jwt:
   client:
@@ -42,6 +34,32 @@ no.nav.security.jwt:
           client-id: ${AZURE_APP_CLIENT_ID}
           client-jwk: ${AZURE_APP_JWK}
           client-auth-method: private_key_jwt
+      pdl-onbehalfof:
+        token-endpoint-url: https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token
+        grant-type: urn:ietf:params:oauth:grant-type:jwt-bearer
+        scope: ${PDL_SCOPE}
+        authentication:
+          client-id: ${AZURE_APP_CLIENT_ID}
+          client-jwk: ${AZURE_APP_JWK}
+          client-auth-method: client_secret_basic
+      pdl-clientcredentials:
+        token-endpoint-url: https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token
+        grant-type: client_credentials
+        scope: ${PDL_SCOPE}
+        authentication:
+          client-id: ${AZURE_APP_CLIENT_ID}
+          client-jwk: ${AZURE_APP_JWK}
+          client-auth-method: client_secret_basic
+
+funksjonsbrytere:
+  enabled: false
+
+kafka:
+  topic:
+    dokument-til-saksbehandling:
+      name: yrkesskade.privat-yrkesskade-dokument-til-saksbehandling
+    aapen-oppgave-opprettet: aapen-oppgave-opprettet-v1-local
+    aapen-oppgave-endret: aapen-oppgave-endret-v1-local
 
 rolle:
   saksbehandler: 044d1494-7e95-4392-86b1-555f4aa6d5c5

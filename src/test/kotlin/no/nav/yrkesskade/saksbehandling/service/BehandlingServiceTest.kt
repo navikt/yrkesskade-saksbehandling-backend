@@ -1,9 +1,8 @@
 package no.nav.yrkesskade.saksbehandling.service
 
-import com.expediagroup.graphql.generated.Journalpost
-import io.mockk.coEvery
+import com.expediagroup.graphql.generated.enums.BrukerIdType
 import no.nav.yrkesskade.saksbehandling.fixtures.*
-import no.nav.yrkesskade.saksbehandling.graphql.client.SafClient
+import no.nav.yrkesskade.saksbehandling.graphql.client.saf.SafClient
 import no.nav.yrkesskade.saksbehandling.model.Behandlingsstatus
 import no.nav.yrkesskade.saksbehandling.model.SakEntity
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
@@ -16,11 +15,16 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.mockito.ArgumentMatchers.*
 import org.mockito.Mockito
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.domain.Pageable
 import org.springframework.transaction.annotation.Transactional
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 
+@Suppress("NonAsciiCharacters")
 class BehandlingServiceTest : AbstractTest() {
 
     @MockBean
@@ -28,6 +32,9 @@ class BehandlingServiceTest : AbstractTest() {
 
     @MockBean
     lateinit var safClient: SafClient
+
+    @MockBean
+    lateinit var kodeverkService: KodeverkService
 
     @Autowired
     lateinit var behandlingService: BehandlingService
@@ -217,4 +224,40 @@ class BehandlingServiceTest : AbstractTest() {
             behandlingService.ferdigstillBehandling(behandling.behandlingId)
         }
     }
+
+    @Test
+    fun `hent behandling dtos`() {
+        Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
+        Mockito.`when`(kodeverkService.hentKodeverk(eq("behandlingstype"), eq(null), any())).thenReturn(behandlingstyper())
+        Mockito.`when`(kodeverkService.hentKodeverk(eq("behandlingsstatus"), eq(null), any())).thenReturn(behandlingsstatus())
+        Mockito.`when`(kodeverkService.hentKodeverk(eq("framdriftsstatus"), eq(null), any())).thenReturn(framdriftsstatus())
+
+        behandlingRepository.save(genererBehandling(1L, "test", Behandlingsstatus.IKKE_PAABEGYNT, sak))
+
+        val behandlingDtos = behandlingService.hentBehandlingDtos(Pageable.unpaged())
+        assertThat(behandlingDtos.size).isEqualTo(1)
+
+        val dto = behandlingDtos.first()
+        assertThat(dto.behandlingId).isNotNull
+        assertThat(dto.tema).isEqualTo("YRK")
+        assertThat(dto.brukerId).isEqualTo("12345")
+        assertThat(dto.brukerIdType).isEqualTo(BrukerIdType.AKTOERID)
+        assertThat(dto.behandlendeEnhet).isEqualTo("9999")
+        assertThat(dto.saksbehandlingsansvarligIdent).isEqualTo("test")
+        assertThat(dto.behandlingstype).isEqualTo("Veiledning")
+        assertThat(dto.status).isEqualTo("Ikke påbegynt")
+        assertThat(dto.behandlingsfrist.truncatedTo(ChronoUnit.DAYS))
+            .isEqualTo(Instant.now().plus(30, ChronoUnit.DAYS).truncatedTo(ChronoUnit.DAYS))
+        assertThat(dto.journalpostId).isEqualTo("213123123")
+        assertThat(dto.dokumentkategori).isEqualTo("enFinKategori")
+        assertThat(dto.systemreferanse).isEqualTo("referanse")
+        assertThat(dto.framdriftsstatus).isEqualTo("Ikke påbegynt")
+        assertThat(dto.opprettetTidspunkt.truncatedTo(ChronoUnit.DAYS))
+            .isEqualTo(Instant.now().truncatedTo(ChronoUnit.DAYS))
+        assertThat(dto.opprettetAv).isEqualTo("test")
+        assertThat(dto.endretAv).isNull()
+        assertThat(dto.sak).isEqualTo(sak)
+        assertThat(dto.behandlingResultater).isEmpty()
+    }
+
 }

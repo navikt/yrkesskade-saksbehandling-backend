@@ -4,6 +4,7 @@ externalHosts:
   - host: saf.dev-fss-pub.nais.io
 outboundExternalHosts:
   - host: saf.dev-fss-pub.nais.io
+  - host: pdl-api.dev-fss-pub.nais.io
 springProfile: dev
 kafka_pool: nav-dev
 tenant: trygdeetaten.no
