@@ -105,3 +105,4 @@ kodeverk:
 SAF_APP_CLIENT_ID: dev-fss.teamdokumenthandtering.saf
 YRKESSKADE_DOKGEN_API_URL: https://yrkesskade-dokgen.dev.intern.nav.no
 YRKESSKADE_KODEVERK_API_URL: https://yrkesskade-kodeverk.dev.intern.nav.no
+PDL_URL: https://pdl-api.dev-fss-pub.nais.io

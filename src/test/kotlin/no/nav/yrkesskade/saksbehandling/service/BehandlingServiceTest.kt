@@ -1,10 +1,8 @@
 package no.nav.yrkesskade.saksbehandling.service
 
-import com.expediagroup.graphql.generated.Journalpost
 import com.expediagroup.graphql.generated.enums.BrukerIdType
-import io.mockk.coEvery
 import no.nav.yrkesskade.saksbehandling.fixtures.*
-import no.nav.yrkesskade.saksbehandling.graphql.client.SafClient
+import no.nav.yrkesskade.saksbehandling.graphql.client.saf.SafClient
 import no.nav.yrkesskade.saksbehandling.model.Behandlingsstatus
 import no.nav.yrkesskade.saksbehandling.model.SakEntity
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository

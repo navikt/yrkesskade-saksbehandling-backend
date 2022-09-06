@@ -1,7 +1,7 @@
 package no.nav.yrkesskade.saksbehandling.service
 
 import DetaljertBehandling
-import no.nav.yrkesskade.saksbehandling.graphql.client.ISafClient
+import no.nav.yrkesskade.saksbehandling.graphql.client.saf.ISafClient
 import no.nav.yrkesskade.saksbehandling.model.BehandlingEntity
 import no.nav.yrkesskade.saksbehandling.model.Behandlingsstatus
 import no.nav.yrkesskade.saksbehandling.model.DokumentInfo
