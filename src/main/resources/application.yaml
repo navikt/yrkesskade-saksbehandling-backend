@@ -91,6 +91,9 @@ saf:
   rest.url: https://saf.dev-fss-pub.nais.io/
   graphql.url: https://saf.dev-fss-pub.nais.io/graphql
 
+pdl:
+  graphql.url: ${PDL_URL}/graphql
+
 funksjonsbrytere:
   enabled: true
   unleash:

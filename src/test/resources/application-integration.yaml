@@ -29,6 +29,22 @@ no.nav.security.jwt:
           client-id: dummy-client-id
           client-secret: dummy-secret
           client-auth-method: client_secret_basic
+      pdl-onbehalfof:
+        token-endpoint-url: http://localhost:${mock-oauth2-server.port}/azuread/token
+        grant-type: urn:ietf:params:oauth:grant-type:jwt-bearer
+        scope: pdl
+        authentication:
+          client-id: dummy-client-id
+          client-secret: dummy-secret
+          client-auth-method: client_secret_basic
+      pdl-clientcredentials:
+        token-endpoint-url: http://localhost:${mock-oauth2-server.port}/azuread/token
+        grant-type: client_credentials
+        scope: pdl
+        authentication:
+          client-id: dummy-client-id
+          client-secret: dummy-secret
+          client-auth-method: client_secret_basic
 
 rolle:
   saksbehandler: saksbehandler
@@ -36,3 +52,4 @@ rolle:
   kode7: kode7
 
 YRKESSKADE_DOKGEN_API_URL: http://localhost:5914
+PDL_URL: https://pdl-api.default
