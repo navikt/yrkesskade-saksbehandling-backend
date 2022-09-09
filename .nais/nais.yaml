@@ -68,6 +68,8 @@ spec:
           - host: {{host}}
         {{/each}}
     outbound:
+      rules:
+        - application: yrkesskade-kodeverk
       external:
         - host: unleash.nais.io
         {{#each outboundExternalHosts}}
