@@ -9,6 +9,7 @@ import io.mockk.junit5.MockKExtension
 import no.nav.yrkesskade.saksbehandling.fixtures.errorRespons
 import no.nav.yrkesskade.saksbehandling.fixtures.journalpostResultWithBrukerAktoerid
 import no.nav.yrkesskade.saksbehandling.fixtures.okRespons
+import no.nav.yrkesskade.saksbehandling.graphql.client.saf.SafClient
 import no.nav.yrkesskade.saksbehandling.util.TokenUtil
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions

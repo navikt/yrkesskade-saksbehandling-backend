@@ -91,6 +91,9 @@ saf:
   rest.url: https://saf.dev-fss-pub.nais.io/
   graphql.url: https://saf.dev-fss-pub.nais.io/graphql
 
+pdl:
+  graphql.url: ${PDL_URL}/graphql
+
 funksjonsbrytere:
   enabled: true
   unleash:
@@ -105,3 +108,4 @@ kodeverk:
 SAF_APP_CLIENT_ID: dev-fss.teamdokumenthandtering.saf
 YRKESSKADE_DOKGEN_API_URL: https://yrkesskade-dokgen.dev.intern.nav.no
 YRKESSKADE_KODEVERK_API_URL: https://yrkesskade-kodeverk.dev.intern.nav.no
+PDL_URL: https://pdl-api.dev-fss-pub.nais.io

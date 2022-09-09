@@ -63,10 +63,33 @@ type Query {
     hentEgneBehandlinger(page: Page!): [Behandling]!
     antallBehandlinger: Int!
     hentBehandling(behandlingId: ID!): DetaljertBehandling
+    hentPerson(foedselsnummer: ID!): Person!
 }
 
 type Mutation {
     overtaBehandling(behandlingId: ID!): Behandling
     ferdigstillBehandling(behandlingId: ID!): Behandling
     leggTilbakeBehandling(behandlingId: ID!): Behandling
+}
+
+type Person {
+    navn: [Navn!]!
+    kjoenn: [Kjoenn!]!
+}
+
+type Navn {
+  fornavn: String!
+  mellomnavn: String
+  etternavn: String!
+  forkortetNavn: String
+}
+
+type Kjoenn {
+  kjoenn: KjoennType
+}
+
+enum KjoennType {
+  MANN
+  KVINNE
+  UKJENT
 }

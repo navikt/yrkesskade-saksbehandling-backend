@@ -5,7 +5,7 @@ import io.mockk.mockk
 import no.nav.yrkesskade.saksbehandling.client.BrevutsendingClient
 import no.nav.yrkesskade.saksbehandling.fixtures.dokumentTilSaksbehandlingHendelse
 import no.nav.yrkesskade.saksbehandling.fixtures.journalpostResultWithBrukerAktoerid
-import no.nav.yrkesskade.saksbehandling.graphql.client.SafClient
+import no.nav.yrkesskade.saksbehandling.graphql.client.saf.SafClient
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
 import no.nav.yrkesskade.saksbehandling.test.AbstractTest
 import no.nav.yrkesskade.saksbehandling.util.MDCConstants

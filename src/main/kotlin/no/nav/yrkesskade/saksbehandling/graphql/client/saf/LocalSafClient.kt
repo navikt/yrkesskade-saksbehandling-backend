@@ -1,12 +1,10 @@
-package no.nav.yrkesskade.saksbehandling.graphql.client
+package no.nav.yrkesskade.saksbehandling.graphql.client.saf
 
 import com.expediagroup.graphql.generated.Journalpost
 import com.expediagroup.graphql.generated.enums.*
 import com.expediagroup.graphql.generated.journalpost.Bruker
 import com.expediagroup.graphql.generated.journalpost.DokumentInfo
-import no.nav.yrkesskade.saksbehandling.util.TokenUtil
 import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime

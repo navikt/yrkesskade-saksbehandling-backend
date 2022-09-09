@@ -3,14 +3,10 @@ package no.nav.yrkesskade.saksbehandling.service
 import com.expediagroup.graphql.generated.enums.BrukerIdType
 import com.expediagroup.graphql.generated.journalpost.Journalpost
 import no.nav.yrkesskade.saksbehandling.client.BrevutsendingClient
-import no.nav.yrkesskade.saksbehandling.graphql.client.ISafClient
+import no.nav.yrkesskade.saksbehandling.graphql.client.saf.ISafClient
 import no.nav.yrkesskade.saksbehandling.model.*
-import no.nav.yrkesskade.saksbehandling.model.pdf.PdfData
-import no.nav.yrkesskade.saksbehandling.model.pdf.PdfTemplate
-import no.nav.yrkesskade.saksbehandling.util.MDCConstants
 import no.nav.yrkesskade.saksbehandling.util.getLogger
 import no.nav.yrkesskade.saksbehandling.util.getSecureLogger
-import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional

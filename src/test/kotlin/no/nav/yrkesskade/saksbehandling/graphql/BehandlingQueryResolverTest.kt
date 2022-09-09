@@ -38,7 +38,7 @@ class BehandlingQueryResolverTest : AbstractTest() {
     fun `hent antall behandlinger`() {
         Mockito.`when`(behandlingRepository.count()).thenReturn(1)
 
-        val response = graphQLTestTemplate.postForResource("graphql/antall_behandlinger.graphql")
+        val response = graphQLTestTemplate.postForResource("graphql/behandling/antall_behandlinger.graphql")
         assertThat(response.statusCode.is2xxSuccessful).isTrue
     }
 
@@ -48,7 +48,7 @@ class BehandlingQueryResolverTest : AbstractTest() {
         Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
         Mockito.`when`(behandlingRepository.findBySaksbehandlingsansvarligIdent(any(), any())).thenReturn(listOf(behandling))
 
-        val response = graphQLTestTemplate.postForResource("graphql/hent_egne_behandlinger.graphql")
+        val response = graphQLTestTemplate.postForResource("graphql/behandling/hent_egne_behandlinger.graphql")
         assertThat(response.statusCode.is2xxSuccessful).isTrue
         assertThat(response.get("$.data.hentEgneBehandlinger.length()")).isEqualTo("1")
     }
@@ -59,7 +59,7 @@ class BehandlingQueryResolverTest : AbstractTest() {
         Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
         Mockito.`when`(behandlingRepository.findById(any())).thenReturn(Optional.of(behandling))
 
-        val response = graphQLTestTemplate.postForResource("graphql/hent_behandling.graphql")
+        val response = graphQLTestTemplate.postForResource("graphql/behandling/hent_behandling.graphql")
         assertThat(response.statusCode.is2xxSuccessful).isTrue
         assertThat(response.get("$.data.hentBehandling.behandlingId")).isEqualTo("1")
         assertThat(response.get("$.data.hentBehandling.dokumenter.length()")).isEqualTo("0")

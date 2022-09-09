@@ -4,6 +4,7 @@ externalHosts:
   - host: saf.prod-fss-pub.nais.io
 outboundExternalHosts:
   - host: saf.prod-fss-pub.nais.io
+  - host: pdl-api.prod-fss-pub.nais.io
 springProfile: prod
 kafka_pool: nav-prod
 tenant: nav.no

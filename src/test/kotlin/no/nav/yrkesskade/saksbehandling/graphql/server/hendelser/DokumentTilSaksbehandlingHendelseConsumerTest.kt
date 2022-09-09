@@ -1,7 +1,7 @@
 package no.nav.yrkesskade.saksbehandling.graphql.server.hendelser
 
 import no.nav.yrkesskade.saksbehandling.fixtures.journalpostResultWithBrukerAktoerid
-import no.nav.yrkesskade.saksbehandling.graphql.client.SafClient
+import no.nav.yrkesskade.saksbehandling.graphql.client.saf.SafClient
 import no.nav.yrkesskade.saksbehandling.hendelser.DokumentTilSaksbehandlingHendelseConsumer
 import no.nav.yrkesskade.saksbehandling.model.DokumentTilSaksbehandling
 import no.nav.yrkesskade.saksbehandling.model.DokumentTilSaksbehandlingHendelse

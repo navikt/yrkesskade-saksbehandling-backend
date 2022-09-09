@@ -1,0 +1,12 @@
+query {
+  hentPerson(foedselsnummer: 12345678910) {
+    navn {
+        fornavn
+        mellomnavn
+        etternavn
+    }
+    kjoenn {
+        kjoenn
+    }
+  }
+}

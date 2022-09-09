@@ -39,7 +39,7 @@ class BehandlingMutationResolverTest : AbstractTest() {
         Mockito.`when`(behandlingRepository.save(any())).thenAnswer{
             it.arguments.first()
         }
-        val response = graphQLTestTemplate.postForResource("graphql/overta_behandling.graphql")
+        val response = graphQLTestTemplate.postForResource("graphql/behandling/overta_behandling.graphql")
         assertThat(response.statusCode.is2xxSuccessful).isTrue
         assertThat(response.get("$.data.overtaBehandling.status")).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING.name)
     }
@@ -50,7 +50,7 @@ class BehandlingMutationResolverTest : AbstractTest() {
         Mockito.`when`(behandlingRepository.save(any())).thenAnswer{
             it.arguments.first()
         }
-        val response = graphQLTestTemplate.postForResource("graphql/overta_behandling.graphql")
+        val response = graphQLTestTemplate.postForResource("graphql/behandling/overta_behandling.graphql")
         assertThat(response.statusCode.is2xxSuccessful).isTrue
         assertThat(response.get("$.errors[0].message")).contains("Behandling tilhører en annen saksbehandler")
     }
@@ -59,7 +59,7 @@ class BehandlingMutationResolverTest : AbstractTest() {
     fun `overta behandling - behandling eksisterer ikke`() {
         Mockito.`when`(behandlingRepository.findById(any())).thenReturn(null)
 
-        val response = graphQLTestTemplate.postForResource("graphql/overta_behandling.graphql")
+        val response = graphQLTestTemplate.postForResource("graphql/behandling/overta_behandling.graphql")
         assertThat(response.statusCode.is2xxSuccessful).isTrue
         assertThat(response.get("$.errors.length()")).isEqualTo("1")
         assertThat(response.get("$.data.overtaBehandling")).isNull()
@@ -72,7 +72,7 @@ class BehandlingMutationResolverTest : AbstractTest() {
         Mockito.`when`(behandlingRepository.save(any())).thenAnswer{
             it.arguments.first()
         }
-        val response = graphQLTestTemplate.postForResource("graphql/ferdigstill_behandling.graphql")
+        val response = graphQLTestTemplate.postForResource("graphql/behandling/ferdigstill_behandling.graphql")
         assertThat(response.statusCode.is2xxSuccessful).isTrue
         assertThat(response.get("$.data.ferdigstillBehandling.status")).isEqualTo(Behandlingsstatus.FERDIG.name)
     }
@@ -81,7 +81,7 @@ class BehandlingMutationResolverTest : AbstractTest() {
     fun `ferdigstill behandling - behandling eksisterer ikke`() {
         Mockito.`when`(behandlingRepository.findById(any())).thenReturn(null)
 
-        val response = graphQLTestTemplate.postForResource("graphql/ferdigstill_behandling.graphql")
+        val response = graphQLTestTemplate.postForResource("graphql/behandling/ferdigstill_behandling.graphql")
         assertThat(response.statusCode.is2xxSuccessful).isTrue
         assertThat(response.get("$.errors.length()")).isEqualTo("1")
         assertThat(response.get("$.data.ferdigstillBehandling")).isNull()
@@ -93,7 +93,7 @@ class BehandlingMutationResolverTest : AbstractTest() {
         Mockito.`when`(behandlingRepository.save(any())).thenAnswer{
             it.arguments.first()
         }
-        val response = graphQLTestTemplate.postForResource("graphql/ferdigstill_behandling.graphql")
+        val response = graphQLTestTemplate.postForResource("graphql/behandling/ferdigstill_behandling.graphql")
         assertThat(response.statusCode.is2xxSuccessful).isTrue
         assertThat(response.get("$.errors[0].message")).contains("Behandling tilhører en annen saksbehandler")
     }
@@ -104,7 +104,7 @@ class BehandlingMutationResolverTest : AbstractTest() {
         Mockito.`when`(behandlingRepository.save(any())).thenAnswer{
             it.arguments.first()
         }
-        val response = graphQLTestTemplate.postForResource("graphql/ferdigstill_behandling.graphql")
+        val response = graphQLTestTemplate.postForResource("graphql/behandling/ferdigstill_behandling.graphql")
         assertThat(response.statusCode.is2xxSuccessful).isTrue
         assertThat(response.get("$.errors[0].message")).contains("Kan ikke ferdigstille behandling. Behandling har status ${aapenBehandling.status}")
     }
@@ -118,7 +118,7 @@ class BehandlingMutationResolverTest : AbstractTest() {
             it.arguments.first()
         }
 
-        val response = graphQLTestTemplate.postForResource("graphql/legg_tilbake_behandling.graphql")
+        val response = graphQLTestTemplate.postForResource("graphql/behandling/legg_tilbake_behandling.graphql")
         assertThat(response.statusCode.is2xxSuccessful).isTrue
         assertThat(response.get("$.data.leggTilbakeBehandling.status")).isEqualTo(Behandlingsstatus.IKKE_PAABEGYNT.name)
     }
