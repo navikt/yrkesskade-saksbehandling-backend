@@ -1,0 +1,11 @@
+query {
+  hentAapneBehandlinger(behandlingsPage: {
+        page: {
+            size: 10,
+            page: 0
+        }
+    }
+  ) {
+    behandlingId
+  }
+}

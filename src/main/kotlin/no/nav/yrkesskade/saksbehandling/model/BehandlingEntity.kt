@@ -29,11 +29,11 @@ data class BehandlingEntity (
     @Column(name = "saksbehandlingsansvarlig_ident", nullable = true)
     val saksbehandlingsansvarligIdent: String? = null,
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(name = "behandlingstype", nullable = false)
     val behandlingstype: Behandlingstype,
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     val status: Behandlingsstatus,
 
@@ -49,7 +49,7 @@ data class BehandlingEntity (
     @Column(name = "systemreferanse", nullable = false)
     val systemreferanse: String,
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(name = "framdriftsstatus", nullable = false)
     val framdriftsstatus: Framdriftsstatus,
 

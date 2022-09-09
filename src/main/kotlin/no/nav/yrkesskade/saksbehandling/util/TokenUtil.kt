@@ -10,14 +10,14 @@ class TokenUtil(
     private val clientConfigurationProperties: ClientConfigurationProperties,
     private val oAuth2AccessTokenService: OAuth2AccessTokenService
 ) {
-    fun getAppAccessTokenWithSafScope(): String {
-        val clientProperties = clientConfigurationProperties.registration["saf-maskintilmaskin"]
-        val response = oAuth2AccessTokenService.getAccessToken(clientProperties)
-        return response.accessToken
-    }
+    fun getAppAccessTokenWithSafScope() = getTokenForRegistration("saf-maskintilmaskin")
 
-    fun getAppAccessOnBehalfOfTokenWithPdlScope(): String {
-        val clientProperties = clientConfigurationProperties.registration["pdl-onbehalfof"]
+    fun getAppAccessOnBehalfOfTokenWithPdlScope() = getTokenForRegistration("pdl-onbehalfof")
+
+    fun getAppAccessWithKodeverkScope() = getTokenForRegistration("kodeverk-maskintilmaskin")
+
+    private fun getTokenForRegistration(registration: String): String {
+        val clientProperties = clientConfigurationProperties.registration[registration]
         val response = oAuth2AccessTokenService.getAccessToken(clientProperties)
         return response.accessToken
     }
