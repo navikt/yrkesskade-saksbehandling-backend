@@ -58,9 +58,21 @@ input Page {
     page: Int
 }
 
+input Behandlingsfilter {
+    behandlingstype: String
+    dokumentkategori: String
+    status: String
+}
+
+input BehandlingsPage {
+    behandlingsfilter: Behandlingsfilter
+    page: Page!
+}
+
 type Query {
     hentBehandlinger(page: Page!): [Behandling]!
     hentEgneBehandlinger(page: Page!): [Behandling]!
+    hentAapneBehandlinger(behandlingsPage: BehandlingsPage!): [Behandling]!
     antallBehandlinger: Int!
     hentBehandling(behandlingId: ID!): DetaljertBehandling
     hentPerson(foedselsnummer: ID!): Person!
