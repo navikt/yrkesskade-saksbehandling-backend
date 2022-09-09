@@ -124,11 +124,11 @@ class BehandlingRepositoryTest : AbstractTest() {
     fun `hent aapne behandlinger med behandlingstype filter`() {
         // given
         val sak = sakRepository.findAll().first()
-        val ikkePaabegyntBehandling = genererBehandling(1L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak)
+        val ikkePaabegyntBehandling = genererBehandling(51L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak)
         behandlingRepository.save(ikkePaabegyntBehandling)
-        val underBehandlingBehandling = genererBehandling(2L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak)
+        val underBehandlingBehandling = genererBehandling(52L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak)
         behandlingRepository.save(underBehandlingBehandling)
-        val ferdigBehandling = genererBehandling(3L, "test", Behandlingsstatus.FERDIG, sak)
+        val ferdigBehandling = genererBehandling(53L, "test", Behandlingsstatus.FERDIG, sak)
         behandlingRepository.save(ferdigBehandling)
 
         //when
