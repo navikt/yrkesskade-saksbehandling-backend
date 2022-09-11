@@ -4,6 +4,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.security.mock.oauth2.token.DefaultOAuth2TokenCallback
 import no.nav.yrkesskade.saksbehandling.api.v1.brev.dto.BrevDto
+import no.nav.yrkesskade.saksbehandling.client.JsonToPdfClient
 import no.nav.yrkesskade.saksbehandling.client.dokgen.DokgenClient
 import no.nav.yrkesskade.saksbehandling.model.Brev
 import no.nav.yrkesskade.saksbehandling.test.AbstractTest
@@ -39,7 +40,7 @@ class BrevControllerTest : AbstractTest() {
     lateinit var mvc: MockMvc
 
     @MockBean
-    lateinit var dokgenClient: DokgenClient
+    lateinit var jsonToPdfClient: JsonToPdfClient
 
     @Test
     fun `send tannlegeerklæring veilednings brev`() {
@@ -54,7 +55,7 @@ class BrevControllerTest : AbstractTest() {
     @Test
     fun `generer brev`() {
         val tekstBytes = "Dette er en test".toByteArray(Charsets.UTF_8)
-        Mockito.`when`(dokgenClient.lagPdf(any(), any())).thenReturn(tekstBytes)
+        Mockito.`when`(jsonToPdfClient.genererPdfFraJson(any())).thenReturn(tekstBytes)
         val jwt = token("azuread", "test@nav.test.no", "aad-client-id")
         val brev = tannlegeerklaeringVeiledngingKunBrev()
 
