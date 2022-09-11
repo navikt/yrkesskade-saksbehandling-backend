@@ -2,6 +2,7 @@ package no.nav.yrkesskade.saksbehandling.client.kodeverk
 
 import no.nav.yrkesskade.kodeverk.model.KodeverdiDto
 import no.nav.yrkesskade.kodeverk.model.KodeverdiResponsDto
+import no.nav.yrkesskade.saksbehandling.client.AbstractRestClient
 import no.nav.yrkesskade.saksbehandling.util.MDCConstants
 import org.slf4j.LoggerFactory
 import org.slf4j.MDC
@@ -14,7 +15,7 @@ import org.springframework.web.reactive.function.client.bodyToMono
 @Component
 class Kodeverkklient(
     private val kodeverkWebClient: WebClient
-) {
+) : AbstractRestClient("Kodeverk") {
 
     companion object {
         @Suppress("JAVA_CLASS_ON_COMPANION")
@@ -40,28 +41,4 @@ class Kodeverkklient(
 
         return kodeverdiRespons.kodeverdierMap.orEmpty()
     }
-
-    @Suppress("SameParameterValue")
-    private fun <T> logTimingAndWebClientResponseException(methodName: String, function: () -> T): T {
-        val start: Long = System.currentTimeMillis()
-        try {
-            return function.invoke()
-        } catch (ex: WebClientResponseException) {
-            log.error(
-                "Got a {} error calling kodeverk {} {} with message {}",
-                ex.statusCode,
-                ex.request?.method ?: "-",
-                ex.request?.uri ?: "-",
-                ex.responseBodyAsString
-            )
-            throw ex
-        } catch (rtex: RuntimeException) {
-            log.error("Caught RuntimeException while calling kodeverk ", rtex)
-            throw rtex
-        } finally {
-            val end: Long = System.currentTimeMillis()
-            log.info("Method {} took {} millis", methodName, (end - start))
-        }
-    }
-
 }
