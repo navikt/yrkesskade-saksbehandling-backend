@@ -77,4 +77,5 @@ rolle:
 
 YRKESSKADE_DOKGEN_API_URL: https://yrkesskade-dokgen.intern.nav.no
 YRKESSKADE_KODEVERK_API_URL: https://yrkesskade-kodeverk.intern.nav.no
+YRKESSKADE_JSON_TO_PDF_API_URL: https://yrkesskade-json-to-pdf.intern.nav.no
 PDL_URL: https://pdl-api.prod-fss-pub.nais.io

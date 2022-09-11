@@ -10,7 +10,10 @@ import reactor.netty.http.client.HttpClient
 
 @Configuration
 class WebClientConfiguration(private val webClientBuilder: WebClient.Builder,
-                             @Value("\${YRKESSKADE_KODEVERK_API_URL}") val kodeverkServiceURL: String) {
+                             @Value("\${YRKESSKADE_KODEVERK_API_URL}") val kodeverkServiceURL: String,
+                             @Value("\${YRKESSKADE_JSON_TO_PDF_API_URL}") val jsonToPdfServiceURL: String,
+
+) {
 
     companion object {
         @Suppress("JAVA_CLASS_ON_COMPANION")
@@ -25,4 +28,11 @@ class WebClientConfiguration(private val webClientBuilder: WebClient.Builder,
             .build()
     }
 
+    @Bean
+    fun jsonToPdfServiceWebClient(): WebClient {
+        return webClientBuilder
+            .baseUrl(jsonToPdfServiceURL)
+            .clientConnector(ReactorClientHttpConnector(HttpClient.newConnection()))
+            .build()
+    }
 }
