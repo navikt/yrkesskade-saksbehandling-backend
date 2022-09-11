@@ -69,9 +69,14 @@ input BehandlingsPage {
     page: Page!
 }
 
+input MinBehandlingsPage {
+    status: String
+    page: Page!
+}
+
 type Query {
     hentBehandlinger(page: Page!): [Behandling]!
-    hentEgneBehandlinger(page: Page!): [Behandling]!
+    hentEgneBehandlinger(minBehandlingsPage: MinBehandlingsPage!): [Behandling]!
     hentAapneBehandlinger(behandlingsPage: BehandlingsPage!): [Behandling]!
     antallBehandlinger: Int!
     hentBehandling(behandlingId: ID!): DetaljertBehandling
