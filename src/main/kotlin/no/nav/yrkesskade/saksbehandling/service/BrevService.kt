@@ -1,6 +1,7 @@
 package no.nav.yrkesskade.saksbehandling.service
 
 import no.nav.yrkesskade.saksbehandling.client.BrevutsendingClient
+import no.nav.yrkesskade.saksbehandling.client.JsonToPdfClient
 import no.nav.yrkesskade.saksbehandling.client.dokgen.DokgenClient
 import no.nav.yrkesskade.saksbehandling.model.Brev
 import no.nav.yrkesskade.saksbehandling.model.BrevutsendingBestiltHendelse
@@ -14,7 +15,8 @@ import java.util.Base64
 @Service
 class BrevService(
     private val brevutsendingClient: BrevutsendingClient,
-    private val dokgenClient: DokgenClient
+    private val dokgenClient: DokgenClient,
+    private val jsonToPdfClient: JsonToPdfClient
     ) {
 
     fun sendTilBrevutsending(brev: Brev, journalpostId: String) {
@@ -34,7 +36,7 @@ class BrevService(
      * Generer en PDF basert på brev innhold og returnerer data som Base64
      */
     fun genererBrev(brev: Brev): String {
-        val data = dokgenClient.lagPdf(brev.innhold, brev.template)
+        val data = jsonToPdfClient.genererPdfFraJson(brev.innhold.innhold)
         return Base64.getEncoder().encodeToString(data)
     }
 }
