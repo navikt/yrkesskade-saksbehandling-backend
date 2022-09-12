@@ -2,7 +2,6 @@ package no.nav.yrkesskade.saksbehandling.service
 
 import no.nav.yrkesskade.saksbehandling.client.BrevutsendingClient
 import no.nav.yrkesskade.saksbehandling.client.JsonToPdfClient
-import no.nav.yrkesskade.saksbehandling.client.dokgen.DokgenClient
 import no.nav.yrkesskade.saksbehandling.model.Brev
 import no.nav.yrkesskade.saksbehandling.model.BrevutsendingBestiltHendelse
 import no.nav.yrkesskade.saksbehandling.model.BrevutsendingMetadata
@@ -15,7 +14,6 @@ import java.util.Base64
 @Service
 class BrevService(
     private val brevutsendingClient: BrevutsendingClient,
-    private val dokgenClient: DokgenClient,
     private val jsonToPdfClient: JsonToPdfClient
     ) {
 
