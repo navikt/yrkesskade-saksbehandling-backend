@@ -29,14 +29,14 @@ interface BehandlingRepository : JpaRepository<BehandlingEntity, Long> {
             WHERE (b.status = :status OR CAST(:status as no.nav.yrkesskade.saksbehandling.model.Behandlingsstatus) IS NULL)
             AND (b.dokumentkategori = :dokumentkategori OR CAST(:dokumentkategori as java.lang.String) IS NULL)
             AND (b.behandlingstype = :behandlingstype OR CAST(:behandlingstype as no.nav.yrkesskade.saksbehandling.model.Behandlingstype) IS NULL)
-            AND b.status IN (:statuser)
+            AND b.status IN (:gyldigeStatuser)
              """
     )
     fun findBehandlingerBegrensetTilBehandlingsstatuser(
         @Param("status") status: Behandlingsstatus?,
         @Param("dokumentkategori") dokumentkategori: String?,
         @Param("behandlingstype") behandlingstype: Behandlingstype?,
-        @Param("statuser") statuser: List<Behandlingsstatus>,
+        @Param("gyldigeStatuser") gyldigeStatuser: List<Behandlingsstatus>,
         pageable: Pageable
     ): Page<BehandlingEntity>
 
