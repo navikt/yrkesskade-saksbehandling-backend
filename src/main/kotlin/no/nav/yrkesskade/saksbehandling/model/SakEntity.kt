@@ -14,7 +14,7 @@ data class SakEntity(
     @Column(name = "tema", nullable = false)
     val tema: String,
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(name = "sakstype", nullable = false)
     val sakstype: Sakstype,
 
@@ -30,7 +30,7 @@ data class SakEntity(
     @OneToMany(mappedBy = "sak")
     val behandlinger: List<BehandlingEntity>,
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(name = "saksstatus", nullable = false)
     val saksstatus: Saksstatus
 )
