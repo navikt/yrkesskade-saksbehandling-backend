@@ -52,25 +52,4 @@ class DokarkivClient(
         return
     }
 
-    private fun <T> logTimingAndWebClientResponseException(methodName: String, function: () -> ResponseEntity<Void>): ResponseEntity<Void> {
-        val start: Long = System.currentTimeMillis()
-        try {
-            return function.invoke()
-        } catch (ex: WebClientResponseException) {
-            secureLogger.error(
-                "Got a {} error calling Dokarkiv {} {} with message {}",
-                ex.statusCode,
-                ex.request?.method ?: "-",
-                ex.request?.uri ?: "-",
-                ex.responseBodyAsString
-            )
-            throw ex
-        } catch (rtex: RuntimeException) {
-            log.warn("Caught RuntimeException", rtex)
-            throw rtex
-        } finally {
-            val end: Long = System.currentTimeMillis()
-            log.info("Method {} took {} millis", methodName, (end - start))
-        }
-    }
 }
