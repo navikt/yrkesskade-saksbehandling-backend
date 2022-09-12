@@ -59,5 +59,7 @@ rolle:
   kode6: kode6
   kode7: kode7
 
-YRKESSKADE_DOKGEN_API_URL: http://localhost:5914
-PDL_URL: https://pdl-api.default
+api:
+  client:
+    pdl:
+      url: https://pdl-api.default/graphql

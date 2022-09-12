@@ -5,7 +5,6 @@ import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.security.mock.oauth2.token.DefaultOAuth2TokenCallback
 import no.nav.yrkesskade.saksbehandling.api.v1.brev.dto.BrevDto
 import no.nav.yrkesskade.saksbehandling.client.JsonToPdfClient
-import no.nav.yrkesskade.saksbehandling.client.dokgen.DokgenClient
 import no.nav.yrkesskade.saksbehandling.model.Brev
 import no.nav.yrkesskade.saksbehandling.test.AbstractTest
 import org.assertj.core.api.Assertions.assertThat

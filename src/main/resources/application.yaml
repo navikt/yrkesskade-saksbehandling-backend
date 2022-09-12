@@ -89,13 +89,6 @@ kafka:
     aapen-oppgave-opprettet: aapen-oppgave-opprettet-v1-preprod
     aapen-oppgave-endret: aapen-oppgave-endret-v1-preprod
 
-saf:
-  rest.url: https://saf.dev-fss-pub.nais.io/
-  graphql.url: https://saf.dev-fss-pub.nais.io/graphql
-
-pdl:
-  graphql.url: ${PDL_URL}/graphql
-
 funksjonsbrytere:
   enabled: true
   unleash:
@@ -107,14 +100,21 @@ kodeverk:
   cache:
     gyldigTidMinutter: 60
 
-YRKESSKADE_DOKGEN_API_URL: https://yrkesskade-dokgen.dev.intern.nav.no
-YRKESSKADE_KODEVERK_API_URL: https://yrkesskade-kodeverk.dev.intern.nav.no
-YRKESSKADE_JSON_TO_PDF_API_URL: https://yrkesskade-json-to-pdf.dev.intern.nav.no
-PDL_URL: https://pdl-api.dev-fss-pub.nais.io
 api:
   client:
     dokarkiv:
       clientId: dev-fss.teamdokumenthandtering.dokarkiv-q1
       url: https://dokarkiv.dev-fss-pub.nais.io
-
-SAF_APP_CLIENT_ID: dev-fss.teamdokumenthandtering.saf
+    json-to-pdf:
+      url: https://yrkesskade-json-to-pdf.dev.intern.nav.no
+    kodeverk:
+      clientId: dev-gcp.yrkesskade.yrkesskade-kodeverk
+      url: https://yrkesskade-kodeverk.dev.intern.nav.no
+    pdl:
+      clientId: dev-fss.pdl.pdl-api
+      url: https://pdl-api.dev-fss-pub.nais.io/graphql
+    saf:
+      clientId: dev-fss.teamdokumenthandtering.saf
+      url:
+        rest: https://saf.dev-fss-pub.nais.io/
+        graphql: https://saf.dev-fss-pub.nais.io/graphql

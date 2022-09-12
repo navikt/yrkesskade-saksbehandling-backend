@@ -25,7 +25,7 @@ import javax.ws.rs.core.HttpHeaders
 @Component
 @Profile("!local")
 class PdlClient(
-    @Value("\${pdl.graphql.url}") private val pdlGraphqlUrl: String,
+    @Value("\${api.client.pdl.url}") private val pdlGraphqlUrl: String,
     private val tokenUtil: TokenUtil
 ) : IPdlClient {
 

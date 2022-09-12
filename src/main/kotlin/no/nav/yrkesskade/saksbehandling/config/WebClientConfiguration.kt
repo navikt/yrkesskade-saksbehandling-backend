@@ -10,10 +10,9 @@ import reactor.netty.http.client.HttpClient
 
 @Configuration
 class WebClientConfiguration(private val webClientBuilder: WebClient.Builder,
-                             @Value("\${api.client.dokarkiv.url}") val dokarkivServiceURL: String,
-                             @Value("\${YRKESSKADE_KODEVERK_API_URL}") val kodeverkServiceURL: String,
-                             @Value("\${YRKESSKADE_JSON_TO_PDF_API_URL}") val jsonToPdfServiceURL: String,
-
+                             @Value("\${api.client.kodeverk.url}") val kodeverkServiceURL: String,
+                             @Value("\${api.client.json-to-pdf.url}") val jsonToPdfServiceURL: String,
+                             @Value("\${api.client.dokarkiv.url}") val dokarkivServiceURL: String
 ) {
 
     companion object {

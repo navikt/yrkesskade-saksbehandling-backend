@@ -16,7 +16,7 @@ import javax.ws.rs.core.Response
 
 @Component
 @Profile("!local")
-class SafRestClient(@Value("\${saf.rest.url}") private val safRestUrl: String,
+class SafRestClient(@Value("\${api.client.saf.url.rest}") private val safRestUrl: String,
 @Value("\${spring.application.name}") val applicationName: String,
 private val tokenUtil: TokenUtil) : ISafRestClient
 {
