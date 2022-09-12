@@ -3,16 +3,18 @@ package no.nav.yrkesskade.saksbehandling.graphql
 import com.graphql.spring.boot.test.GraphQLTest
 import com.graphql.spring.boot.test.GraphQLTestTemplate
 import no.nav.yrkesskade.saksbehandling.config.GraphQLScalarsConfig
-import no.nav.yrkesskade.saksbehandling.fixtures.genererBehandling
-import no.nav.yrkesskade.saksbehandling.fixtures.genererSak
+import no.nav.yrkesskade.saksbehandling.fixtures.*
 import no.nav.yrkesskade.saksbehandling.model.*
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
 import no.nav.yrkesskade.saksbehandling.security.AutentisertBruker
+import no.nav.yrkesskade.saksbehandling.service.KodeverkService
 import no.nav.yrkesskade.saksbehandling.test.AbstractTest
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
 import java.util.*
@@ -30,8 +32,22 @@ class BehandlingMutationResolverTest : AbstractTest() {
     @Autowired
     lateinit var autentisertBruker: AutentisertBruker
 
+    @Autowired
+    lateinit var kodeverkService: KodeverkService
+
     private val aapenBehandling: BehandlingEntity = genererBehandling(1L, null, Behandlingsstatus.IKKE_PAABEGYNT, genererSak())
     private val paabegyntBehandling: BehandlingEntity = genererBehandling(1L, "test", Behandlingsstatus.UNDER_BEHANDLING, genererSak())
+
+    @BeforeEach
+    fun startup() {
+        Mockito.`when`(kodeverkService.hentKodeverk(eq("behandlingstype"), eq(null), any())).thenReturn(behandlingstyper())
+        Mockito.`when`(kodeverkService.hentKodeverk(eq("behandlingsstatus"), eq(null), any())).thenReturn(
+            behandlingsstatus()
+        )
+        Mockito.`when`(kodeverkService.hentKodeverk(eq("framdriftsstatus"), eq(null), any())).thenReturn(
+            framdriftsstatus()
+        )
+    }
 
     @Test
     fun `overta behandling - behandling eksisterer`() {
@@ -41,7 +57,7 @@ class BehandlingMutationResolverTest : AbstractTest() {
         }
         val response = graphQLTestTemplate.postForResource("graphql/behandling/overta_behandling.graphql")
         assertThat(response.statusCode.is2xxSuccessful).isTrue
-        assertThat(response.get("$.data.overtaBehandling.status")).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING.name)
+        assertThat(response.get("$.data.overtaBehandling.status")).isEqualTo("Under behandling")
     }
 
     @Test
@@ -74,7 +90,7 @@ class BehandlingMutationResolverTest : AbstractTest() {
         }
         val response = graphQLTestTemplate.postForResource("graphql/behandling/ferdigstill_behandling.graphql")
         assertThat(response.statusCode.is2xxSuccessful).isTrue
-        assertThat(response.get("$.data.ferdigstillBehandling.status")).isEqualTo(Behandlingsstatus.FERDIG.name)
+        assertThat(response.get("$.data.ferdigstillBehandling.status")).isEqualTo("Ferdig")
     }
 
     @Test
@@ -106,7 +122,7 @@ class BehandlingMutationResolverTest : AbstractTest() {
         }
         val response = graphQLTestTemplate.postForResource("graphql/behandling/ferdigstill_behandling.graphql")
         assertThat(response.statusCode.is2xxSuccessful).isTrue
-        assertThat(response.get("$.errors[0].message")).contains("Kan ikke ferdigstille behandling. Behandling har status ${aapenBehandling.status}")
+        assertThat(response.get("$.errors[0].message")).contains("Kan ikke ferdigstille behandling. Behandling har status ${Behandlingsstatus.IKKE_PAABEGYNT.name}")
     }
 
     @Test
@@ -120,6 +136,6 @@ class BehandlingMutationResolverTest : AbstractTest() {
 
         val response = graphQLTestTemplate.postForResource("graphql/behandling/legg_tilbake_behandling.graphql")
         assertThat(response.statusCode.is2xxSuccessful).isTrue
-        assertThat(response.get("$.data.leggTilbakeBehandling.status")).isEqualTo(Behandlingsstatus.IKKE_PAABEGYNT.name)
+        assertThat(response.get("$.data.leggTilbakeBehandling.status")).isEqualTo("Ikke påbegynt")
     }
 }

@@ -45,6 +45,14 @@ no.nav.security.jwt:
           client-id: dummy-client-id
           client-secret: dummy-secret
           client-auth-method: client_secret_basic
+      kodeverk-maskintilmaskin:
+        token-endpoint-url: http://localhost:${mock-oauth2-server.port}/azuread/token
+        grant-type: client_credentials
+        scope: kodeverk
+        authentication:
+          client-id: dummy-client-id
+          client-secret: dummy-secret
+          client-auth-method: client_secret_basic
 
 rolle:
   saksbehandler: saksbehandler

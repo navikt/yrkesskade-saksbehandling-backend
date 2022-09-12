@@ -11,7 +11,7 @@ class BehandlingsresultatEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val behandlingsresultatId: Long,
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(name = "resultat")
     val resultat: Behandlingsresultat,
 

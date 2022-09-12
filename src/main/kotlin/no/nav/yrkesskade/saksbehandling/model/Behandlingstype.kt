@@ -9,5 +9,11 @@ enum class Behandlingstype(val verdi: String) {
     INNSYN("Innsyn"),
     GJENOPPRETTING("Gjenoppretting"),
     REVURDERING("Revurdering"),
-    TILBAKEKREVING("Tilbakekreving")
+    TILBAKEKREVING("Tilbakekreving");
+
+    companion object {
+        inline fun valueOfOrNull(name: String): Behandlingstype? {
+            return Behandlingstype.values().firstOrNull { it.name == name }
+        }
+    }
 }

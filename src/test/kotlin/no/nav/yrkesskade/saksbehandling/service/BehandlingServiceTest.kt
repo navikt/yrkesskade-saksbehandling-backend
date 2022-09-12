@@ -52,6 +52,14 @@ class BehandlingServiceTest : AbstractTest() {
         resetDatabase()
         sak = genererSak()
         sak = sakRepository.save(sak)
+
+        Mockito.`when`(kodeverkService.hentKodeverk(eq("behandlingstype"), eq(null), any())).thenReturn(behandlingstyper())
+        Mockito.`when`(kodeverkService.hentKodeverk(eq("behandlingsstatus"), eq(null), any())).thenReturn(
+            behandlingsstatus()
+        )
+        Mockito.`when`(kodeverkService.hentKodeverk(eq("framdriftsstatus"), eq(null), any())).thenReturn(
+            framdriftsstatus()
+        )
     }
 
     @Transactional
@@ -71,8 +79,8 @@ class BehandlingServiceTest : AbstractTest() {
     @Test
     fun `hent egne behandlinger`() {
         Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
-        behandlingRepository.save(genererBehandling(1L, "test", Behandlingsstatus.IKKE_PAABEGYNT, sak))
-        behandlingRepository.save(genererBehandling(1L, "todd", Behandlingsstatus.IKKE_PAABEGYNT, sak))
+        behandlingRepository.save(genererBehandling(1L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(1L, "todd", Behandlingsstatus.UNDER_BEHANDLING, sak))
 
         val behandlinger = behandlingService.hentBehandlinger(Pageable.unpaged())
         assertThat(behandlinger.size).isEqualTo(2)
@@ -131,7 +139,7 @@ class BehandlingServiceTest : AbstractTest() {
 
         val lagretBehandling = behandlingService.overtaBehandling(behandling.behandlingId)
         assertThat(lagretBehandling.saksbehandlingsansvarligIdent).isEqualTo("test")
-        assertThat(lagretBehandling.status).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING)
+        assertThat(lagretBehandling.status).isEqualTo("Under behandling")
         assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
     }
 
@@ -181,7 +189,7 @@ class BehandlingServiceTest : AbstractTest() {
 
         val lagretBehandling = behandlingService.leggTilbakeBehandling(behandling.behandlingId)
         assertThat(lagretBehandling.saksbehandlingsansvarligIdent).isNull()
-        assertThat(lagretBehandling.status).isEqualTo(Behandlingsstatus.IKKE_PAABEGYNT)
+        assertThat(lagretBehandling.status).isEqualTo("Ikke påbegynt")
         assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
     }
 
@@ -195,7 +203,7 @@ class BehandlingServiceTest : AbstractTest() {
 
         val lagretBehandling = behandlingService.ferdigstillBehandling(behandling.behandlingId)
         assertThat(lagretBehandling.saksbehandlingsansvarligIdent).isEqualTo("test")
-        assertThat(lagretBehandling.status).isEqualTo(Behandlingsstatus.FERDIG)
+        assertThat(lagretBehandling.status).isEqualTo("Ferdig")
         assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
     }
 
@@ -234,7 +242,7 @@ class BehandlingServiceTest : AbstractTest() {
 
         behandlingRepository.save(genererBehandling(1L, "test", Behandlingsstatus.IKKE_PAABEGYNT, sak))
 
-        val behandlingDtos = behandlingService.hentBehandlingDtos(Pageable.unpaged())
+        val behandlingDtos = behandlingService.hentBehandlinger(Pageable.unpaged())
         assertThat(behandlingDtos.size).isEqualTo(1)
 
         val dto = behandlingDtos.first()

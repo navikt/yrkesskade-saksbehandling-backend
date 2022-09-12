@@ -2,8 +2,10 @@ package no.nav.yrkesskade.saksbehandling.service
 
 import DetaljertBehandling
 import no.nav.yrkesskade.saksbehandling.graphql.client.saf.ISafClient
+import no.nav.yrkesskade.saksbehandling.graphql.common.model.BehandlingsPage
 import no.nav.yrkesskade.saksbehandling.model.BehandlingEntity
 import no.nav.yrkesskade.saksbehandling.model.Behandlingsstatus
+import no.nav.yrkesskade.saksbehandling.model.Behandlingstype
 import no.nav.yrkesskade.saksbehandling.model.DokumentInfo
 import no.nav.yrkesskade.saksbehandling.model.dto.BehandlingDto
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
@@ -13,6 +15,7 @@ import no.nav.yrkesskade.saksbehandling.util.kodeverk.KodeverdiMapper
 import no.nav.yrkesskade.saksbehandling.util.kodeverk.KodeverkHolder
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -77,22 +80,30 @@ class BehandlingService(
         )
     }
 
-    fun hentBehandlinger(page: Pageable): Page<BehandlingEntity> = behandlingRepository.findAll(page)
-
-    fun hentBehandlingDtos(page: Pageable): Page<BehandlingDto> {
+    fun hentBehandlinger(page: Pageable): Page<BehandlingDto> {
         val behandlingEntities = behandlingRepository.findAll(page)
+        val kodeverkHolder = KodeverkHolder.init(kodeverkService = kodeverkService)
+        return behandlingEntities.map { BehandlingDto.fromEntity(it, KodeverdiMapper(kodeverkHolder)) }
+    }
+
+    fun hentAapneBehandlinger(behandlingsPage: BehandlingsPage): Page<BehandlingDto> {
+        val status = Behandlingsstatus.valueOfOrNull(behandlingsPage.behandlingsfilter?.status.orEmpty())
+        val behandlingstype = Behandlingstype.valueOfOrNull(behandlingsPage.behandlingsfilter?.behandlingstype.orEmpty())
+        val behandlingEntities = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(status, behandlingsPage.behandlingsfilter?.dokumentkategori, behandlingstype, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), PageRequest.of(behandlingsPage.page.page, behandlingsPage.page.size))
         val kodeverkHolder = KodeverkHolder.init(kodeverkService = kodeverkService)
         return behandlingEntities.map { BehandlingDto.fromEntity(it, KodeverdiMapper(kodeverkHolder)) }
     }
 
     fun hentAntallBehandlinger(): Long = behandlingRepository.count()
 
-    fun hentEgneBehandlinger(page: Pageable) : List<BehandlingEntity> {
-        return behandlingRepository.findBySaksbehandlingsansvarligIdent(autentisertBruker.preferredUsername, page)
+    fun hentEgneBehandlinger(page: Pageable) : List<BehandlingDto> {
+        val behandlingEntities = behandlingRepository.findBySaksbehandlingsansvarligIdent(autentisertBruker.preferredUsername, page)
+        val kodeverkHolder = KodeverkHolder.init(kodeverkService = kodeverkService)
+        return behandlingEntities.map { BehandlingDto.fromEntity(it, KodeverdiMapper(kodeverkHolder)) }
     }
 
     @Transactional
-    fun overtaBehandling(behandlingId: Long): BehandlingEntity {
+    fun overtaBehandling(behandlingId: Long): BehandlingDto {
         val behandling = behandlingRepository.findById(behandlingId).orElseThrow()
 
         // sjekk at behandling ikke allerede tilhører en annen saksbehandler
@@ -106,11 +117,12 @@ class BehandlingService(
             endretAv = autentisertBruker.preferredUsername
         )
 
-        return behandlingRepository.save(oppdatertBehandling)
+        val kodeverkHolder = KodeverkHolder.init(kodeverkService = kodeverkService)
+        return BehandlingDto.fromEntity(behandlingRepository.save(oppdatertBehandling), KodeverdiMapper(kodeverkHolder))
     }
 
     @Transactional
-    fun ferdigstillBehandling(behandlingId: Long) : BehandlingEntity {
+    fun ferdigstillBehandling(behandlingId: Long) : BehandlingDto {
         val behandling = behandlingRepository.findById(behandlingId).orElseThrow()
 
         // kan kun ferdigstille behandling som har status UNDER_BEHANDLING
@@ -129,11 +141,12 @@ class BehandlingService(
             endretAv = autentisertBruker.preferredUsername
         )
 
-        return behandlingRepository.save(oppdatertBehandling)
+        val kodeverkHolder = KodeverkHolder.init(kodeverkService = kodeverkService)
+        return BehandlingDto.fromEntity(behandlingRepository.save(oppdatertBehandling), KodeverdiMapper(kodeverkHolder))
     }
 
     @Transactional
-    fun leggTilbakeBehandling(behandlingId: Long): BehandlingEntity {
+    fun leggTilbakeBehandling(behandlingId: Long): BehandlingDto {
         val behandling = behandlingRepository.findById(behandlingId).orElseThrow()
 
         if (behandling.saksbehandlingsansvarligIdent == null) {
@@ -147,6 +160,7 @@ class BehandlingService(
 
         val oppdatertBehandling = behandling.copy(status = Behandlingsstatus.IKKE_PAABEGYNT, saksbehandlingsansvarligIdent = null, endretAv = autentisertBruker.preferredUsername)
 
-        return behandlingRepository.save(oppdatertBehandling)
+        val kodeverkHolder = KodeverkHolder.init(kodeverkService = kodeverkService)
+        return BehandlingDto.fromEntity(behandlingRepository.save(oppdatertBehandling), KodeverdiMapper(kodeverkHolder))
     }
 }

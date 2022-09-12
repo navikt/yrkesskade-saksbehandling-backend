@@ -46,7 +46,7 @@ no.nav.security.jwt:
   client:
     registration:
       saf-maskintilmaskin:
-        token-endpoint-url: ${AUTH_SERVER}/aad
+        token-endpoint-url: ${AUTH_SERVER}/token
         grant-type: client_credentials
         scope: saf
         authentication:
@@ -54,7 +54,7 @@ no.nav.security.jwt:
           client-secret: dummy-secret
           client-auth-method: client_secret_basic
       pdl-onbehalfof:
-        token-endpoint-url: ${AUTH_SERVER}/aad
+        token-endpoint-url: ${AUTH_SERVER}/token
         grant-type: urn:ietf:params:oauth:grant-type:jwt-bearer
         scope: pdl
         authentication:
@@ -62,9 +62,17 @@ no.nav.security.jwt:
           client-secret: dummy-secret
           client-auth-method: client_secret_basic
       pdl-clientcredentials:
-        token-endpoint-url: ${AUTH_SERVER}/aad
+        token-endpoint-url: ${AUTH_SERVER}/token
         grant-type: client_credentials
         scope: pdl
+        authentication:
+          client-id: dummy-client-id
+          client-secret: dummy-secret
+          client-auth-method: client_secret_basic
+      kodeverk-maskintilmaskin:
+        token-endpoint-url: ${AUTH_SERVER}/token
+        grant-type: client_credentials
+        scope: api://dev-gcp.yrkesskade.yrkesskade-kodeverk/.default
         authentication:
           client-id: dummy-client-id
           client-secret: dummy-secret
