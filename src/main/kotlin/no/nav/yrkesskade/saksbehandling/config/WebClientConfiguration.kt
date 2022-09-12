@@ -12,12 +12,20 @@ import reactor.netty.http.client.HttpClient
 class WebClientConfiguration(private val webClientBuilder: WebClient.Builder,
                              @Value("\${YRKESSKADE_KODEVERK_API_URL}") val kodeverkServiceURL: String,
                              @Value("\${YRKESSKADE_JSON_TO_PDF_API_URL}") val jsonToPdfServiceURL: String,
-
+                             @Value("\${api.client.dokarkiv.url}") val dokarkivServiceURL: String
 ) {
 
     companion object {
         @Suppress("JAVA_CLASS_ON_COMPANION")
         private val logger = LoggerFactory.getLogger(javaClass.enclosingClass)
+    }
+
+    @Bean
+    fun dokarkivWebClient(): WebClient {
+        return webClientBuilder
+            .baseUrl(dokarkivServiceURL)
+            .clientConnector(ReactorClientHttpConnector(HttpClient.newConnection()))
+            .build()
     }
 
     @Bean

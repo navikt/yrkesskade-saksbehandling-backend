@@ -25,6 +25,14 @@ spring:
 no.nav.security.jwt:
   client:
     registration:
+      dokarkiv-maskintilmaskin:
+        token-endpoint-url: https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token
+        grant-type: client_credentials
+        scope: api://${api.client.dokarkiv.clientId}/.default
+        authentication:
+          client-id: ${AZURE_APP_CLIENT_ID}
+          client-jwk: ${AZURE_APP_JWK}
+          client-auth-method: private_key_jwt
       saf-maskintilmaskin:
         token-endpoint-url: https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token
         grant-type: client_credentials
@@ -70,3 +78,8 @@ YRKESSKADE_DOKGEN_API_URL: https://yrkesskade-dokgen.intern.nav.no
 YRKESSKADE_KODEVERK_API_URL: https://yrkesskade-kodeverk.intern.nav.no
 YRKESSKADE_JSON_TO_PDF_API_URL: https://yrkesskade-json-to-pdf.intern.nav.no
 PDL_URL: https://pdl-api.prod-fss-pub.nais.io
+api:
+  client:
+    dokarkiv:
+      clientId: prod-fss.teamdokumenthandtering.dokarkiv
+      url: https://dokarkiv.prod-fss-pub.nais.io
