@@ -3,6 +3,8 @@ package no.nav.yrkesskade.saksbehandling.service
 import com.expediagroup.graphql.generated.enums.BrukerIdType
 import no.nav.yrkesskade.saksbehandling.fixtures.*
 import no.nav.yrkesskade.saksbehandling.graphql.client.saf.SafClient
+import no.nav.yrkesskade.saksbehandling.graphql.common.model.MinBehandlingsPage
+import no.nav.yrkesskade.saksbehandling.graphql.common.model.Page
 import no.nav.yrkesskade.saksbehandling.model.Behandlingsstatus
 import no.nav.yrkesskade.saksbehandling.model.SakEntity
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
@@ -80,13 +82,13 @@ class BehandlingServiceTest : AbstractTest() {
     fun `hent egne behandlinger`() {
         Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
         behandlingRepository.save(genererBehandling(1L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak))
-        behandlingRepository.save(genererBehandling(1L, "todd", Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(10L, "todd", Behandlingsstatus.UNDER_BEHANDLING, sak))
 
         val behandlinger = behandlingService.hentBehandlinger(Pageable.unpaged())
         assertThat(behandlinger.size).isEqualTo(2)
 
-        val egneBehandlinger = behandlingService.hentEgneBehandlinger(Pageable.ofSize(10))
-        assertThat(egneBehandlinger.size).isEqualTo(1)
+        val egneBehandlinger = behandlingService.hentEgneBehandlinger(MinBehandlingsPage(Page(0, 10), Behandlingsstatus.UNDER_BEHANDLING.name))
+        assertThat(egneBehandlinger.numberOfElements).isEqualTo(1)
     }
 
     @Test

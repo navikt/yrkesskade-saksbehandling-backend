@@ -3,6 +3,7 @@ package no.nav.yrkesskade.saksbehandling.graphql.server
 import DetaljertBehandling
 import graphql.kickstart.tools.GraphQLQueryResolver
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.BehandlingsPage
+import no.nav.yrkesskade.saksbehandling.graphql.common.model.MinBehandlingsPage
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.Page
 import no.nav.yrkesskade.saksbehandling.model.BehandlingEntity
 import no.nav.yrkesskade.saksbehandling.model.dto.BehandlingDto
@@ -19,9 +20,7 @@ class BehandlingQueryResolver(
 
     fun hentAapneBehandlinger(behandlingsPage: BehandlingsPage) = behandlingService.hentAapneBehandlinger(behandlingsPage)
 
-    fun hentEgneBehandlinger(page: Page): List<BehandlingDto> {
-        return behandlingService.hentEgneBehandlinger(PageRequest.of(page.page, page.size))
-    }
+    fun hentEgneBehandlinger(behandlingsPage: MinBehandlingsPage) = behandlingService.hentEgneBehandlinger(behandlingsPage)
 
     fun hentBehandling(behandlingId: Long) : DetaljertBehandling {
         return behandlingService.hentBehandling(behandlingId)
