@@ -3,6 +3,7 @@ package no.nav.yrkesskade.saksbehandling.service
 import DetaljertBehandling
 import no.nav.yrkesskade.saksbehandling.graphql.client.saf.ISafClient
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.BehandlingsPage
+import no.nav.yrkesskade.saksbehandling.graphql.common.model.MinBehandlingsPage
 import no.nav.yrkesskade.saksbehandling.model.BehandlingEntity
 import no.nav.yrkesskade.saksbehandling.model.Behandlingsstatus
 import no.nav.yrkesskade.saksbehandling.model.Behandlingstype
@@ -96,8 +97,10 @@ class BehandlingService(
 
     fun hentAntallBehandlinger(): Long = behandlingRepository.count()
 
-    fun hentEgneBehandlinger(page: Pageable) : List<BehandlingDto> {
-        val behandlingEntities = behandlingRepository.findBySaksbehandlingsansvarligIdent(autentisertBruker.preferredUsername, page)
+    fun hentEgneBehandlinger(behandlingsPage: MinBehandlingsPage) : Page<BehandlingDto> {
+        val page = behandlingsPage.page
+        val status = Behandlingsstatus.valueOfOrNull(behandlingsPage.status.orEmpty()) ?: Behandlingsstatus.UNDER_BEHANDLING
+        val behandlingEntities = behandlingRepository.findBySaksbehandlingsansvarligIdentAndStatus(autentisertBruker.preferredUsername, status, PageRequest.of(page.page, page.size))
         val kodeverkHolder = KodeverkHolder.init(kodeverkService = kodeverkService)
         return behandlingEntities.map { BehandlingDto.fromEntity(it, KodeverdiMapper(kodeverkHolder)) }
     }

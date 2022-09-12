@@ -6,7 +6,7 @@ import no.nav.yrkesskade.saksbehandling.model.*
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
-fun genererBehandling(behandlingId: Long, behandlingsansvarligIdent: String?, behandlingstatus: Behandlingsstatus, sak: SakEntity) : BehandlingEntity {
+fun genererBehandling(behandlingId: Long, behandlingsansvarligIdent: String?, behandlingstatus: Behandlingsstatus, sak: SakEntity, behandlingstype: Behandlingstype = Behandlingstype.VEILEDNING) : BehandlingEntity {
     return BehandlingEntity(
         behandlingId = behandlingId,
         opprettetAv = "test",
@@ -20,7 +20,7 @@ fun genererBehandling(behandlingId: Long, behandlingsansvarligIdent: String?, be
         behandlendeEnhet = "9999",
         sak = sak,
         saksbehandlingsansvarligIdent = behandlingsansvarligIdent,
-        behandlingstype = Behandlingstype.VEILEDNING,
+        behandlingstype = behandlingstype,
         behandlingsfrist = Instant.now().plus(30, ChronoUnit.DAYS),
         journalpostId = "213123123",
         dokumentkategori = "enFinKategori",
