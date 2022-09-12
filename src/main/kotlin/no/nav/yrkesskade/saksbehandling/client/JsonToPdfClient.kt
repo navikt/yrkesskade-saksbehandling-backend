@@ -20,7 +20,7 @@ class JsonToPdfClient(
     }
 
     fun genererPdfFraJson(body: List<PdfInnholdElement>): ByteArray {
-        return logTimingAndWebClientResponseException("jsonToPdf") {
+        return logTimingAndWebClientResponseException("genererPdfFraJson") {
             jsonToPdfServiceWebClient.post()
                 .uri { it.path("/generer-pdf").build() }
                 .header("Nav-Callid", MDC.get(MDCConstants.MDC_CALL_ID))
