@@ -1,5 +1,6 @@
 package no.nav.yrkesskade.saksbehandling.client.dokarkiv
 
+import no.nav.yrkesskade.saksbehandling.client.AbstractRestClient
 import no.nav.yrkesskade.saksbehandling.util.TokenUtil
 import no.nav.yrkesskade.saksbehandling.util.getLogger
 import no.nav.yrkesskade.saksbehandling.util.getSecureLogger
@@ -17,7 +18,7 @@ class DokarkivClient(
     private val dokarkivWebClient: WebClient,
     private val tokenUtil: TokenUtil,
     @Value("\${spring.application.name}") val applicationName: String
-) {
+) : AbstractRestClient("Dokarkiv") {
 
     companion object {
         @Suppress("JAVA_CLASS_ON_COMPANION")
