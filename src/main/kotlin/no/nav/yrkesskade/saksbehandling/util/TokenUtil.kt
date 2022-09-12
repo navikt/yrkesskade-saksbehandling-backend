@@ -12,6 +12,8 @@ class TokenUtil(
 ) {
     fun getAppAccessTokenWithSafScope() = getTokenForRegistration("saf-maskintilmaskin")
 
+    fun getAppAccessTokenWithDokarkivScope() = getTokenForRegistration("dokarkiv-maskintilmaskin")
+
     fun getAppAccessOnBehalfOfTokenWithPdlScope() = getTokenForRegistration("pdl-onbehalfof")
 
     fun getAppAccessWithKodeverkScope() = getTokenForRegistration("kodeverk-maskintilmaskin")
