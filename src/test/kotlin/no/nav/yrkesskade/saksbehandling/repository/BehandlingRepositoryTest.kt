@@ -35,14 +35,15 @@ class BehandlingRepositoryTest : AbstractTest() {
     @Test
     fun `hent egne behandlinger`() {
         val sak = sakRepository.findAll().first()
-        genererBehandling(2L, "test", Behandlingsstatus.IKKE_PAABEGYNT, sak)
-        genererBehandling(3L, "test", Behandlingsstatus.FERDIG, sak)
-        val behandling = genererBehandling(1L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak)
+        behandlingRepository.save(genererBehandling(2L, "test", Behandlingsstatus.IKKE_PAABEGYNT, sak))
+        behandlingRepository.save(genererBehandling(3L, "test", Behandlingsstatus.FERDIG, sak))
+        behandlingRepository.save(genererBehandling(1L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak))
 
-        behandlingRepository.save(behandling)
-
+        assertThat(behandlingRepository.count()).isEqualTo(3)
         val behandlinger = behandlingRepository.findBySaksbehandlingsansvarligIdentAndStatus("test", Behandlingsstatus.UNDER_BEHANDLING, Pageable.ofSize(10))
         assertThat(behandlinger.numberOfElements).isEqualTo(1)
+        val behandling = behandlinger.first()
+        assertThat(behandling.status).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING)
     }
 
     @Test
