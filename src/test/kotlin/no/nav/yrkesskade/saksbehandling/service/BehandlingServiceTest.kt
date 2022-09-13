@@ -3,9 +3,12 @@ package no.nav.yrkesskade.saksbehandling.service
 import com.expediagroup.graphql.generated.enums.BrukerIdType
 import no.nav.yrkesskade.saksbehandling.fixtures.*
 import no.nav.yrkesskade.saksbehandling.graphql.client.saf.SafClient
+import no.nav.yrkesskade.saksbehandling.graphql.common.model.BehandlingsPage
+import no.nav.yrkesskade.saksbehandling.graphql.common.model.Behandlingsfilter
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.MinBehandlingsPage
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.Page
 import no.nav.yrkesskade.saksbehandling.model.Behandlingsstatus
+import no.nav.yrkesskade.saksbehandling.model.Behandlingstype
 import no.nav.yrkesskade.saksbehandling.model.SakEntity
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
 import no.nav.yrkesskade.saksbehandling.repository.SakRepository
@@ -268,6 +271,54 @@ class BehandlingServiceTest : AbstractTest() {
         assertThat(dto.endretAv).isNull()
         assertThat(dto.sak).isEqualTo(sak)
         assertThat(dto.behandlingResultater).isEmpty()
+    }
+
+    @Test
+    fun `hent aapne behandlinger med behandlingstype journalfoering`() {
+        // given
+        behandlingRepository.save(genererBehandling(10L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
+        behandlingRepository.save(genererBehandling(11L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak, Behandlingstype.JOURNALFOERING))
+        behandlingRepository.save(genererBehandling(12L, null, Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(13L, null, Behandlingsstatus.UNDER_BEHANDLING, sak, Behandlingstype.JOURNALFOERING))
+
+        // when
+        val behandlinger = behandlingService.hentAapneBehandlinger(BehandlingsPage(page = Page(page = 0, size = 10), behandlingsfilter = Behandlingsfilter(behandlingstype = Behandlingstype.JOURNALFOERING.kode, null, null,)))
+
+        // then
+        assertThat(behandlinger.numberOfElements).isEqualTo(2)
+        assertThat(behandlinger.first().behandlingstype).isEqualTo("Journalføring")
+    }
+
+    @Test
+    fun `hent aapne behandlinger med status underBehandling`() {
+        // given
+        behandlingRepository.save(genererBehandling(10L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
+        behandlingRepository.save(genererBehandling(11L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak, Behandlingstype.JOURNALFOERING))
+        behandlingRepository.save(genererBehandling(12L, null, Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(13L, null, Behandlingsstatus.UNDER_BEHANDLING, sak, Behandlingstype.JOURNALFOERING))
+
+        // when
+        val behandlinger = behandlingService.hentAapneBehandlinger(BehandlingsPage(page = Page(page = 0, size = 10), behandlingsfilter = Behandlingsfilter(behandlingstype = null, null, status = Behandlingsstatus.UNDER_BEHANDLING.kode)))
+
+        // then
+        assertThat(behandlinger.numberOfElements).isEqualTo(2)
+        assertThat(behandlinger.first().status).isEqualTo("Under behandling")
+    }
+
+    @Test
+    fun `hent aapne behandlinger med dokumentkategori tannlegeerklaering`() {
+        // given
+        behandlingRepository.save(genererBehandling(10L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
+        behandlingRepository.save(genererBehandling(11L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak, Behandlingstype.JOURNALFOERING))
+        behandlingRepository.save(genererBehandling(12L, null, Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(13L, null, Behandlingsstatus.UNDER_BEHANDLING, sak, Behandlingstype.JOURNALFOERING))
+
+        // when
+        val behandlinger = behandlingService.hentAapneBehandlinger(BehandlingsPage(page = Page(page = 0, size = 10), behandlingsfilter = Behandlingsfilter(behandlingstype = null, dokumentkategori = "enFinKategori", status = null)))
+
+        // then
+        assertThat(behandlinger.numberOfElements).isEqualTo(4)
+        assertThat(behandlinger.first().dokumentkategori).isEqualTo("enFinKategori")
     }
 
 }
