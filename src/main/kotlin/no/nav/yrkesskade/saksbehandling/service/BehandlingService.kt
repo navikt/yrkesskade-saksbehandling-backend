@@ -90,7 +90,7 @@ class BehandlingService(
     fun hentAapneBehandlinger(behandlingsPage: BehandlingsPage): Page<BehandlingDto> {
         val status = Behandlingsstatus.valueOfOrNull(behandlingsPage.behandlingsfilter?.status.orEmpty())
         val behandlingstype = Behandlingstype.valueOfOrNull(behandlingsPage.behandlingsfilter?.behandlingstype.orEmpty())
-        val behandlingEntities = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(status, behandlingsPage.behandlingsfilter?.dokumentkategori, behandlingstype, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), PageRequest.of(behandlingsPage.page.page, behandlingsPage.page.size))
+        val behandlingEntities = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(status, behandlingsPage.behandlingsfilter?.dokumentkategori, behandlingstype, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), false, PageRequest.of(behandlingsPage.page.page, behandlingsPage.page.size))
         val kodeverkHolder = KodeverkHolder.init(kodeverkService = kodeverkService)
         return behandlingEntities.map { BehandlingDto.fromEntity(it, KodeverdiMapper(kodeverkHolder)) }
     }
@@ -161,7 +161,7 @@ class BehandlingService(
             throw IllegalStateException("$brukerIdent er ikke saksbehandler for behandling ${behandling.behandlingId}")
         }
 
-        val oppdatertBehandling = behandling.copy(status = Behandlingsstatus.IKKE_PAABEGYNT, saksbehandlingsansvarligIdent = null, endretAv = autentisertBruker.preferredUsername)
+        val oppdatertBehandling = behandling.copy(saksbehandlingsansvarligIdent = null, endretAv = autentisertBruker.preferredUsername)
 
         val kodeverkHolder = KodeverkHolder.init(kodeverkService = kodeverkService)
         return BehandlingDto.fromEntity(behandlingRepository.save(oppdatertBehandling), KodeverdiMapper(kodeverkHolder))
