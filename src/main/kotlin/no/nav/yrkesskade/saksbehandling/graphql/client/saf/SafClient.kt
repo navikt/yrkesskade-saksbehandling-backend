@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component
 @Qualifier("safClient")
 @Profile("!local")
 class SafClient(
-    @Value("\${saf.graphql.url}") private val safGraphqlUrl: String,
+    @Value("\${api.client.saf.url.graphql}") private val safGraphqlUrl: String,
     @Value("\${spring.application.name}") val applicationName: String,
     private val tokenUtil: TokenUtil
 ) : ISafClient {

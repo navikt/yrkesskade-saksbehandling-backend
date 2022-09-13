@@ -1,7 +1,5 @@
 SAKSBEHANDLING_CLIENT_ID: ${AZURE_APP_CLIENT_ID}
 TENANT_ID: 966ac572-f5b7-4bbe-aa88-c76419c0f851         # trygdeetaten.no
-PDL_SCOPE: api://dev-fss.pdl.pdl-api/.default
-KODEVERK_SCOPE: api://dev-gcp.yrkesskade.yrkesskade-kodeverk/.default
 
 spring:
   kafka:
@@ -38,7 +36,7 @@ no.nav.security.jwt:
       saf-maskintilmaskin:
         token-endpoint-url: https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token
         grant-type: client_credentials
-        scope: api://${SAF_APP_CLIENT_ID}/.default
+        scope: api://${api.client.saf.clientId}/.default
         authentication:
           client-id: ${AZURE_APP_CLIENT_ID}
           client-jwk: ${AZURE_APP_JWK}
@@ -46,7 +44,7 @@ no.nav.security.jwt:
       pdl-onbehalfof:
         token-endpoint-url: https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token
         grant-type: urn:ietf:params:oauth:grant-type:jwt-bearer
-        scope: ${PDL_SCOPE}
+        scope: api://${api.client.pdl.clientId}/.default
         authentication:
           client-id: ${AZURE_APP_CLIENT_ID}
           client-jwk: ${AZURE_APP_JWK}
@@ -54,7 +52,7 @@ no.nav.security.jwt:
       pdl-clientcredentials:
         token-endpoint-url: https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token
         grant-type: client_credentials
-        scope: ${PDL_SCOPE}
+        scope: api://${api.client.pdl.clientId}/.default
         authentication:
           client-id: ${AZURE_APP_CLIENT_ID}
           client-jwk: ${AZURE_APP_JWK}
@@ -62,7 +60,7 @@ no.nav.security.jwt:
       kodeverk-maskintilmaskin:
         token-endpoint-url: https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token
         grant-type: client_credentials
-        scope: ${KODEVERK_SCOPE}
+        scope: api://${api.client.kodeverk.clientId}/.default
         authentication:
           client-id: ${AZURE_APP_CLIENT_ID}
           client-jwk: ${AZURE_APP_JWK}

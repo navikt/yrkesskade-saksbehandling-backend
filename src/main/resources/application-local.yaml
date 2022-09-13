@@ -83,6 +83,9 @@ rolle:
   kode6: 5ef775f2-61f8-4283-bf3d-8d03f428aa14
   kode7: ea930b6b-9397-44d9-b9e6-f4cf527a632a
 
-YRKESSKADE_DOKGEN_API_URL: http://localhost:5914
-YRKESSKADE_KODEVERK_API_URL: http://localhost:8080
-PDL_URL: https://pdl-api.default
+api:
+  client:
+    kodeverk:
+      url: http://localhost:8080
+    pdl:
+      url: https://pdl-api.default
