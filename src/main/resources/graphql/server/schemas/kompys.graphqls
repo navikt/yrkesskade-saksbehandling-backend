@@ -74,6 +74,15 @@ input MinBehandlingsPage {
     page: Page!
 }
 
+input FerdigstillBehandling {
+    behandlingId: ID!
+    journalfoeringdetaljer: Journalfoeringdetaljer
+}
+
+input Journalfoeringdetaljer {
+    avsender: String!
+}
+
 type Query {
     hentBehandlinger(page: Page!): [Behandling]!
     hentEgneBehandlinger(minBehandlingsPage: MinBehandlingsPage!): [Behandling]!
@@ -85,7 +94,7 @@ type Query {
 
 type Mutation {
     overtaBehandling(behandlingId: ID!): Behandling
-    ferdigstillBehandling(behandlingId: ID!): Behandling
+    ferdigstillBehandling(ferdigstillBehandling: FerdigstillBehandling!): Behandling
     leggTilbakeBehandling(behandlingId: ID!): Behandling
 }
 
