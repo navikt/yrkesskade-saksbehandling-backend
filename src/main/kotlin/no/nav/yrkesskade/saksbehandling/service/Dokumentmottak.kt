@@ -72,18 +72,6 @@ class Dokumentmottak(
 
     }
 
-    fun utledDokumentkategori(dokumenter: List<DokumentInfo?>?): String {
-        val dokumentkategorier: List<String?> =
-            dokumenter?.mapNotNull { dokumentInfo -> utledDokumentkategori(dokumentInfo?.tittel) } ?: emptyList()
-        return dokumentkategorier.first() ?: " "
-    }
-
-    fun utledDokumentkategori(tittel: String?): String? =
-        when (tittel) {
-            "Tannlegeerklæring ved yrkesskade" -> "tannlegeerklaering"
-            else -> null
-        }
-
     /**
      * Avgjør om en journalpost er gyldig (inneholder data som vi kan jobbe med)
      * Kriterier:
