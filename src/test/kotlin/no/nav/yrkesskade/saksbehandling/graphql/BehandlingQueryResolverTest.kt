@@ -82,6 +82,7 @@ class BehandlingQueryResolverTest : AbstractTest() {
             dokumentkategori = org.mockito.kotlin.isNull(),
             behandlingstype = org.mockito.kotlin.isNull(),
             gyldigeStatuser = any(),
+            inkluderSaksbehandlingansvarlige = any(),
             pageable = any())
         ).thenReturn(page)
 

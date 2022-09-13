@@ -35,14 +35,15 @@ class BehandlingRepositoryTest : AbstractTest() {
     @Test
     fun `hent egne behandlinger`() {
         val sak = sakRepository.findAll().first()
-        genererBehandling(2L, "test", Behandlingsstatus.IKKE_PAABEGYNT, sak)
-        genererBehandling(3L, "test", Behandlingsstatus.FERDIG, sak)
-        val behandling = genererBehandling(1L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak)
+        behandlingRepository.save(genererBehandling(2L, "test", Behandlingsstatus.IKKE_PAABEGYNT, sak))
+        behandlingRepository.save(genererBehandling(3L, "test", Behandlingsstatus.FERDIG, sak))
+        behandlingRepository.save(genererBehandling(1L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak))
 
-        behandlingRepository.save(behandling)
-
+        assertThat(behandlingRepository.count()).isEqualTo(3)
         val behandlinger = behandlingRepository.findBySaksbehandlingsansvarligIdentAndStatus("test", Behandlingsstatus.UNDER_BEHANDLING, Pageable.ofSize(10))
         assertThat(behandlinger.numberOfElements).isEqualTo(1)
+        val behandling = behandlinger.first()
+        assertThat(behandling.status).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING)
     }
 
     @Test
@@ -84,15 +85,13 @@ class BehandlingRepositoryTest : AbstractTest() {
     fun `hent aapne behandlinger med alle filter`() {
         // given
         val sak = sakRepository.findAll().first()
-        val ikkePaabegyntBehandling = genererBehandling(1L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak)
-        behandlingRepository.save(ikkePaabegyntBehandling)
-        val underBehandlingBehandling = genererBehandling(2L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak)
-        behandlingRepository.save(underBehandlingBehandling)
-        val ferdigBehandling = genererBehandling(3L, "test", Behandlingsstatus.FERDIG, sak)
-        behandlingRepository.save(ferdigBehandling)
+        behandlingRepository.save(genererBehandling(1L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
+        behandlingRepository.save(genererBehandling(2L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(4L, null, Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(3L, "test", Behandlingsstatus.FERDIG, sak))
 
         //when
-        val behandlinger = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(Behandlingsstatus.UNDER_BEHANDLING, "enFinKategori", Behandlingstype.VEILEDNING, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), Pageable.unpaged())
+        val behandlinger = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(Behandlingsstatus.UNDER_BEHANDLING, "enFinKategori", Behandlingstype.VEILEDNING, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), false, Pageable.unpaged())
 
         // then
         assertThat(behandlinger.numberOfElements).isEqualTo(1)
@@ -102,15 +101,13 @@ class BehandlingRepositoryTest : AbstractTest() {
     fun `hent aapne behandlinger med status filter`() {
         // given
         val sak = sakRepository.findAll().first()
-        val ikkePaabegyntBehandling = genererBehandling(1L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak)
-        behandlingRepository.save(ikkePaabegyntBehandling)
-        val underBehandlingBehandling = genererBehandling(2L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak)
-        behandlingRepository.save(underBehandlingBehandling)
-        val ferdigBehandling = genererBehandling(3L, "test", Behandlingsstatus.FERDIG, sak)
-        behandlingRepository.save(ferdigBehandling)
+        behandlingRepository.save(genererBehandling(1L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
+        behandlingRepository.save(genererBehandling(2L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(4L, null, Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(3L, "test", Behandlingsstatus.FERDIG, sak))
 
         //when
-        val behandlinger = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(Behandlingsstatus.UNDER_BEHANDLING, null, null, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), Pageable.unpaged())
+        val behandlinger = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(Behandlingsstatus.UNDER_BEHANDLING, null, null, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), false, Pageable.unpaged())
 
         // then
         assertThat(behandlinger.numberOfElements).isEqualTo(1)
@@ -120,15 +117,13 @@ class BehandlingRepositoryTest : AbstractTest() {
     fun `hent aapne behandlinger med dokumentkategori filter`() {
         // given
         val sak = sakRepository.findAll().first()
-        val ikkePaabegyntBehandling = genererBehandling(100L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak)
-        behandlingRepository.save(ikkePaabegyntBehandling)
-        val underBehandlingBehandling = genererBehandling(200L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak)
-        behandlingRepository.save(underBehandlingBehandling)
-        val ferdigBehandling = genererBehandling(300L, "test", Behandlingsstatus.FERDIG, sak)
-        behandlingRepository.save(ferdigBehandling)
+        behandlingRepository.save(genererBehandling(100L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
+        behandlingRepository.save(genererBehandling(200L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(54L, null, Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(300L, "test", Behandlingsstatus.FERDIG, sak))
 
         //when
-        val behandlinger = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(null, "enFinKategori", null, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), Pageable.unpaged())
+        val behandlinger = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(null, "enFinKategori", null, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), false, Pageable.unpaged())
 
         // then
         assertThat(behandlinger.numberOfElements).isEqualTo(2)
@@ -138,33 +133,44 @@ class BehandlingRepositoryTest : AbstractTest() {
     fun `hent aapne behandlinger med behandlingstype VEILEDNING filter`() {
         // given
         val sak = sakRepository.findAll().first()
-        val ikkePaabegyntBehandling = genererBehandling(51L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak)
-        behandlingRepository.save(ikkePaabegyntBehandling)
-        val underBehandlingBehandling = genererBehandling(52L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak)
-        behandlingRepository.save(underBehandlingBehandling)
-        val ferdigBehandling = genererBehandling(53L, "test", Behandlingsstatus.FERDIG, sak)
-        behandlingRepository.save(ferdigBehandling)
+        behandlingRepository.save(genererBehandling(51L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
+        behandlingRepository.save(genererBehandling(52L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(54L, null, Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(53L, "test", Behandlingsstatus.FERDIG, sak))
 
         //when
-        val behandlinger = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(null, null, Behandlingstype.VEILEDNING, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), Pageable.unpaged())
+        val behandlinger = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(null, null, Behandlingstype.VEILEDNING, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), false, Pageable.unpaged())
 
         // then
         assertThat(behandlinger.numberOfElements).isEqualTo(2)
     }
 
     @Test
+    fun `hent aapne behandlinger med behandlingstype VEILEDNING filter inkludert behandlinger med saksbehandler`() {
+        // given
+        val sak = sakRepository.findAll().first()
+        behandlingRepository.save(genererBehandling(51L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
+        behandlingRepository.save(genererBehandling(52L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(54L, null, Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(53L, "test", Behandlingsstatus.FERDIG, sak))
+
+        //when
+        val behandlinger = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(null, null, Behandlingstype.VEILEDNING, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), true, Pageable.unpaged())
+
+        // then
+        assertThat(behandlinger.numberOfElements).isEqualTo(3)
+    }
+
+    @Test
     fun `hent aapne behandlinger med behandlingstype JOURNALFORING filter`() {
         // given
         val sak = sakRepository.findAll().first()
-        val ikkePaabegyntBehandling = genererBehandling(51L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak)
-        behandlingRepository.save(ikkePaabegyntBehandling)
-        val underBehandlingBehandling = genererBehandling(52L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak, Behandlingstype.JOURNALFOERING)
-        behandlingRepository.save(underBehandlingBehandling)
-        val ferdigBehandling = genererBehandling(53L, "test", Behandlingsstatus.FERDIG, sak, Behandlingstype.JOURNALFOERING)
-        behandlingRepository.save(ferdigBehandling)
+        behandlingRepository.save(genererBehandling(51L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
+        behandlingRepository.save(genererBehandling(52L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak, Behandlingstype.JOURNALFOERING))
+        behandlingRepository.save(genererBehandling(53L, "test", Behandlingsstatus.FERDIG, sak, Behandlingstype.JOURNALFOERING))
 
         //when
-        val behandlinger = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(null, null, Behandlingstype.VEILEDNING, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), Pageable.unpaged())
+        val behandlinger = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(null, null, Behandlingstype.VEILEDNING, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), false, Pageable.unpaged())
 
         // then
         assertThat(behandlinger.size).isEqualTo(1)
@@ -174,15 +180,13 @@ class BehandlingRepositoryTest : AbstractTest() {
     fun `hent aapne behandlinger med uten filter`() {
         // given
         val sak = sakRepository.findAll().first()
-        val ikkePaabegyntBehandling = genererBehandling(1L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak)
-        behandlingRepository.save(ikkePaabegyntBehandling)
-        val underBehandlingBehandling = genererBehandling(2L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak)
-        behandlingRepository.save(underBehandlingBehandling)
-        val ferdigBehandling = genererBehandling(3L, "test", Behandlingsstatus.FERDIG, sak)
-        behandlingRepository.save(ferdigBehandling)
+        behandlingRepository.save(genererBehandling(1L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
+        behandlingRepository.save(genererBehandling(2L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(4L, null, Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(3L, "test", Behandlingsstatus.FERDIG, sak))
 
         //when
-        val behandlinger = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(null, null, null, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), Pageable.unpaged())
+        val behandlinger = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(null, null, null, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), false, Pageable.unpaged())
 
         // then
         assertThat(behandlinger.numberOfElements).isEqualTo(2)
