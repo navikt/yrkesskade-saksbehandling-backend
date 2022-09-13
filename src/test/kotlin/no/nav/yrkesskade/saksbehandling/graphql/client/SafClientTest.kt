@@ -7,7 +7,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import no.nav.yrkesskade.saksbehandling.fixtures.errorRespons
-import no.nav.yrkesskade.saksbehandling.fixtures.journalpostResultWithBrukerAktoerid
+import no.nav.yrkesskade.saksbehandling.fixtures.journalpost.journalpostResultWithBrukerAktoerid
 import no.nav.yrkesskade.saksbehandling.fixtures.okRespons
 import no.nav.yrkesskade.saksbehandling.graphql.client.saf.SafClient
 import no.nav.yrkesskade.saksbehandling.util.TokenUtil

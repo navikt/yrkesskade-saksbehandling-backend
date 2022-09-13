@@ -1,8 +1,11 @@
 package no.nav.yrkesskade.saksbehandling.service
 
 import DetaljertBehandling
+import no.nav.yrkesskade.saksbehandling.client.dokarkiv.DokarkivClient
+import no.nav.yrkesskade.saksbehandling.client.dokarkiv.FerdigstillJournalpostRequest
 import no.nav.yrkesskade.saksbehandling.graphql.client.saf.ISafClient
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.BehandlingsPage
+import no.nav.yrkesskade.saksbehandling.graphql.common.model.FerdigstillBehandling
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.MinBehandlingsPage
 import no.nav.yrkesskade.saksbehandling.model.BehandlingEntity
 import no.nav.yrkesskade.saksbehandling.model.Behandlingsstatus
@@ -26,6 +29,7 @@ import java.time.ZoneOffset
 class BehandlingService(
     private val autentisertBruker: AutentisertBruker,
     private val behandlingRepository: BehandlingRepository,
+    private val dokarkivClient: DokarkivClient,
     @Qualifier("safClient") private val safClient: ISafClient,
     private val kodeverkService: KodeverkService
 ) {
@@ -125,8 +129,8 @@ class BehandlingService(
     }
 
     @Transactional
-    fun ferdigstillBehandling(behandlingId: Long) : BehandlingDto {
-        val behandling = behandlingRepository.findById(behandlingId).orElseThrow()
+    fun ferdigstillBehandling(ferdigstillBehandling: FerdigstillBehandling) : BehandlingDto {
+        val behandling = behandlingRepository.findById(ferdigstillBehandling.behandlingId).orElseThrow()
 
         // kan kun ferdigstille behandling som har status UNDER_BEHANDLING
         if (behandling.status != Behandlingsstatus.UNDER_BEHANDLING) {
@@ -145,7 +149,17 @@ class BehandlingService(
         )
 
         val kodeverkHolder = KodeverkHolder.init(kodeverkService = kodeverkService)
-        return BehandlingDto.fromEntity(behandlingRepository.save(oppdatertBehandling), KodeverdiMapper(kodeverkHolder))
+        val lagretBehandling =
+            BehandlingDto.fromEntity(behandlingRepository.save(oppdatertBehandling), KodeverdiMapper(kodeverkHolder))
+
+        dokarkivClient.ferdigstillJournalpost(
+            FerdigstillJournalpostRequest(
+                journalpostId = behandling.journalpostId,
+                journalfoerendeEnhet = behandling.behandlendeEnhet!!
+            )
+        )
+
+        return lagretBehandling
     }
 
     @Transactional

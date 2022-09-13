@@ -126,6 +126,18 @@ class BehandlingMutationResolverTest : AbstractTest() {
     }
 
     @Test
+    fun `ferdigstill journalfoering`() {
+        Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
+        Mockito.`when`(behandlingRepository.findById(any())).thenReturn(Optional.of(paabegyntBehandling))
+        Mockito.`when`(behandlingRepository.save(any())).thenAnswer{
+            it.arguments.first()
+        }
+        val response = graphQLTestTemplate.postForResource("graphql/behandling/ferdigstill_journalfoering_behandling.graphql")
+        assertThat(response.statusCode.is2xxSuccessful).isTrue
+        assertThat(response.get("$.data.ferdigstillBehandling.status")).isEqualTo("Ferdig")
+    }
+
+    @Test
     fun `legg tilbake behandling`() {
         val behandling = genererBehandling(1, "test", Behandlingsstatus.UNDER_BEHANDLING, genererSak())
         Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
