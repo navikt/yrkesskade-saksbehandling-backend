@@ -1,6 +1,7 @@
 package no.nav.yrkesskade.saksbehandling.service
 
 import com.expediagroup.graphql.generated.enums.BrukerIdType
+import no.nav.yrkesskade.saksbehandling.client.dokarkiv.DokarkivClient
 import no.nav.yrkesskade.saksbehandling.fixtures.*
 import no.nav.yrkesskade.saksbehandling.graphql.client.saf.SafClient
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.FerdigstillBehandling
@@ -16,7 +17,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.mockito.ArgumentMatchers.*
+import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
@@ -32,6 +33,9 @@ class BehandlingServiceTest : AbstractTest() {
 
     @MockBean
     lateinit var autentisertBruker: AutentisertBruker
+
+    @MockBean
+    lateinit var dokarkivClient: DokarkivClient
 
     @MockBean
     lateinit var safClient: SafClient
@@ -206,6 +210,7 @@ class BehandlingServiceTest : AbstractTest() {
         assertThat(lagretBehandling.saksbehandlingsansvarligIdent).isEqualTo("test")
         assertThat(lagretBehandling.status).isEqualTo("Ferdig")
         assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
+        Mockito.verify(dokarkivClient).ferdigstillJournalpost(any())
     }
 
     @Test

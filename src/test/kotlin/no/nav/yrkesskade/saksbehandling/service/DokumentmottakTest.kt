@@ -4,8 +4,9 @@ import io.mockk.every
 import io.mockk.mockk
 import no.nav.yrkesskade.saksbehandling.client.BrevutsendingClient
 import no.nav.yrkesskade.saksbehandling.fixtures.dokumentTilSaksbehandlingHendelse
-import no.nav.yrkesskade.saksbehandling.fixtures.journalpostResultWithBrukerAktoerid
+import no.nav.yrkesskade.saksbehandling.fixtures.journalpost.journalpostResultTannlegeerklaeringWithBrukerAktoerid
 import no.nav.yrkesskade.saksbehandling.graphql.client.saf.SafClient
+import no.nav.yrkesskade.saksbehandling.model.Behandlingstype
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
 import no.nav.yrkesskade.saksbehandling.test.AbstractTest
 import no.nav.yrkesskade.saksbehandling.util.MDCConstants
@@ -54,9 +55,17 @@ class DokumentmottakTest : AbstractTest() {
     }
 
     @Test
-    fun mottaDokument() {
-        every { safClientMock.hentOppdatertJournalpost(any()) } returns journalpostResultWithBrukerAktoerid()
+    fun mottaTannlegeerklaering() {
+        every { safClientMock.hentOppdatertJournalpost(any()) } returns journalpostResultTannlegeerklaeringWithBrukerAktoerid()
         dokumentmottak.mottaDokument(dokumentTilSaksbehandlingHendelse())
-        assertThat(behandlingRepository.findAll().size).isEqualTo(1)
+
+        val behandlingEntities = behandlingRepository.findAll()
+        assertThat(behandlingEntities.size).isEqualTo(1)
+
+        val behandlingEntity = behandlingEntities.first()
+        assertThat(behandlingEntity.behandlendeEnhet).isEqualTo(dokumentTilSaksbehandlingHendelse().dokumentTilSaksbehandling.enhet)
+        assertThat(behandlingEntity.behandlingstype).isEqualTo(Behandlingstype.JOURNALFOERING)
+        assertThat(behandlingEntity.dokumentkategori).isEqualTo("tannlegeerklaering")
     }
+
 }

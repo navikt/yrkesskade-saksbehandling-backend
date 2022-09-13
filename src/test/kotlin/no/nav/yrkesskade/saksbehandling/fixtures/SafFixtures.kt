@@ -5,6 +5,8 @@ import com.expediagroup.graphql.client.jackson.types.JacksonGraphQLResponse
 import com.expediagroup.graphql.client.jackson.types.JacksonGraphQLSourceLocation
 import com.expediagroup.graphql.client.types.GraphQLClientResponse
 import com.expediagroup.graphql.generated.Journalpost
+import no.nav.yrkesskade.saksbehandling.fixtures.journalpost.gyldigJournalpostMedAktoerId
+import no.nav.yrkesskade.saksbehandling.fixtures.journalpost.gyldigJournalpostMedAktoerIdUtenDokumenter
 
 fun errorRespons(): GraphQLClientResponse<Journalpost.Result> {
     return JacksonGraphQLResponse(

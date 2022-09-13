@@ -1,6 +1,7 @@
 package no.nav.yrkesskade.saksbehandling.service
 
 import com.expediagroup.graphql.generated.enums.BrukerIdType
+import com.expediagroup.graphql.generated.journalpost.DokumentInfo
 import com.expediagroup.graphql.generated.journalpost.Journalpost
 import no.nav.yrkesskade.saksbehandling.client.BrevutsendingClient
 import no.nav.yrkesskade.saksbehandling.graphql.client.saf.ISafClient
@@ -25,6 +26,18 @@ class Dokumentmottak(
         @Suppress("JAVA_CLASS_ON_COMPANION")
         private val logger = getLogger(javaClass.enclosingClass)
         private val secureLogger = getSecureLogger()
+
+        fun utledDokumentkategori(dokumentInfos: List<DokumentInfo?>?): String {
+            val dokumentkategorier: List<String?> =
+                dokumentInfos?.mapNotNull { dokumentInfo -> utledDokumentkategori(dokumentInfo?.tittel) } ?: emptyList()
+            return dokumentkategorier.firstOrNull() ?: " "
+        }
+
+        private fun utledDokumentkategori(tittel: String?): String? =
+            when (tittel) {
+                "Tannlegeerklæring ved yrkesskade" -> "tannlegeerklaering"
+                else -> null
+            }
     }
 
     @Transactional
@@ -43,11 +56,11 @@ class Dokumentmottak(
             brukerId = journalpost.bruker!!.id!!,
             brukerIdType = journalpost.bruker.type!!,
             behandlendeEnhet = dokumentTilSaksbehandling.enhet,
-            behandlingstype = Behandlingstype.VEILEDNING,
+            behandlingstype = Behandlingstype.JOURNALFOERING,
             status = Behandlingsstatus.IKKE_PAABEGYNT,
             behandlingsfrist = Instant.now().plus(30, ChronoUnit.DAYS),
-            journalpostId = dokumentTilSaksbehandling.journalpostId,
-            dokumentkategori = " ",
+            journalpostId = journalpost.journalpostId,
+            dokumentkategori = utledDokumentkategori(journalpost.dokumenter),
             systemreferanse = UUID.randomUUID().toString(),
             framdriftsstatus = Framdriftsstatus.IKKE_PAABEGYNT,
             opprettetTidspunkt = Instant.now(),
