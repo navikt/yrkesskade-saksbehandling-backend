@@ -35,13 +35,28 @@ class BehandlingRepositoryTest : AbstractTest() {
     @Test
     fun `hent egne behandlinger`() {
         val sak = sakRepository.findAll().first()
-        genererBehandling(2L, "test", Behandlingsstatus.IKKE_PAABEGYNT, sak)
+        behandlingRepository.save(genererBehandling(2L, "test", Behandlingsstatus.IKKE_PAABEGYNT, sak))
+        behandlingRepository.save(genererBehandling(3L, "test", Behandlingsstatus.FERDIG, sak))
+        behandlingRepository.save(genererBehandling(1L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak))
+
+        assertThat(behandlingRepository.count()).isEqualTo(3)
+        val behandlinger = behandlingRepository.findBySaksbehandlingsansvarligIdentAndStatus("test", Behandlingsstatus.UNDER_BEHANDLING, Pageable.ofSize(10))
+        assertThat(behandlinger.numberOfElements).isEqualTo(1)
+        val behandling = behandlinger.first()
+        assertThat(behandling.status).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING)
+    }
+
+    @Test
+    fun `hent egne behandlinger - ferdig`() {
+        val sak = sakRepository.findAll().first()
+        behandlingRepository.save(genererBehandling(2L, "test", Behandlingsstatus.IKKE_PAABEGYNT, sak))
+        behandlingRepository.save(genererBehandling(30L, "test", Behandlingsstatus.FERDIG, sak))
         val behandling = genererBehandling(1L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak)
 
         behandlingRepository.save(behandling)
 
-        val behandlinger = behandlingRepository.findBySaksbehandlingsansvarligIdent("test", Pageable.ofSize(10))
-        assertThat(behandlinger.size).isEqualTo(1)
+        val behandlinger = behandlingRepository.findBySaksbehandlingsansvarligIdentAndStatus("test", Behandlingsstatus.FERDIG, Pageable.ofSize(10))
+        assertThat(behandlinger.numberOfElements).isEqualTo(1)
     }
 
     @Test
@@ -51,8 +66,8 @@ class BehandlingRepositoryTest : AbstractTest() {
 
         behandlingRepository.save(behandling)
 
-        val behandlinger = behandlingRepository.findBySaksbehandlingsansvarligIdent("test", Pageable.ofSize(10))
-        assertThat(behandlinger.size).isEqualTo(1)
+        val behandlinger = behandlingRepository.findBySaksbehandlingsansvarligIdentAndStatus("test", Behandlingsstatus.UNDER_BEHANDLING, Pageable.ofSize(10))
+        assertThat(behandlinger.numberOfElements).isEqualTo(1)
     }
 
     @Test
@@ -62,8 +77,8 @@ class BehandlingRepositoryTest : AbstractTest() {
 
         behandlingRepository.save(behandling)
 
-        val behandlinger = behandlingRepository.findBySaksbehandlingsansvarligIdent("test", Pageable.ofSize(10))
-        assertThat(behandlinger.size).isEqualTo(0)
+        val behandlinger = behandlingRepository.findBySaksbehandlingsansvarligIdentAndStatus("test", Behandlingsstatus.UNDER_BEHANDLING, Pageable.ofSize(10))
+        assertThat(behandlinger.numberOfElements).isEqualTo(0)
     }
 
     @Test
@@ -81,7 +96,7 @@ class BehandlingRepositoryTest : AbstractTest() {
         val behandlinger = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(Behandlingsstatus.UNDER_BEHANDLING, "enFinKategori", Behandlingstype.VEILEDNING, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), Pageable.unpaged())
 
         // then
-        assertThat(behandlinger.size).isEqualTo(1)
+        assertThat(behandlinger.numberOfElements).isEqualTo(1)
     }
 
     @Test
@@ -99,7 +114,7 @@ class BehandlingRepositoryTest : AbstractTest() {
         val behandlinger = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(Behandlingsstatus.UNDER_BEHANDLING, null, null, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), Pageable.unpaged())
 
         // then
-        assertThat(behandlinger.size).isEqualTo(1)
+        assertThat(behandlinger.numberOfElements).isEqualTo(1)
     }
 
     @Test
@@ -117,7 +132,7 @@ class BehandlingRepositoryTest : AbstractTest() {
         val behandlinger = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(null, "enFinKategori", null, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), Pageable.unpaged())
 
         // then
-        assertThat(behandlinger.size).isEqualTo(2)
+        assertThat(behandlinger.numberOfElements).isEqualTo(2)
     }
 
     @Test
@@ -135,7 +150,7 @@ class BehandlingRepositoryTest : AbstractTest() {
         val behandlinger = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(null, null, Behandlingstype.VEILEDNING, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), Pageable.unpaged())
 
         // then
-        assertThat(behandlinger.size).isEqualTo(2)
+        assertThat(behandlinger.numberOfElements).isEqualTo(2)
     }
 
     @Test
@@ -171,6 +186,6 @@ class BehandlingRepositoryTest : AbstractTest() {
         val behandlinger = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(null, null, null, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), Pageable.unpaged())
 
         // then
-        assertThat(behandlinger.size).isEqualTo(2)
+        assertThat(behandlinger.numberOfElements).isEqualTo(2)
     }
 }

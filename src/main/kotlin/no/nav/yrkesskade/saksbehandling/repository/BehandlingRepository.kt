@@ -18,10 +18,10 @@ interface BehandlingRepository : JpaRepository<BehandlingEntity, Long> {
 
     @Query("""
         SELECT b FROM BehandlingEntity b
-        WHERE b.status = no.nav.yrkesskade.saksbehandling.model.Behandlingsstatus.UNDER_BEHANDLING
+        WHERE b.status = :status
         AND b.saksbehandlingsansvarligIdent = :ident
     """)
-    fun findBySaksbehandlingsansvarligIdent(@Param("ident") ident: String, pageable: Pageable): List<BehandlingEntity>
+    fun findBySaksbehandlingsansvarligIdentAndStatus(@Param("ident") ident: String, @Param("status") status: Behandlingsstatus, pageable: Pageable): Page<BehandlingEntity>
 
     @Query(
         """
