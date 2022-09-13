@@ -148,6 +148,6 @@ class BehandlingMutationResolverTest : AbstractTest() {
 
         val response = graphQLTestTemplate.postForResource("graphql/behandling/legg_tilbake_behandling.graphql")
         assertThat(response.statusCode.is2xxSuccessful).isTrue
-        assertThat(response.get("$.data.leggTilbakeBehandling.status")).isEqualTo("Ikke påbegynt")
+        assertThat(response.get("$.data.leggTilbakeBehandling.status")).isEqualTo("Under behandling")
     }
 }
