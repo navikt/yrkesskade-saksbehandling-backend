@@ -30,6 +30,7 @@ interface BehandlingRepository : JpaRepository<BehandlingEntity, Long> {
             AND (b.dokumentkategori = :dokumentkategori OR CAST(:dokumentkategori as java.lang.String) IS NULL)
             AND (b.behandlingstype = :behandlingstype OR CAST(:behandlingstype as no.nav.yrkesskade.saksbehandling.model.Behandlingstype) IS NULL)
             AND b.status IN (:gyldigeStatuser)
+            AND (b.saksbehandlingsansvarligIdent IS NULL OR :inkluderSaksbehandlingsansvarlige = TRUE)
              """
     )
     fun findBehandlingerBegrensetTilBehandlingsstatuser(
@@ -37,6 +38,7 @@ interface BehandlingRepository : JpaRepository<BehandlingEntity, Long> {
         @Param("dokumentkategori") dokumentkategori: String?,
         @Param("behandlingstype") behandlingstype: Behandlingstype?,
         @Param("gyldigeStatuser") gyldigeStatuser: List<Behandlingsstatus>,
+        @Param("inkluderSaksbehandlingsansvarlige") inkluderSaksbehandlingansvarlige: Boolean,
         pageable: Pageable
     ): Page<BehandlingEntity>
 

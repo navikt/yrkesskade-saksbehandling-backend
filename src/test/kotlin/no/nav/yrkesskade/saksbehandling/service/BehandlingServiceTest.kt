@@ -139,8 +139,7 @@ class BehandlingServiceTest : AbstractTest() {
     @Test
     fun `overta behandling`() {
         Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
-        var behandling = genererBehandling(1L, "test", Behandlingsstatus.IKKE_PAABEGYNT, sak)
-        behandling = behandlingRepository.save(behandling)
+        val behandling = behandlingRepository.save(genererBehandling(1L, "test", Behandlingsstatus.IKKE_PAABEGYNT, sak))
         assertThat(behandling.status).isNotEqualTo(Behandlingsstatus.UNDER_BEHANDLING)
         assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
 
@@ -166,7 +165,7 @@ class BehandlingServiceTest : AbstractTest() {
     @Test
     fun `legg tilbake behandling for behandling som ikke har en saksbehandler`() {
         Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
-        var behandling = genererBehandling(1L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak)
+        var behandling = genererBehandling(1L, null, Behandlingsstatus.UNDER_BEHANDLING, sak)
         behandling = behandlingRepository.save(behandling)
         assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
 
@@ -178,7 +177,7 @@ class BehandlingServiceTest : AbstractTest() {
     @Test
     fun `legg tilbake behandling for behandling som har en annen saksbehandler`() {
         Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("todd")
-        var behandling = genererBehandling(1L, "test", Behandlingsstatus.IKKE_PAABEGYNT, sak)
+        var behandling = genererBehandling(1L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak)
         behandling = behandlingRepository.save(behandling)
         assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
 
@@ -190,13 +189,12 @@ class BehandlingServiceTest : AbstractTest() {
     @Test
     fun `legg tilbake egen behandling`() {
         Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
-        var behandling = genererBehandling(1L, "test", Behandlingsstatus.IKKE_PAABEGYNT, sak)
-        behandling = behandlingRepository.save(behandling)
+        val behandling = behandlingRepository.save(genererBehandling(1L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak))
         assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
 
         val lagretBehandling = behandlingService.leggTilbakeBehandling(behandling.behandlingId)
         assertThat(lagretBehandling.saksbehandlingsansvarligIdent).isNull()
-        assertThat(lagretBehandling.status).isEqualTo("Ikke påbegynt")
+        assertThat(lagretBehandling.status).isEqualTo("Under behandling")
         assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
     }
 
