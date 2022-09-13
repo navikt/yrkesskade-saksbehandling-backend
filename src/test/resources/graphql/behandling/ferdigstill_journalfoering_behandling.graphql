@@ -1,6 +1,9 @@
 mutation {
     ferdigstillBehandling(ferdigstillBehandling: {
-        behandlingId: 1
+        behandlingId: 1,
+        journalfoeringdetaljer: {
+            avsender: "012345678910"
+        }
     }) {
         behandlingId,
         status

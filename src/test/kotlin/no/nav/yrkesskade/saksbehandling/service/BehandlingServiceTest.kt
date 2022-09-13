@@ -4,6 +4,7 @@ import com.expediagroup.graphql.generated.enums.BrukerIdType
 import no.nav.yrkesskade.saksbehandling.client.dokarkiv.DokarkivClient
 import no.nav.yrkesskade.saksbehandling.fixtures.*
 import no.nav.yrkesskade.saksbehandling.graphql.client.saf.SafClient
+import no.nav.yrkesskade.saksbehandling.graphql.common.model.FerdigstillBehandling
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.MinBehandlingsPage
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.Page
 import no.nav.yrkesskade.saksbehandling.model.Behandlingsstatus
@@ -207,7 +208,7 @@ class BehandlingServiceTest : AbstractTest() {
         assertThat(behandling.status).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING)
         assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
 
-        val lagretBehandling = behandlingService.ferdigstillBehandling(behandling.behandlingId)
+        val lagretBehandling = behandlingService.ferdigstillBehandling(FerdigstillBehandling(behandling.behandlingId))
         assertThat(lagretBehandling.saksbehandlingsansvarligIdent).isEqualTo("test")
         assertThat(lagretBehandling.status).isEqualTo("Ferdig")
         assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
@@ -223,7 +224,7 @@ class BehandlingServiceTest : AbstractTest() {
         assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
 
         assertThrows<BehandlingException> {
-            behandlingService.ferdigstillBehandling(behandling.behandlingId)
+            behandlingService.ferdigstillBehandling(FerdigstillBehandling(behandling.behandlingId))
         }
     }
 
@@ -236,7 +237,7 @@ class BehandlingServiceTest : AbstractTest() {
         assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
 
         assertThrows<BehandlingException> {
-            behandlingService.ferdigstillBehandling(behandling.behandlingId)
+            behandlingService.ferdigstillBehandling(FerdigstillBehandling(behandling.behandlingId))
         }
     }
 
