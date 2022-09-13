@@ -3,6 +3,7 @@ package no.nav.yrkesskade.saksbehandling.service
 import DetaljertBehandling
 import no.nav.yrkesskade.saksbehandling.graphql.client.saf.ISafClient
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.BehandlingsPage
+import no.nav.yrkesskade.saksbehandling.graphql.common.model.FerdigstillBehandling
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.MinBehandlingsPage
 import no.nav.yrkesskade.saksbehandling.model.BehandlingEntity
 import no.nav.yrkesskade.saksbehandling.model.Behandlingsstatus
@@ -125,8 +126,8 @@ class BehandlingService(
     }
 
     @Transactional
-    fun ferdigstillBehandling(behandlingId: Long) : BehandlingDto {
-        val behandling = behandlingRepository.findById(behandlingId).orElseThrow()
+    fun ferdigstillBehandling(ferdigstillBehandling: FerdigstillBehandling) : BehandlingDto {
+        val behandling = behandlingRepository.findById(ferdigstillBehandling.behandlingId).orElseThrow()
 
         // kan kun ferdigstille behandling som har status UNDER_BEHANDLING
         if (behandling.status != Behandlingsstatus.UNDER_BEHANDLING) {

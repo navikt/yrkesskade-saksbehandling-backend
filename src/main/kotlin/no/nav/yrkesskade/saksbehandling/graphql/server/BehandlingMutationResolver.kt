@@ -1,6 +1,7 @@
 package no.nav.yrkesskade.saksbehandling.graphql.server
 
 import graphql.kickstart.tools.GraphQLMutationResolver
+import no.nav.yrkesskade.saksbehandling.graphql.common.model.FerdigstillBehandling
 import no.nav.yrkesskade.saksbehandling.model.BehandlingEntity
 import no.nav.yrkesskade.saksbehandling.model.dto.BehandlingDto
 import no.nav.yrkesskade.saksbehandling.service.BehandlingService
@@ -13,6 +14,6 @@ class BehandlingMutationResolver(
 
     fun overtaBehandling(behandlingId: Long) : BehandlingDto = behandlingService.overtaBehandling(behandlingId)
 
-    fun ferdigstillBehandling(behandlingId: Long) : BehandlingDto = behandlingService.ferdigstillBehandling(behandlingId)
+    fun ferdigstillBehandling(ferdigstillBehandling: FerdigstillBehandling) : BehandlingDto = behandlingService.ferdigstillBehandling(ferdigstillBehandling)
     fun leggTilbakeBehandling(behandlingId: Long) : BehandlingDto = behandlingService.leggTilbakeBehandling(behandlingId)
 }
