@@ -1,11 +1,7 @@
-package no.nav.yrkesskade.saksbehandling.fixtures
+package no.nav.yrkesskade.saksbehandling.fixtures.journalpost
 
 import com.expediagroup.graphql.generated.Journalpost
-import com.expediagroup.graphql.generated.enums.BrukerIdType
-import com.expediagroup.graphql.generated.enums.Journalposttype
-import com.expediagroup.graphql.generated.enums.Journalstatus
-import com.expediagroup.graphql.generated.enums.Kanal
-import com.expediagroup.graphql.generated.enums.Tema
+import com.expediagroup.graphql.generated.enums.*
 import com.expediagroup.graphql.generated.journalpost.Bruker
 import com.expediagroup.graphql.generated.journalpost.DokumentInfo
 import java.time.LocalDateTime

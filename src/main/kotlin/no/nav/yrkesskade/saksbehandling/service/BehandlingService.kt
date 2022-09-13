@@ -1,6 +1,8 @@
 package no.nav.yrkesskade.saksbehandling.service
 
 import DetaljertBehandling
+import no.nav.yrkesskade.saksbehandling.client.dokarkiv.DokarkivClient
+import no.nav.yrkesskade.saksbehandling.client.dokarkiv.FerdigstillJournalpostRequest
 import no.nav.yrkesskade.saksbehandling.graphql.client.saf.ISafClient
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.BehandlingsPage
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.MinBehandlingsPage
@@ -26,6 +28,7 @@ import java.time.ZoneOffset
 class BehandlingService(
     private val autentisertBruker: AutentisertBruker,
     private val behandlingRepository: BehandlingRepository,
+    private val dokarkivClient: DokarkivClient,
     @Qualifier("safClient") private val safClient: ISafClient,
     private val kodeverkService: KodeverkService
 ) {
@@ -145,7 +148,17 @@ class BehandlingService(
         )
 
         val kodeverkHolder = KodeverkHolder.init(kodeverkService = kodeverkService)
-        return BehandlingDto.fromEntity(behandlingRepository.save(oppdatertBehandling), KodeverdiMapper(kodeverkHolder))
+        val lagretBehandling =
+            BehandlingDto.fromEntity(behandlingRepository.save(oppdatertBehandling), KodeverdiMapper(kodeverkHolder))
+
+        dokarkivClient.ferdigstillJournalpost(
+            FerdigstillJournalpostRequest(
+                journalpostId = behandling.journalpostId,
+                journalfoerendeEnhet = behandling.behandlendeEnhet!!
+            )
+        )
+
+        return lagretBehandling
     }
 
     @Transactional

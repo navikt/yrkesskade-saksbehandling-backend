@@ -1,5 +1,6 @@
 package no.nav.yrkesskade.saksbehandling.graphql
 
+import no.nav.yrkesskade.saksbehandling.client.dokarkiv.DokarkivClient
 import no.nav.yrkesskade.saksbehandling.graphql.client.pdl.PdlClient
 import no.nav.yrkesskade.saksbehandling.graphql.client.saf.SafClient
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
@@ -24,6 +25,9 @@ class GraphQLConfig {
     lateinit var transactionManager: PlatformTransactionManager
 
     @MockBean
+    lateinit var dokarkivClient: DokarkivClient
+
+    @MockBean
     lateinit var safClient: SafClient
 
     @MockBean
@@ -34,7 +38,7 @@ class GraphQLConfig {
 
     @Bean
     fun behandlingService(): BehandlingService {
-        return BehandlingService(autentisertBruker, behandlingRepository, safClient, kodeverkService)
+        return BehandlingService(autentisertBruker, behandlingRepository, dokarkivClient, safClient, kodeverkService)
     }
 
     @Bean
