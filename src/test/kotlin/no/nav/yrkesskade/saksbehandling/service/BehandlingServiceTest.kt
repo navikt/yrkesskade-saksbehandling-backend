@@ -210,7 +210,7 @@ class BehandlingServiceTest : AbstractTest() {
         assertThat(lagretBehandling.saksbehandlingsansvarligIdent).isEqualTo("test")
         assertThat(lagretBehandling.status).isEqualTo("Ferdig")
         assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
-        Mockito.verify(dokarkivClient).ferdigstillJournalpost(any())
+        Mockito.verify(dokarkivClient).ferdigstillJournalpost(any(), any())
     }
 
     @Test
