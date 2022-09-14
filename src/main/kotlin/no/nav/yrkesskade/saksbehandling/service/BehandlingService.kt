@@ -152,9 +152,8 @@ class BehandlingService(
         val lagretBehandling =
             BehandlingDto.fromEntity(behandlingRepository.save(oppdatertBehandling), KodeverdiMapper(kodeverkHolder))
 
-        dokarkivClient.ferdigstillJournalpost(
+        dokarkivClient.ferdigstillJournalpost(behandling.journalpostId,
             FerdigstillJournalpostRequest(
-                journalpostId = behandling.journalpostId,
                 journalfoerendeEnhet = behandling.behandlendeEnhet!!
             )
         )

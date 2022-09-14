@@ -30,7 +30,7 @@ internal class DokarkivClientMockTest {
             tokenUtilMock,
             "mock"
         )
-        dokarkivClient.ferdigstillJournalpost(ferdigstillJournalpostRequest())
+        dokarkivClient.ferdigstillJournalpost("123456", ferdigstillJournalpostRequest())
     }
 
 }

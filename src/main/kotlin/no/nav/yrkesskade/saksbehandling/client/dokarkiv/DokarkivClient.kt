@@ -6,11 +6,9 @@ import no.nav.yrkesskade.saksbehandling.util.getLogger
 import no.nav.yrkesskade.saksbehandling.util.getSecureLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
 import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.WebClientResponseException
 import java.util.*
 
 @Component
@@ -27,8 +25,8 @@ class DokarkivClient(
     }
 
     @Retryable
-    fun ferdigstillJournalpost(ferdigstillJournalpostRequest: FerdigstillJournalpostRequest) {
-        log.info("Ferdigstiller journalpost ${ferdigstillJournalpostRequest.journalpostId}")
+    fun ferdigstillJournalpost(journalpostId: String, ferdigstillJournalpostRequest: FerdigstillJournalpostRequest) {
+        log.info("Ferdigstiller journalpost $journalpostId")
         logTimingAndWebClientResponseException<Any>("ferdigstillJournalpost") {
             dokarkivWebClient.patch()
                 .uri { uriBuilder ->
@@ -36,7 +34,7 @@ class DokarkivClient(
                         .pathSegment("journalpostapi")
                         .pathSegment("v1")
                         .pathSegment("journalpost")
-                        .pathSegment(ferdigstillJournalpostRequest.journalpostId)
+                        .pathSegment(journalpostId)
                         .pathSegment("ferdigstill")
                         .build()
                 }
