@@ -20,7 +20,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import tannlegeerklaeringVeiledngingKunBrev
 import tannlegeerklaeringVeiledningbrev
 
 @AutoConfigureMockMvc
@@ -54,7 +53,7 @@ class BrevControllerTest : AbstractTest() {
         val tekstBytes = "Dette er en test".toByteArray(Charsets.UTF_8)
         Mockito.`when`(jsonToPdfClient.genererPdfFraJson(any())).thenReturn(tekstBytes)
         val jwt = token("azuread", "test@nav.test.no", "aad-client-id")
-        val brev = tannlegeerklaeringVeiledngingKunBrev()
+        val brev = tannlegeerklaeringVeiledningbrev()
 
         mvc.perform(
             MockMvcRequestBuilders.post("$BREV_PATH/generer")
