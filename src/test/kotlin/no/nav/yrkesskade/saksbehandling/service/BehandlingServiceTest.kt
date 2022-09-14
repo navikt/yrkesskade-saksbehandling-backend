@@ -8,6 +8,7 @@ import no.nav.yrkesskade.saksbehandling.graphql.common.model.FerdigstillBehandli
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.MinBehandlingsPage
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.Page
 import no.nav.yrkesskade.saksbehandling.model.Behandlingsstatus
+import no.nav.yrkesskade.saksbehandling.model.Behandlingstype
 import no.nav.yrkesskade.saksbehandling.model.SakEntity
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
 import no.nav.yrkesskade.saksbehandling.repository.SakRepository
@@ -199,9 +200,24 @@ class BehandlingServiceTest : AbstractTest() {
     }
 
     @Test
-    fun `ferdigstill behandling`() {
+    fun `ferdigstill journalfoeringsbehandling`() {
         Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
-        var behandling = genererBehandling(1L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak)
+        var behandling = genererBehandling(1L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak, Behandlingstype.JOURNALFOERING)
+        behandling = behandlingRepository.save(behandling)
+        assertThat(behandling.status).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING)
+        assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
+
+        val lagretBehandling = behandlingService.ferdigstillBehandling(FerdigstillBehandling(behandling.behandlingId))
+        assertThat(lagretBehandling.saksbehandlingsansvarligIdent).isEqualTo("test")
+        assertThat(lagretBehandling.status).isEqualTo("Ferdig")
+        assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(2)
+        Mockito.verify(dokarkivClient).ferdigstillJournalpost(any(), any())
+    }
+
+    @Test
+    fun `ferdigstill veiledingsbehandling`() {
+        Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
+        var behandling = genererBehandling(1L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak, Behandlingstype.VEILEDNING)
         behandling = behandlingRepository.save(behandling)
         assertThat(behandling.status).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING)
         assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
