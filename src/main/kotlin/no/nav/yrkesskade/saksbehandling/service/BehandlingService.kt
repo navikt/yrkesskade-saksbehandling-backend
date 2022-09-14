@@ -7,10 +7,7 @@ import no.nav.yrkesskade.saksbehandling.graphql.client.saf.ISafClient
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.BehandlingsPage
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.FerdigstillBehandling
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.MinBehandlingsPage
-import no.nav.yrkesskade.saksbehandling.model.BehandlingEntity
-import no.nav.yrkesskade.saksbehandling.model.Behandlingsstatus
-import no.nav.yrkesskade.saksbehandling.model.Behandlingstype
-import no.nav.yrkesskade.saksbehandling.model.DokumentInfo
+import no.nav.yrkesskade.saksbehandling.model.*
 import no.nav.yrkesskade.saksbehandling.model.dto.BehandlingDto
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
 import no.nav.yrkesskade.saksbehandling.security.AutentisertBruker
@@ -23,7 +20,10 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.Instant
 import java.time.ZoneOffset
+import java.time.temporal.ChronoUnit
+import java.util.*
 
 @Service
 class BehandlingService(
@@ -42,7 +42,7 @@ class BehandlingService(
     @Transactional
     fun lagreBehandling(behandlingEntity: BehandlingEntity) {
         behandlingRepository.save(behandlingEntity).also {
-            logger.info("Lagret behandling med journalpostId ${behandlingEntity.journalpostId} og behandlingId ${behandlingEntity.behandlingId}")
+            logger.info("Lagret behandling (${behandlingEntity.behandlingstype.verdi}) med journalpostId ${behandlingEntity.journalpostId} og behandlingId ${behandlingEntity.behandlingId}")
         }
     }
 
@@ -152,14 +152,39 @@ class BehandlingService(
         val lagretBehandling =
             BehandlingDto.fromEntity(behandlingRepository.save(oppdatertBehandling), KodeverdiMapper(kodeverkHolder))
 
-        dokarkivClient.ferdigstillJournalpost(
+        dokarkivClient.ferdigstillJournalpost(behandling.journalpostId,
             FerdigstillJournalpostRequest(
-                journalpostId = behandling.journalpostId,
                 journalfoerendeEnhet = behandling.behandlendeEnhet!!
             )
         )
 
+        if (lagretBehandling.behandlingstype == Behandlingstype.JOURNALFOERING.verdi) {
+            opprettVeiledningsbehandling(lagretBehandling)
+        }
+
         return lagretBehandling
+    }
+
+    private fun opprettVeiledningsbehandling(journalfoering: BehandlingDto) {
+        val veiledningsbehandling = BehandlingEntity(
+            behandlingId = 0,
+            tema = journalfoering.tema,
+            brukerId = journalfoering.brukerId,
+            brukerIdType = journalfoering.brukerIdType,
+            behandlendeEnhet = journalfoering.behandlendeEnhet,
+            behandlingstype = Behandlingstype.VEILEDNING,
+            status = Behandlingsstatus.IKKE_PAABEGYNT,
+            behandlingsfrist = Instant.now().plus(30, ChronoUnit.DAYS),
+            journalpostId = journalfoering.journalpostId,
+            dokumentkategori = journalfoering.dokumentkategori,
+            systemreferanse = UUID.randomUUID().toString(),
+            framdriftsstatus = Framdriftsstatus.IKKE_PAABEGYNT,
+            opprettetTidspunkt = Instant.now(),
+            opprettetAv = "yrkesskade-saksbehandling-backend",
+            behandlingResultater = emptyList(),
+            sak = null,
+        )
+        lagreBehandling(veiledningsbehandling)
     }
 
     @Transactional
