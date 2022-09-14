@@ -20,6 +20,7 @@ import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
+import org.mockito.kotlin.never
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.domain.Pageable
@@ -224,7 +225,7 @@ class BehandlingServiceTest : AbstractTest() {
         assertThat(lagretBehandling.saksbehandlingsansvarligIdent).isEqualTo("test")
         assertThat(lagretBehandling.status).isEqualTo("Ferdig")
         assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
-        Mockito.verify(dokarkivClient).ferdigstillJournalpost(any(), any())
+        Mockito.verify(dokarkivClient, never()).ferdigstillJournalpost(any(), any())
     }
 
     @Test
