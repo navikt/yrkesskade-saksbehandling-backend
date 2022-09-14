@@ -3,7 +3,7 @@ package no.nav.yrkesskade.saksbehandling.model
 enum class Behandlingstype(val kode: String) {
     JOURNALFOERING("journalfoering"),
     VEILEDNING("veiledning"),
-    KRAV_MELDING("krav"),
+    KRAV_MELDING("krav-melding"),
     KLAGE("klage"),
     ANKE("anke"),
     INNSYN("innsyn"),

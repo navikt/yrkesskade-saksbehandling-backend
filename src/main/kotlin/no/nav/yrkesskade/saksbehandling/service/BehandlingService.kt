@@ -42,7 +42,7 @@ class BehandlingService(
     @Transactional
     fun lagreBehandling(behandlingEntity: BehandlingEntity) {
         behandlingRepository.save(behandlingEntity).also {
-            logger.info("Lagret behandling (${behandlingEntity.behandlingstype.verdi}) med journalpostId ${behandlingEntity.journalpostId} og behandlingId ${behandlingEntity.behandlingId}")
+            logger.info("Lagret behandling (${behandlingEntity.behandlingstype.name}) med journalpostId ${behandlingEntity.journalpostId} og behandlingId ${behandlingEntity.behandlingId}")
         }
     }
 
@@ -149,8 +149,8 @@ class BehandlingService(
         )
 
         val kodeverkHolder = KodeverkHolder.init(kodeverkService = kodeverkService)
-        val lagretBehandling =
-            BehandlingDto.fromEntity(behandlingRepository.save(oppdatertBehandling), KodeverdiMapper(kodeverkHolder))
+        val lagretBehandling = behandlingRepository.save(oppdatertBehandling)
+        val lagretBehandlingDto = BehandlingDto.fromEntity(lagretBehandling, KodeverdiMapper(kodeverkHolder))
 
         dokarkivClient.ferdigstillJournalpost(behandling.journalpostId,
             FerdigstillJournalpostRequest(
@@ -158,14 +158,14 @@ class BehandlingService(
             )
         )
 
-        if (lagretBehandling.behandlingstype == Behandlingstype.JOURNALFOERING.verdi) {
+        if (lagretBehandling.behandlingstype == Behandlingstype.JOURNALFOERING) {
             opprettVeiledningsbehandling(lagretBehandling)
         }
 
-        return lagretBehandling
+        return lagretBehandlingDto
     }
 
-    private fun opprettVeiledningsbehandling(journalfoering: BehandlingDto) {
+    private fun opprettVeiledningsbehandling(journalfoering: BehandlingEntity) {
         val veiledningsbehandling = BehandlingEntity(
             behandlingId = 0,
             tema = journalfoering.tema,
