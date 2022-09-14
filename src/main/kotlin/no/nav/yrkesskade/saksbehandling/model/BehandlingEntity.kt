@@ -43,6 +43,9 @@ data class BehandlingEntity (
     @Column(name = "journalpost_id", nullable = false)
     val journalpostId: String,
 
+    @Column(name = "utgaaende_journalpost_id", nullable = true)
+    val utgaaendeJournalpostId: String? = null,
+
     @Column(name = "dokumentkategori", nullable = false)
     val dokumentkategori: String,
 

@@ -13,6 +13,7 @@ data class DetaljertBehandling(
     val status: Behandlingsstatus,
     val behandlingsfrist: Instant,
     val journalpostId: String,
+    val utgaaendeJournalpostId: String? = null,
     val dokumentkategori: String,
     val systemreferanse: String,
     val framdriftsstatus: Framdriftsstatus,

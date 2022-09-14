@@ -152,14 +152,17 @@ class BehandlingService(
         val lagretBehandling = behandlingRepository.save(oppdatertBehandling)
         val lagretBehandlingDto = BehandlingDto.fromEntity(lagretBehandling, KodeverdiMapper(kodeverkHolder))
 
-        dokarkivClient.ferdigstillJournalpost(behandling.journalpostId,
-            FerdigstillJournalpostRequest(
-                journalfoerendeEnhet = behandling.behandlendeEnhet!!
-            )
-        )
-
         if (lagretBehandling.behandlingstype == Behandlingstype.JOURNALFOERING) {
+            dokarkivClient.ferdigstillJournalpost(behandling.journalpostId,
+                FerdigstillJournalpostRequest(
+                    journalfoerendeEnhet = behandling.behandlendeEnhet!!
+                )
+            )
+
             opprettVeiledningsbehandling(lagretBehandling)
+        }
+        else {
+            logger.info("Forsøkte å ferdigstille journalpost ${behandling.journalpostId} med behandlingstype ${behandling.behandlingstype}!")
         }
 
         return lagretBehandlingDto
@@ -176,6 +179,7 @@ class BehandlingService(
             status = Behandlingsstatus.IKKE_PAABEGYNT,
             behandlingsfrist = Instant.now().plus(30, ChronoUnit.DAYS),
             journalpostId = journalfoering.journalpostId,
+            utgaaendeJournalpostId = null,
             dokumentkategori = journalfoering.dokumentkategori,
             systemreferanse = UUID.randomUUID().toString(),
             framdriftsstatus = Framdriftsstatus.IKKE_PAABEGYNT,
