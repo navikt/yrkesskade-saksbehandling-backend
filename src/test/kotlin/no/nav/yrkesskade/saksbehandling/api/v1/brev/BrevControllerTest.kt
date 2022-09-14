@@ -30,23 +30,10 @@ class BrevControllerTest : AbstractTest() {
     }
 
     @Autowired
-    lateinit var server: MockOAuth2Server
-
-    @Autowired
     lateinit var mvc: MockMvc
 
     @MockBean
     lateinit var jsonToPdfClient: JsonToPdfClient
-
-    @Test
-    fun `send tannlegeerklæring veilednings brev`() {
-        val jwt = token("azuread", "test@nav.test.no", "aad-client-id")
-        val brevSomStreng = tannlegeerklaeringVeiledningbrev()
-        val brev = jacksonObjectMapper().readValue(brevSomStreng, Brev::class.java)
-        assertThat(brev).isNotNull
-
-        postBrev(brevSomStreng, jwt).andDo(MockMvcResultHandlers.print()).andExpect(status().isAccepted)
-    }
 
     @Test
     fun `generer brev`() {
@@ -61,29 +48,8 @@ class BrevControllerTest : AbstractTest() {
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding(Charsets.UTF_8)
                 .content(brev)
-        ).andDo(MockMvcResultHandlers.print()).andExpect(status().is2xxSuccessful).andExpect(content().string("RGV0dGUgZXIgZW4gdGVzdA=="))
-    }
-
-    private fun postBrev(brev: String, token: String) =
-        mvc.perform(
-            MockMvcRequestBuilders.post(BREV_PATH)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer $token")
-                .contentType(MediaType.APPLICATION_JSON)
-                .characterEncoding(Charsets.UTF_8)
-                .content(brev)
-        )
-
-    private fun token(issuerId: String, subject: String, audience: String): String {
-        return server.issueToken(
-            issuerId = issuerId,
-            clientId = "theclientid",
-            tokenCallback = DefaultOAuth2TokenCallback(
-                issuerId = issuerId,
-                subject = subject,
-                audience = listOf(audience),
-                claims = emptyMap(),
-                expiry = 3600L
-            )
-        ).serialize()
+        ).andDo(MockMvcResultHandlers.print())
+            .andExpect(status().is2xxSuccessful)
+            .andExpect(content().string("RGV0dGUgZXIgZW4gdGVzdA=="))
     }
 }

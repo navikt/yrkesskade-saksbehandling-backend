@@ -29,9 +29,6 @@ class DokumentInfoControllerTest : AbstractTest() {
     lateinit var safRestClient: SafRestClient
 
     @Autowired
-    lateinit var server: MockOAuth2Server
-
-    @Autowired
     lateinit var mvc: MockMvc
 
     @Test
@@ -44,7 +41,8 @@ class DokumentInfoControllerTest : AbstractTest() {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer $jwt")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding(Charsets.UTF_8)
-        ).andDo(MockMvcResultHandlers.print())   .andExpect(MockMvcResultMatchers.status().isOk)
+        ).andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isOk)
     }
 
     @Test
@@ -55,19 +53,5 @@ class DokumentInfoControllerTest : AbstractTest() {
                 .characterEncoding(Charsets.UTF_8)
         ).andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().is4xxClientError)
-    }
-
-    private fun token(issuerId: String, subject: String, audience: String, vararg grupper: String = arrayOf("saksbehandler")): String {
-        return server.issueToken(
-            issuerId = issuerId,
-            clientId = "theclientid",
-            tokenCallback = DefaultOAuth2TokenCallback(
-                issuerId = issuerId,
-                subject = subject,
-                audience = listOf(audience),
-                claims = mapOf("groups" to grupper),
-                expiry = 3600L
-            )
-        ).serialize()
     }
 }

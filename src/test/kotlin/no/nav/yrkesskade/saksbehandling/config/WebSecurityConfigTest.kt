@@ -21,9 +21,6 @@ import org.springframework.web.bind.annotation.RestController
 class WebSecurityConfigTest : AbstractTest() {
 
     @Autowired
-    lateinit var server: MockOAuth2Server
-
-    @Autowired
     lateinit var mvc: MockMvc
 
     @Test
@@ -53,20 +50,6 @@ class WebSecurityConfigTest : AbstractTest() {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer $jwt"))
             .andDo(MockMvcResultHandlers.print())
             .andExpect(status().isUnauthorized)
-    }
-
-    private fun token(issuerId: String, subject: String, audience: String): String {
-        return server.issueToken(
-            issuerId = issuerId,
-            clientId = "theclientid",
-            tokenCallback = DefaultOAuth2TokenCallback(
-                issuerId = issuerId,
-                subject = subject,
-                audience = listOf(audience),
-                claims = emptyMap(),
-                expiry = 3600L
-            )
-        ).serialize()
     }
 }
 

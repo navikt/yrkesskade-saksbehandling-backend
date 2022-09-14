@@ -1,8 +1,11 @@
 package no.nav.yrkesskade.saksbehandling.test
 
+import no.nav.security.mock.oauth2.MockOAuth2Server
+import no.nav.security.mock.oauth2.token.DefaultOAuth2TokenCallback
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import no.nav.yrkesskade.saksbehandling.test.docker.KafkaDockerContainer
 import no.nav.yrkesskade.saksbehandling.test.docker.PostgresDockerContainer
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.ApplicationContextInitializer
 import org.springframework.context.ConfigurableApplicationContext
@@ -23,6 +26,23 @@ abstract class AbstractTest {
     init {
         PostgresDockerContainer.container
         KafkaDockerContainer.container
+    }
+
+    @Autowired
+    lateinit var server: MockOAuth2Server
+
+    protected fun token(issuerId: String, subject: String, audience: String): String {
+        return server.issueToken(
+            issuerId = issuerId,
+            clientId = "theclientid",
+            tokenCallback = DefaultOAuth2TokenCallback(
+                issuerId = issuerId,
+                subject = subject,
+                audience = listOf(audience),
+                claims = emptyMap(),
+                expiry = 3600L
+            )
+        ).serialize()
     }
 
     class DockerConfigInitializer : ApplicationContextInitializer<ConfigurableApplicationContext> {

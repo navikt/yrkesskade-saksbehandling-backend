@@ -29,12 +29,14 @@ import java.lang.RuntimeException
 import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
-internal class BrevServiceTest {
+internal class BrevServiceMockTest {
 
     private val brevutsendingClientMock: BrevutsendingClient = mockk()
     private val jsonToPdfClientMock: JsonToPdfClient = mockk()
     private val pdlClientMock: PdlClient = mockk()
     private val behandlingServiceMock: BehandlingService = mockk()
+
+    private val brev = jacksonObjectMapper().readValue(tannlegeerklaeringVeiledningbrev(), Brev::class.java)
 
     private val brevService = BrevService(
         brevutsendingClient = brevutsendingClientMock,
@@ -56,11 +58,24 @@ internal class BrevServiceTest {
     }
 
     @Test
-    fun sendTilBrevutsending() {
-        val brev = jacksonObjectMapper().readValue(tannlegeerklaeringVeiledningbrev(), Brev::class.java)
+    fun `sendTilBrevutsending - behandling med AKTOERID`() {
         brevService.sendTilBrevutsending(1, brev)
 
         verify(exactly = 1) { brevutsendingClientMock.sendTilBrevutsending(any()) }
+    }
+
+    @Test
+    fun `sendTilBrevutsending - behandling med FNR`() {
+        every { behandlingServiceMock.hentBehandling(eq(1)) } answers {
+            genererBehandling(1, "123", Behandlingsstatus.FERDIG, genererSak()).copy(
+                brukerIdType = BrukerIdType.FNR
+            )
+        }
+
+        brevService.sendTilBrevutsending(1, brev)
+
+        verify(exactly = 1) { brevutsendingClientMock.sendTilBrevutsending(any()) }
+        verify(exactly = 0) { pdlClientMock.hentIdenter(any(), any(), any()) }
     }
 
     @Test
@@ -70,8 +85,6 @@ internal class BrevServiceTest {
                 brukerIdType = BrukerIdType.ORGNR
             )
         }
-        val brev = jacksonObjectMapper().readValue(tannlegeerklaeringVeiledningbrev(), Brev::class.java)
-
         val runtimeException = assertThrows<RuntimeException> {
             brevService.sendTilBrevutsending(1, brev)
         }
