@@ -5,7 +5,7 @@ import com.expediagroup.graphql.generated.enums.BrukerIdType
 import com.expediagroup.graphql.generated.enums.IdentGruppe
 import no.nav.yrkesskade.saksbehandling.client.BrevutsendingClient
 import no.nav.yrkesskade.saksbehandling.client.JsonToPdfClient
-import no.nav.yrkesskade.saksbehandling.graphql.client.pdl.PdlClient
+import no.nav.yrkesskade.saksbehandling.graphql.client.pdl.IPdlClient
 import no.nav.yrkesskade.saksbehandling.graphql.client.pdl.PdlException
 import no.nav.yrkesskade.saksbehandling.model.BehandlingEntity
 import no.nav.yrkesskade.saksbehandling.model.Brev
@@ -22,7 +22,7 @@ import java.util.Base64
 class BrevService(
     private val brevutsendingClient: BrevutsendingClient,
     private val jsonToPdfClient: JsonToPdfClient,
-    private val pdlClient: PdlClient,
+    private val pdlClient: IPdlClient,
     private val behandlingService: BehandlingService
     ) {
 
