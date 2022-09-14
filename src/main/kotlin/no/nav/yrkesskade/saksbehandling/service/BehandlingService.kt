@@ -46,7 +46,7 @@ class BehandlingService(
         }
     }
 
-    fun hentBehandling(behandlingId: Long): DetaljertBehandling {
+    fun hentDetaljertBehandling(behandlingId: Long): DetaljertBehandling {
         val behandling = behandlingRepository.findById(behandlingId).orElseThrow()
 
         val journalpostResult = safClient.hentOppdatertJournalpost(behandling.journalpostId)
@@ -179,5 +179,9 @@ class BehandlingService(
 
         val kodeverkHolder = KodeverkHolder.init(kodeverkService = kodeverkService)
         return BehandlingDto.fromEntity(behandlingRepository.save(oppdatertBehandling), KodeverdiMapper(kodeverkHolder))
+    }
+
+    fun hentBehandling(behandlingId: Long): BehandlingEntity {
+        return behandlingRepository.findById(behandlingId).orElseThrow()
     }
 }
