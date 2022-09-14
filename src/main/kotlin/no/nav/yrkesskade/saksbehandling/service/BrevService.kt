@@ -40,9 +40,9 @@ class BrevService(
     }
 
     private fun extractFoedselsnummer(identerResult: HentIdenter.Result?): String {
-        return identerResult?.hentIdenter?.identer?.stream()
-            ?.filter { identInfo -> identInfo.gruppe == IdentGruppe.AKTORID }?.findFirst()?.get()?.ident
-            ?: throw PdlException("Fant ikke fødselsnummer i PDL")
+        return identerResult?.hentIdenter?.identer?.first {
+                identInfo -> identInfo.gruppe == IdentGruppe.FOLKEREGISTERIDENT
+        }?.ident ?: throw PdlException("Fant ikke fødselsnummer i PDL")
     }
 
     fun sendTilBrevutsending(behandlingId: Long, brev: Brev) {
