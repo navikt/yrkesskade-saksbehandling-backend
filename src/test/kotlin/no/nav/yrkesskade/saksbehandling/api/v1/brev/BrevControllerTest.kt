@@ -3,7 +3,6 @@ package no.nav.yrkesskade.saksbehandling.api.v1.brev
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.security.mock.oauth2.token.DefaultOAuth2TokenCallback
-import no.nav.yrkesskade.saksbehandling.api.v1.brev.dto.BrevDto
 import no.nav.yrkesskade.saksbehandling.client.JsonToPdfClient
 import no.nav.yrkesskade.saksbehandling.model.Brev
 import no.nav.yrkesskade.saksbehandling.test.AbstractTest
@@ -23,7 +22,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import tannlegeerklaeringVeiledngingKunBrev
 import tannlegeerklaeringVeiledningbrev
-import java.util.*
 
 @AutoConfigureMockMvc
 class BrevControllerTest : AbstractTest() {
@@ -44,11 +42,11 @@ class BrevControllerTest : AbstractTest() {
     @Test
     fun `send tannlegeerklæring veilednings brev`() {
         val jwt = token("azuread", "test@nav.test.no", "aad-client-id")
-        val brev = tannlegeerklaeringVeiledningbrev()
-        val brevDto = jacksonObjectMapper().readValue(brev, BrevDto::class.java)
-        assertThat(brevDto).isNotNull
+        val brevSomStreng = tannlegeerklaeringVeiledningbrev()
+        val brev = jacksonObjectMapper().readValue(brevSomStreng, Brev::class.java)
+        assertThat(brev).isNotNull
 
-        postBrev(brev, jwt).andDo(MockMvcResultHandlers.print()).andExpect(status().isAccepted)
+        postBrev(brevSomStreng, jwt).andDo(MockMvcResultHandlers.print()).andExpect(status().isAccepted)
     }
 
     @Test
