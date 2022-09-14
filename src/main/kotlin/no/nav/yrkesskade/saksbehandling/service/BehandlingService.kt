@@ -42,7 +42,7 @@ class BehandlingService(
     @Transactional
     fun lagreBehandling(behandlingEntity: BehandlingEntity) {
         behandlingRepository.save(behandlingEntity).also {
-            logger.info("Lagret behandling (${behandlingEntity.behandlingstype.verdi}) med journalpostId ${behandlingEntity.journalpostId} og behandlingId ${behandlingEntity.behandlingId}")
+            logger.info("Lagret behandling (${behandlingEntity.behandlingstype.name}) med journalpostId ${behandlingEntity.journalpostId} og behandlingId ${behandlingEntity.behandlingId}")
         }
     }
 
@@ -92,8 +92,8 @@ class BehandlingService(
     }
 
     fun hentAapneBehandlinger(behandlingsPage: BehandlingsPage): Page<BehandlingDto> {
-        val status = Behandlingsstatus.valueOfOrNull(behandlingsPage.behandlingsfilter?.status.orEmpty())
-        val behandlingstype = Behandlingstype.valueOfOrNull(behandlingsPage.behandlingsfilter?.behandlingstype.orEmpty())
+        val status = Behandlingsstatus.fromKode(behandlingsPage.behandlingsfilter?.status.orEmpty())
+        val behandlingstype = Behandlingstype.fromKode(behandlingsPage.behandlingsfilter?.behandlingstype.orEmpty())
         val behandlingEntities = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(status, behandlingsPage.behandlingsfilter?.dokumentkategori, behandlingstype, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), false, PageRequest.of(behandlingsPage.page.page, behandlingsPage.page.size))
         val kodeverkHolder = KodeverkHolder.init(kodeverkService = kodeverkService)
         return behandlingEntities.map { BehandlingDto.fromEntity(it, KodeverdiMapper(kodeverkHolder)) }
@@ -149,8 +149,8 @@ class BehandlingService(
         )
 
         val kodeverkHolder = KodeverkHolder.init(kodeverkService = kodeverkService)
-        val lagretBehandling =
-            BehandlingDto.fromEntity(behandlingRepository.save(oppdatertBehandling), KodeverdiMapper(kodeverkHolder))
+        val lagretBehandling = behandlingRepository.save(oppdatertBehandling)
+        val lagretBehandlingDto = BehandlingDto.fromEntity(lagretBehandling, KodeverdiMapper(kodeverkHolder))
 
         dokarkivClient.ferdigstillJournalpost(behandling.journalpostId,
             FerdigstillJournalpostRequest(
@@ -158,14 +158,14 @@ class BehandlingService(
             )
         )
 
-        if (lagretBehandling.behandlingstype == Behandlingstype.JOURNALFOERING.verdi) {
+        if (lagretBehandling.behandlingstype == Behandlingstype.JOURNALFOERING) {
             opprettVeiledningsbehandling(lagretBehandling)
         }
 
-        return lagretBehandling
+        return lagretBehandlingDto
     }
 
-    private fun opprettVeiledningsbehandling(journalfoering: BehandlingDto) {
+    private fun opprettVeiledningsbehandling(journalfoering: BehandlingEntity) {
         val veiledningsbehandling = BehandlingEntity(
             behandlingId = 0,
             tema = journalfoering.tema,

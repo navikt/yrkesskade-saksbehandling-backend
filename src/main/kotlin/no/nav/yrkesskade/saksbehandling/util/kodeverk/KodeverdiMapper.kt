@@ -11,27 +11,11 @@ private const val TYPE_FRAMDRIFTSSTATUS = "framdriftsstatus"
 class KodeverdiMapper(val kodeverkHolder: KodeverkHolder) {
 
     fun mapBehandlingstype(behandlingstype: Behandlingstype): String {
-        val kode = when (behandlingstype) {
-            Behandlingstype.ANKE -> "anke"
-            Behandlingstype.GJENOPPRETTING -> "gjenoppretting"
-            Behandlingstype.INNSYN -> "innsyn"
-            Behandlingstype.KLAGE -> "klage"
-            Behandlingstype.KRAV_MELDING -> "krav-melding"
-            Behandlingstype.JOURNALFOERING -> "journalfoering"
-            Behandlingstype.REVURDERING -> "revurdering"
-            Behandlingstype.TILBAKEKREVING -> "tilbakekreving"
-            Behandlingstype.VEILEDNING -> "veiledning"
-        }
-        return kodeverkHolder.mapKodeTilVerdi(kode, TYPE_BEHANDLINGSTYPE)
+       return kodeverkHolder.mapKodeTilVerdi(behandlingstype.kode, TYPE_BEHANDLINGSTYPE)
     }
 
     fun mapBehandlingsstatus(status: Behandlingsstatus): String {
-        val kode = when (status) {
-            Behandlingsstatus.IKKE_PAABEGYNT -> "ikkePaabegynt"
-            Behandlingsstatus.UNDER_BEHANDLING -> "underBehandling"
-            Behandlingsstatus.FERDIG -> "ferdig"
-        }
-        return kodeverkHolder.mapKodeTilVerdi(kode, TYPE_BEHANDLINGSSTATUS)
+        return kodeverkHolder.mapKodeTilVerdi(status.kode, TYPE_BEHANDLINGSSTATUS)
     }
 
     fun mapFramdriftsstatus(framdriftsstatus: Framdriftsstatus): String {
