@@ -22,7 +22,7 @@ class BehandlingController(
 
     @PostMapping(path = ["{behandlingId}"], consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun opprettBrev(
-        @Parameter(description = "brev data til PDF som skal opprettes og distribueres") @RequestBody brev: Brev,
+        @Parameter(description = "brev data som skal brukes til å generere PDF") @RequestBody brev: Brev,
         @Parameter(description = "Id på behandlingen som skal få distribuert brev") @PathVariable behandlingId: Long
         ): ResponseEntity<Void> {
         brevService.sendTilBrevutsending(behandlingId, brev)
