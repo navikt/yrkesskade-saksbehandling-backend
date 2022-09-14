@@ -1,9 +1,11 @@
 package no.nav.yrkesskade.saksbehandling.client.dokarkiv
 
 import no.nav.yrkesskade.saksbehandling.client.AbstractRestClient
+import no.nav.yrkesskade.saksbehandling.util.MDCConstants
 import no.nav.yrkesskade.saksbehandling.util.TokenUtil
 import no.nav.yrkesskade.saksbehandling.util.getLogger
 import no.nav.yrkesskade.saksbehandling.util.getSecureLogger
+import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -42,7 +44,7 @@ class DokarkivClient(
                 }
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer ${tokenUtil.getAppAccessTokenWithDokarkivScope()}")
-                .header("Nav-Callid", UUID.randomUUID().toString())
+                .header("Nav-Callid", MDC.get(MDCConstants.MDC_CALL_ID))
                 .header("Nav-Consumer-Id", applicationName)
                 .bodyValue(ferdigstillJournalpostRequest)
                 .retrieve()
