@@ -53,6 +53,14 @@ no.nav.security.jwt:
           client-id: dummy-client-id
           client-secret: dummy-secret
           client-auth-method: client_secret_basic
+      saf-onbehalfof:
+        token-endpoint-url: ${AUTH_SERVER}/token
+        grant-type: urn:ietf:params:oauth:grant-type:jwt-bearer
+        scope: saf
+        authentication:
+          client-id: dummy-client-id
+          client-secret: dummy-secret
+          client-auth-method: client_secret_basic
       pdl-onbehalfof:
         token-endpoint-url: ${AUTH_SERVER}/token
         grant-type: urn:ietf:params:oauth:grant-type:jwt-bearer
