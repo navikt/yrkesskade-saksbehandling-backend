@@ -102,7 +102,7 @@ class BehandlingServiceTest : AbstractTest() {
         Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
         val behandling = behandlingRepository.save(genererBehandling(1L, "test", Behandlingsstatus.IKKE_PAABEGYNT, sak))
 
-        val detaljertBehandling = behandlingService.hentBehandling(behandling.behandlingId)
+        val detaljertBehandling = behandlingService.hentDetaljertBehandling(behandling.behandlingId)
         assertThat(detaljertBehandling.dokumenter.size).isEqualTo(1)
     }
 
@@ -112,7 +112,7 @@ class BehandlingServiceTest : AbstractTest() {
         Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
         val behandling = behandlingRepository.save(genererBehandling(1L, "test", Behandlingsstatus.IKKE_PAABEGYNT, sak))
 
-        val detaljertBehandling = behandlingService.hentBehandling(behandling.behandlingId)
+        val detaljertBehandling = behandlingService.hentDetaljertBehandling(behandling.behandlingId)
         assertThat(detaljertBehandling.dokumenter.size).isEqualTo(0)
     }
 
@@ -122,7 +122,7 @@ class BehandlingServiceTest : AbstractTest() {
         Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
         val behandling = behandlingRepository.save(genererBehandling(1L, "test", Behandlingsstatus.IKKE_PAABEGYNT, sak))
 
-        val detaljertBehandling = behandlingService.hentBehandling(behandling.behandlingId)
+        val detaljertBehandling = behandlingService.hentDetaljertBehandling(behandling.behandlingId)
         assertThat(detaljertBehandling.dokumenter.size).isEqualTo(0)
     }
 
@@ -132,7 +132,7 @@ class BehandlingServiceTest : AbstractTest() {
         Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
 
         assertThrows<NoSuchElementException> {
-            behandlingService.hentBehandling(1)
+            behandlingService.hentDetaljertBehandling(1)
         }
     }
 

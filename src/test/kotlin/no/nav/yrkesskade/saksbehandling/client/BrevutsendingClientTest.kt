@@ -3,13 +3,8 @@ package no.nav.yrkesskade.saksbehandling.client
 import no.nav.yrkesskade.saksbehandling.fixtures.brevutsendingBestiltHendelse
 import no.nav.yrkesskade.saksbehandling.model.BrevutsendingBestiltHendelse
 import no.nav.yrkesskade.saksbehandling.test.AbstractTest
-import no.nav.yrkesskade.saksbehandling.test.docker.KafkaDockerContainer
-import no.nav.yrkesskade.saksbehandling.test.docker.PostgresDockerContainer
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
-import org.mockito.kotlin.any
-import org.mockito.kotlin.timeout
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationContextInitializer
