@@ -37,7 +37,7 @@ class SafClient(
     private val client = GraphQLWebClient(url = safGraphqlUrl)
 
     override fun hentOppdatertJournalpost(journalpostId: String): Journalpost.Result? {
-        val token = tokenUtil.getAppAccessTokenWithSafScope()
+        val token = tokenUtil.getAppAccessMaskinTilMaskinTokenWithSafScope()
         logger.info("Hentet token for Saf")
         val journalpostQuery = Journalpost(Journalpost.Variables(journalpostId))
 

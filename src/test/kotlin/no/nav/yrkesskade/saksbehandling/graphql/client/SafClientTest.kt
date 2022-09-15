@@ -31,7 +31,7 @@ internal class SafClientTest {
 
     @BeforeEach
     fun init() {
-        every { tokenUtilMock.getAppAccessTokenWithSafScope() } returns "abc"
+        every { tokenUtilMock.getAppAccessMaskinTilMaskinTokenWithSafScope() } returns "abc"
 
         client = SafClient(safGraphqlUrl = "test", "yrkesskade-saksbehandling-backend", tokenUtilMock)
         ReflectionTestUtils.setField(client, "client", graphQLWebClient)

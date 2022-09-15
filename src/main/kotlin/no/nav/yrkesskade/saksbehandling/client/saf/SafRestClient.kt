@@ -35,7 +35,7 @@ private val tokenUtil: TokenUtil) : ISafRestClient
      *
      */
     override fun hentDokument(journalpostId: String, dokumentinfoId: String): String {
-        val token = tokenUtil.getAppAccessTokenWithSafScope()
+        val token = tokenUtil.getAppAccessOnBehalfOfTokenWithSafScope()
         logger.info("Hentet token for Saf")
 
         secureLogger.info("Henter dokument for journalpost for id $journalpostId og med dokumentinfoId $dokumentinfoId på url $safRestUrl")

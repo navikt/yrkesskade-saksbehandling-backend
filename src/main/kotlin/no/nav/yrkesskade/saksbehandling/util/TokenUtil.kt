@@ -10,9 +10,11 @@ class TokenUtil(
     private val clientConfigurationProperties: ClientConfigurationProperties,
     private val oAuth2AccessTokenService: OAuth2AccessTokenService
 ) {
-    fun getAppAccessTokenWithDokarkivScope() = getTokenForRegistration("dokarkiv-maskintilmaskin")
+    fun getAppAccessMaskinTilMaskinTokenWithSafScope() = getTokenForRegistration("saf-maskintilmaskin")
 
-    fun getAppAccessTokenWithSafScope() = getTokenForRegistration("saf-maskintilmaskin")
+    fun getAppAccessOnBehalfOfTokenWithSafScope() = getTokenForRegistration("saf-onbehalfof")
+
+    fun getAppAccessTokenWithDokarkivScope() = getTokenForRegistration("dokarkiv-maskintilmaskin")
 
     fun getAppAccessOnBehalfOfTokenWithPdlScope() = getTokenForRegistration("pdl-onbehalfof")
 
