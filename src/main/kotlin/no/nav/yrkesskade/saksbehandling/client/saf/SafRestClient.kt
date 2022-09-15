@@ -38,6 +38,8 @@ private val tokenUtil: TokenUtil) : ISafRestClient
         val token = tokenUtil.getAppAccessTokenWithSafScope()
         logger.info("Hentet token for Saf")
 
+        secureLogger.info("Henter dokument for journalpost for id $journalpostId og med dokumentinfoId $dokumentinfoId på url $safRestUrl")
+        secureLogger.info("Token er $token")
         logger.info("Henter dokument for journalpost for id $journalpostId og med dokumentinfoId $dokumentinfoId på url $safRestUrl")
 
         val response: Response = client.target(safRestUrl)
