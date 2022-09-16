@@ -1,5 +1,6 @@
 scalar LocalDate
 scalar Instant
+scalar Long
 
 type Sak {
     sakId: ID!
@@ -7,6 +8,13 @@ type Sak {
     brukerIdentifikator: String!
     sakstype: String
     saksstatus: String
+}
+
+type BehandlingsPage {
+    behandlinger: [Behandling]!
+    antallSider: Int
+    gjeldendeSide: Int
+    totaltAntallBehandlinger: Long
 }
 
 type Behandling {
@@ -64,13 +72,8 @@ input Behandlingsfilter {
     status: String
 }
 
-input BehandlingsPage {
+input BehandlingPageRequest {
     behandlingsfilter: Behandlingsfilter
-    page: Page!
-}
-
-input MinBehandlingsPage {
-    status: String
     page: Page!
 }
 
@@ -85,8 +88,8 @@ input Journalfoeringdetaljer {
 
 type Query {
     hentBehandlinger(page: Page!): [Behandling]!
-    hentEgneBehandlinger(minBehandlingsPage: MinBehandlingsPage!): [Behandling]!
-    hentAapneBehandlinger(behandlingsPage: BehandlingsPage!): [Behandling]!
+    hentEgneBehandlinger(status: String, page: Page!): BehandlingsPage!
+    hentAapneBehandlinger(behandlingsfilter: Behandlingsfilter, page: Page!): BehandlingsPage!
     antallBehandlinger: Int!
     hentBehandling(behandlingId: ID!): DetaljertBehandling
     hentPerson(foedselsnummer: ID!): Person!
