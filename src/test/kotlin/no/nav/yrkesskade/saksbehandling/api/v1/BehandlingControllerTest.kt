@@ -100,7 +100,7 @@ internal class BehandlingControllerTest : AbstractTest() {
         Assertions.assertThat(brev).isNotNull
 
         mvc.perform(
-            MockMvcRequestBuilders.post("$PATH/{behandlingId}", behandlingId)
+            MockMvcRequestBuilders.post("$PATH/{behandlingId}/brev", behandlingId)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer $jwt")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding(Charsets.UTF_8)
