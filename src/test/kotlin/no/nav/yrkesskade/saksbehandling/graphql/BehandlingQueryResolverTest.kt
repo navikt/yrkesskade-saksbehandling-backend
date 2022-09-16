@@ -67,7 +67,7 @@ class BehandlingQueryResolverTest : AbstractTest() {
 
         val response = graphQLTestTemplate.postForResource("graphql/behandling/hent_egne_behandlinger.graphql")
         assertThat(response.statusCode.is2xxSuccessful).isTrue
-        assertThat(response.get("$.data.hentEgneBehandlinger.length()")).isEqualTo("1")
+        assertThat(response.get("$.data.hentEgneBehandlinger.behandlinger.length()")).isEqualTo("1")
     }
 
     @Test
@@ -91,7 +91,7 @@ class BehandlingQueryResolverTest : AbstractTest() {
 
         // then
         assertThat(response.statusCode.is2xxSuccessful).isTrue
-        assertThat(response.get("$.data.hentAapneBehandlinger.length()")).isEqualTo("2")
+        assertThat(response.get("$.data.hentAapneBehandlinger.behandlinger.length()")).isEqualTo("2")
     }
 
     @Test
