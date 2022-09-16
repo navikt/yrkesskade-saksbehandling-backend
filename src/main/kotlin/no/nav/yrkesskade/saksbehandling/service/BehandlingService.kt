@@ -5,8 +5,8 @@ import no.nav.yrkesskade.saksbehandling.client.dokarkiv.DokarkivClient
 import no.nav.yrkesskade.saksbehandling.client.dokarkiv.FerdigstillJournalpostRequest
 import no.nav.yrkesskade.saksbehandling.graphql.client.saf.ISafClient
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.BehandlingsPage
+import no.nav.yrkesskade.saksbehandling.graphql.common.model.Behandlingsfilter
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.FerdigstillBehandling
-import no.nav.yrkesskade.saksbehandling.graphql.common.model.MinBehandlingsPage
 import no.nav.yrkesskade.saksbehandling.model.*
 import no.nav.yrkesskade.saksbehandling.model.dto.BehandlingDto
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
@@ -16,7 +16,6 @@ import no.nav.yrkesskade.saksbehandling.util.kodeverk.KodeverdiMapper
 import no.nav.yrkesskade.saksbehandling.util.kodeverk.KodeverkHolder
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -91,22 +90,33 @@ class BehandlingService(
         return behandlingEntities.map { BehandlingDto.fromEntity(it, KodeverdiMapper(kodeverkHolder)) }
     }
 
-    fun hentAapneBehandlinger(behandlingsPage: BehandlingsPage): Page<BehandlingDto> {
-        val status = Behandlingsstatus.fromKode(behandlingsPage.behandlingsfilter?.status.orEmpty())
-        val behandlingstype = Behandlingstype.fromKode(behandlingsPage.behandlingsfilter?.behandlingstype.orEmpty())
-        val behandlingEntities = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(status, behandlingsPage.behandlingsfilter?.dokumentkategori, behandlingstype, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), false, PageRequest.of(behandlingsPage.page.page, behandlingsPage.page.size))
+    fun hentAapneBehandlinger(behandlingsfilter: Behandlingsfilter?, page: Pageable): BehandlingsPage {
+        val status = Behandlingsstatus.fromKode(behandlingsfilter?.status.orEmpty())
+        val behandlingstype = Behandlingstype.fromKode(behandlingsfilter?.behandlingstype.orEmpty())
+        val behandlingEntities = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(status, behandlingsfilter?.dokumentkategori, behandlingstype, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), false, page)
         val kodeverkHolder = KodeverkHolder.init(kodeverkService = kodeverkService)
-        return behandlingEntities.map { BehandlingDto.fromEntity(it, KodeverdiMapper(kodeverkHolder)) }
+
+        return BehandlingsPage(
+            behandlinger = behandlingEntities.content.map { BehandlingDto.fromEntity(it, KodeverdiMapper(kodeverkHolder)) },
+            antallSider = behandlingEntities.totalPages,
+            gjeldendeSide = page.pageNumber,
+            totaltAntallBehandlinger = behandlingEntities.totalElements
+        )
     }
 
     fun hentAntallBehandlinger(): Long = behandlingRepository.count()
 
-    fun hentEgneBehandlinger(behandlingsPage: MinBehandlingsPage) : Page<BehandlingDto> {
-        val page = behandlingsPage.page
-        val status = Behandlingsstatus.valueOfOrNull(behandlingsPage.status.orEmpty()) ?: Behandlingsstatus.UNDER_BEHANDLING
-        val behandlingEntities = behandlingRepository.findBySaksbehandlingsansvarligIdentAndStatus(autentisertBruker.preferredUsername, status, PageRequest.of(page.page, page.size))
+    fun hentEgneBehandlinger(behandlingsstatus: String?, page: Pageable) : BehandlingsPage {
+        val status = Behandlingsstatus.valueOfOrNull(behandlingsstatus.orEmpty()) ?: Behandlingsstatus.UNDER_BEHANDLING
+        val behandlingEntities = behandlingRepository.findBySaksbehandlingsansvarligIdentAndStatus(autentisertBruker.preferredUsername, status, page)
         val kodeverkHolder = KodeverkHolder.init(kodeverkService = kodeverkService)
-        return behandlingEntities.map { BehandlingDto.fromEntity(it, KodeverdiMapper(kodeverkHolder)) }
+
+        return BehandlingsPage(
+            behandlinger = behandlingEntities.content.map { BehandlingDto.fromEntity(it, KodeverdiMapper(kodeverkHolder)) },
+            antallSider = behandlingEntities.totalPages,
+            gjeldendeSide = page.pageNumber,
+            totaltAntallBehandlinger = behandlingEntities.totalElements
+        )
     }
 
     @Transactional

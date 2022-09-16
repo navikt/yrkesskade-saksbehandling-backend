@@ -1,6 +1,7 @@
 package no.nav.yrkesskade.saksbehandling.config
 
 import com.zhokhov.graphql.datetime.GraphqlLocalDateCoercing
+import graphql.scalars.ExtendedScalars
 import graphql.schema.GraphQLScalarType
 import no.nav.yrkesskade.saksbehandling.graphql.common.scalar.InstantCoercing
 import org.springframework.context.annotation.Bean
@@ -28,5 +29,10 @@ class GraphQLScalarsConfig {
             .description("Java 8 LocalDate as scalar.")
             .coercing(GraphqlLocalDateCoercing(false, DateTimeFormatter.ISO_DATE))
             .build()
+    }
+
+    @Bean
+    fun longScalar(): GraphQLScalarType? {
+        return ExtendedScalars.GraphQLLong
     }
 }

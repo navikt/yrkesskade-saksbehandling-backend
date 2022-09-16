@@ -23,6 +23,7 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.never
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
@@ -92,8 +93,8 @@ class BehandlingServiceTest : AbstractTest() {
         val behandlinger = behandlingService.hentBehandlinger(Pageable.unpaged())
         assertThat(behandlinger.size).isEqualTo(2)
 
-        val egneBehandlinger = behandlingService.hentEgneBehandlinger(MinBehandlingsPage(Page(0, 10), Behandlingsstatus.UNDER_BEHANDLING.name))
-        assertThat(egneBehandlinger.numberOfElements).isEqualTo(1)
+        val egneBehandlingerPage = behandlingService.hentEgneBehandlinger(page = PageRequest.of(0, 10), behandlingsstatus = Behandlingsstatus.UNDER_BEHANDLING.name)
+        assertThat(egneBehandlingerPage.behandlinger.size).isEqualTo(1)
     }
 
     @Test
@@ -298,11 +299,11 @@ class BehandlingServiceTest : AbstractTest() {
         behandlingRepository.save(genererBehandling(13L, null, Behandlingsstatus.UNDER_BEHANDLING, sak, Behandlingstype.JOURNALFOERING))
 
         // when
-        val behandlinger = behandlingService.hentAapneBehandlinger(BehandlingsPage(page = Page(page = 0, size = 10), behandlingsfilter = Behandlingsfilter(behandlingstype = Behandlingstype.JOURNALFOERING.kode, null, null,)))
+        val behandlingsPage = behandlingService.hentAapneBehandlinger(behandlingsfilter = Behandlingsfilter(behandlingstype = Behandlingstype.JOURNALFOERING.kode, null, null,), page = PageRequest.of(0, 10))
 
         // then
-        assertThat(behandlinger.numberOfElements).isEqualTo(2)
-        assertThat(behandlinger.first().behandlingstype).isEqualTo("Journalføring")
+        assertThat(behandlingsPage.behandlinger.size).isEqualTo(2)
+        assertThat(behandlingsPage.behandlinger.first().behandlingstype).isEqualTo("Journalføring")
     }
 
     @Test
@@ -314,11 +315,11 @@ class BehandlingServiceTest : AbstractTest() {
         behandlingRepository.save(genererBehandling(13L, null, Behandlingsstatus.UNDER_BEHANDLING, sak, Behandlingstype.JOURNALFOERING))
 
         // when
-        val behandlinger = behandlingService.hentAapneBehandlinger(BehandlingsPage(page = Page(page = 0, size = 10), behandlingsfilter = Behandlingsfilter(behandlingstype = null, null, status = Behandlingsstatus.UNDER_BEHANDLING.kode)))
+        val behandlingsPage = behandlingService.hentAapneBehandlinger(behandlingsfilter = Behandlingsfilter(behandlingstype = null, null, status = Behandlingsstatus.UNDER_BEHANDLING.kode), page = PageRequest.of(0, 10))
 
         // then
-        assertThat(behandlinger.numberOfElements).isEqualTo(2)
-        assertThat(behandlinger.first().status).isEqualTo("Under behandling")
+        assertThat(behandlingsPage.behandlinger.size).isEqualTo(2)
+        assertThat(behandlingsPage.behandlinger.first().status).isEqualTo("Under behandling")
     }
 
     @Test
@@ -330,11 +331,11 @@ class BehandlingServiceTest : AbstractTest() {
         behandlingRepository.save(genererBehandling(13L, null, Behandlingsstatus.UNDER_BEHANDLING, sak, Behandlingstype.JOURNALFOERING))
 
         // when
-        val behandlinger = behandlingService.hentAapneBehandlinger(BehandlingsPage(page = Page(page = 0, size = 10), behandlingsfilter = Behandlingsfilter(behandlingstype = null, dokumentkategori = "enFinKategori", status = null)))
+        val behandlingsPage = behandlingService.hentAapneBehandlinger(behandlingsfilter = Behandlingsfilter(behandlingstype = null, dokumentkategori = "enFinKategori", status = null), page = PageRequest.of(0, 10))
 
         // then
-        assertThat(behandlinger.numberOfElements).isEqualTo(4)
-        assertThat(behandlinger.first().dokumentkategori).isEqualTo("enFinKategori")
+        assertThat(behandlingsPage.behandlinger.size).isEqualTo(4)
+        assertThat(behandlingsPage.behandlinger.first().dokumentkategori).isEqualTo("enFinKategori")
     }
 
 }

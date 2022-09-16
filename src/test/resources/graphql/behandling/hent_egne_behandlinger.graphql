@@ -1,11 +1,12 @@
 query {
-  hentEgneBehandlinger(minBehandlingsPage: {
+  hentEgneBehandlinger(
     page: {
         size: 10,
         page: 1
-    }
   }
   ) {
-    behandlingId
+    behandlinger {
+        behandlingId
+    }
   }
 }

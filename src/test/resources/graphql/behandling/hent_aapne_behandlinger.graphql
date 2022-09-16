@@ -1,11 +1,12 @@
 query {
-  hentAapneBehandlinger(behandlingsPage: {
+  hentAapneBehandlinger(
         page: {
             size: 10,
             page: 0
         }
-    }
   ) {
-    behandlingId
+    behandlinger {
+        behandlingId
+    }
   }
 }
