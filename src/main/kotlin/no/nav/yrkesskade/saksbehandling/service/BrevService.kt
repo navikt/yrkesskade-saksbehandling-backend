@@ -30,7 +30,7 @@ class BrevService(
         return when (behandling.brukerIdType) {
             BrukerIdType.FNR -> behandling.brukerId
             BrukerIdType.AKTOERID -> hentFoedselsnummerFraPdl(behandling.brukerId)
-            else -> throw RuntimeException("Utsending av brev for brukerIdType ${behandling.brukerIdType} støttes ikke")
+            else -> throw IllegalArgumentException("Utsending av brev for brukerIdType ${behandling.brukerIdType} støttes ikke")
         }
     }
 

@@ -85,7 +85,7 @@ internal class BrevServiceMockTest {
                 brukerIdType = BrukerIdType.ORGNR
             )
         }
-        val runtimeException = assertThrows<RuntimeException> {
+        val runtimeException = assertThrows<IllegalArgumentException> {
             brevService.sendTilBrevutsending(1, brev)
         }
         assertThat(runtimeException.localizedMessage).isEqualTo("Utsending av brev for brukerIdType ${BrukerIdType.ORGNR.name} støttes ikke")
