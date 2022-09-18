@@ -62,6 +62,7 @@ internal class BrevServiceMockTest {
         brevService.sendTilBrevutsending(1, brev)
 
         verify(exactly = 1) { brevutsendingClientMock.sendTilBrevutsending(any()) }
+        verify(exactly = 1) { pdlClientMock.hentIdenter(any(), any(), any()) }
     }
 
     @Test
