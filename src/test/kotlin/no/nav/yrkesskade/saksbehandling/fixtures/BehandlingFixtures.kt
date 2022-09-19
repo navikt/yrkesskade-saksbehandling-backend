@@ -6,13 +6,13 @@ import no.nav.yrkesskade.saksbehandling.model.*
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
-fun genererBehandling(behandlingId: Long, behandlingsansvarligIdent: String?, behandlingstatus: Behandlingsstatus, sak: SakEntity, behandlingstype: Behandlingstype = Behandlingstype.VEILEDNING) : BehandlingEntity {
+fun genererBehandling(behandlingId: Long, behandlingsansvarligIdent: String?, behandlingstatus: Behandlingsstatus, sak: SakEntity, behandlingstype: Behandlingstype = Behandlingstype.VEILEDNING, opprettetTidspunkt: Instant = Instant.now()) : BehandlingEntity {
     return BehandlingEntity(
         behandlingId = behandlingId,
         opprettetAv = "test",
         endretAv = null,
         behandlingResultater = emptyList(),
-        opprettetTidspunkt = Instant.now(),
+        opprettetTidspunkt = opprettetTidspunkt,
         status = behandlingstatus,
         tema = Tema.YRK.name,
         brukerId = "12345",
@@ -21,7 +21,7 @@ fun genererBehandling(behandlingId: Long, behandlingsansvarligIdent: String?, be
         sak = sak,
         saksbehandlingsansvarligIdent = behandlingsansvarligIdent,
         behandlingstype = behandlingstype,
-        behandlingsfrist = Instant.now().plus(30, ChronoUnit.DAYS),
+        behandlingsfrist = opprettetTidspunkt.plus(30, ChronoUnit.DAYS),
         journalpostId = "213123123",
         dokumentkategori = "enFinKategori",
         systemreferanse = "referanse",
