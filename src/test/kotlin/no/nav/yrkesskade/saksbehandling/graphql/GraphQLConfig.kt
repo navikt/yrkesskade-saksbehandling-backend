@@ -6,7 +6,6 @@ import no.nav.yrkesskade.saksbehandling.graphql.client.saf.SafClient
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
 import no.nav.yrkesskade.saksbehandling.security.AutentisertBruker
 import no.nav.yrkesskade.saksbehandling.service.BehandlingService
-import no.nav.yrkesskade.saksbehandling.service.KodeverkService
 import no.nav.yrkesskade.saksbehandling.service.PersonService
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.Bean
@@ -33,12 +32,9 @@ class GraphQLConfig {
     @MockBean
     lateinit var pdlClient: PdlClient
 
-    @MockBean
-    lateinit var kodeverkService: KodeverkService
-
     @Bean
     fun behandlingService(): BehandlingService {
-        return BehandlingService(autentisertBruker, behandlingRepository, dokarkivClient, safClient, kodeverkService)
+        return BehandlingService(autentisertBruker, behandlingRepository, dokarkivClient, safClient)
     }
 
     @Bean

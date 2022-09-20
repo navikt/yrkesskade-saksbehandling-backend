@@ -3,19 +3,18 @@ package no.nav.yrkesskade.saksbehandling.graphql
 import com.graphql.spring.boot.test.GraphQLTest
 import com.graphql.spring.boot.test.GraphQLTestTemplate
 import no.nav.yrkesskade.saksbehandling.config.GraphQLScalarsConfig
-import no.nav.yrkesskade.saksbehandling.fixtures.*
+import no.nav.yrkesskade.saksbehandling.fixtures.genererBehandling
+import no.nav.yrkesskade.saksbehandling.fixtures.genererSak
 import no.nav.yrkesskade.saksbehandling.model.Behandlingsstatus
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
 import no.nav.yrkesskade.saksbehandling.security.AutentisertBruker
 import no.nav.yrkesskade.saksbehandling.service.BehandlingService
-import no.nav.yrkesskade.saksbehandling.service.KodeverkService
 import no.nav.yrkesskade.saksbehandling.test.AbstractTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.mockito.kotlin.any
-import org.mockito.kotlin.eq
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
 import org.springframework.data.domain.PageImpl
@@ -37,18 +36,9 @@ class BehandlingQueryResolverTest : AbstractTest() {
     @Autowired
     lateinit var autentisertBruker: AutentisertBruker
 
-    @Autowired
-    lateinit var kodeverkService: KodeverkService
-
     @BeforeEach
     fun startup() {
-        Mockito.`when`(kodeverkService.hentKodeverk(eq("behandlingstype"), eq(null), any())).thenReturn(behandlingstyper())
-        Mockito.`when`(kodeverkService.hentKodeverk(eq("behandlingsstatus"), eq(null), any())).thenReturn(
-            behandlingsstatus()
-        )
-        Mockito.`when`(kodeverkService.hentKodeverk(eq("framdriftsstatus"), eq(null), any())).thenReturn(
-            framdriftsstatus()
-        )
+
     }
 
     @Test
