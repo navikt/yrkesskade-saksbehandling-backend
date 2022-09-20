@@ -41,9 +41,6 @@ class BehandlingServiceTest : AbstractTest() {
     @MockBean
     lateinit var safClient: SafClient
 
-    @MockBean
-    lateinit var kodeverkService: KodeverkService
-
     @Autowired
     lateinit var behandlingService: BehandlingService
 
@@ -60,14 +57,6 @@ class BehandlingServiceTest : AbstractTest() {
         resetDatabase()
         sak = genererSak()
         sak = sakRepository.save(sak)
-
-        Mockito.`when`(kodeverkService.hentKodeverk(eq("behandlingstype"), eq(null), any())).thenReturn(behandlingstyper())
-        Mockito.`when`(kodeverkService.hentKodeverk(eq("behandlingsstatus"), eq(null), any())).thenReturn(
-            behandlingsstatus()
-        )
-        Mockito.`when`(kodeverkService.hentKodeverk(eq("framdriftsstatus"), eq(null), any())).thenReturn(
-            framdriftsstatus()
-        )
     }
 
     @Transactional
@@ -258,9 +247,6 @@ class BehandlingServiceTest : AbstractTest() {
     @Test
     fun `hent behandling dtos`() {
         Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
-        Mockito.`when`(kodeverkService.hentKodeverk(eq("behandlingstype"), eq(null), any())).thenReturn(behandlingstyper())
-        Mockito.`when`(kodeverkService.hentKodeverk(eq("behandlingsstatus"), eq(null), any())).thenReturn(behandlingsstatus())
-        Mockito.`when`(kodeverkService.hentKodeverk(eq("framdriftsstatus"), eq(null), any())).thenReturn(framdriftsstatus())
 
         behandlingRepository.save(genererBehandling(1L, "test", Behandlingsstatus.IKKE_PAABEGYNT, sak))
 
