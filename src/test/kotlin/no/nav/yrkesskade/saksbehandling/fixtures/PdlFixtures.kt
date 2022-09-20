@@ -2,9 +2,11 @@ package no.nav.yrkesskade.meldingmottak.fixtures
 
 import com.expediagroup.graphql.client.jackson.types.JacksonGraphQLResponse
 import com.expediagroup.graphql.client.types.GraphQLClientResponse
-import com.expediagroup.graphql.generated.HentAdresse
 import com.expediagroup.graphql.generated.HentIdenter
 import com.expediagroup.graphql.generated.HentPerson
+import com.expediagroup.graphql.generated.enums.IdentGruppe
+import com.expediagroup.graphql.generated.hentidenter.IdentInformasjon
+import com.expediagroup.graphql.generated.hentidenter.Identliste
 
 
 fun okResponsPersonFraPdl(): GraphQLClientResponse<HentPerson.Result> {
@@ -87,3 +89,15 @@ fun okResponsStrengtFortroligPersonFraPdl(): GraphQLClientResponse<HentPerson.Re
         extensions = emptyMap()
     )
 }
+
+fun hentIdenterResultMedFnrUtenHistorikk(): HentIdenter.Result {
+    return HentIdenter.Result(gyldigIdentlisteUtenFnrHistorikk())
+}
+
+fun gyldigIdentlisteUtenFnrHistorikk() = Identliste(listOf(identInformasjon_Fnr()))
+
+fun identInformasjon_Fnr() = IdentInformasjon(
+    ident = "33333333333",
+    historisk = false,
+    gruppe = IdentGruppe.FOLKEREGISTERIDENT
+)

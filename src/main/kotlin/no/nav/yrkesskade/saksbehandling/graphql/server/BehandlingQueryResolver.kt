@@ -19,7 +19,7 @@ class BehandlingQueryResolver(
     fun hentEgneBehandlinger(behandlingsstatus: String?, page: Page) = behandlingService.hentEgneBehandlinger(page = page.tilPageRequest(), behandlingsstatus = behandlingsstatus)
 
     fun hentBehandling(behandlingId: Long) : DetaljertBehandling {
-        return behandlingService.hentBehandling(behandlingId)
+        return behandlingService.hentDetaljertBehandling(behandlingId)
     }
 
     fun antallBehandlinger() = behandlingService.hentAntallBehandlinger()
