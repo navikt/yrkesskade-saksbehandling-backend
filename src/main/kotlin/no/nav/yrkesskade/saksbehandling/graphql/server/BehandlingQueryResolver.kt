@@ -34,7 +34,7 @@ class BehandlingQueryResolver(
     }
 
     fun hentBehandling(behandlingId: Long) : DetaljertBehandling {
-        return behandlingService.hentBehandling(behandlingId)
+        return behandlingService.hentDetaljertBehandling(behandlingId)
     }
 
     fun antallBehandlinger() = behandlingService.hentAntallBehandlinger()

@@ -45,8 +45,8 @@ class BehandlingService(
         }
     }
 
-    fun hentBehandling(behandlingId: Long): DetaljertBehandling {
-        val behandling = behandlingRepository.findById(behandlingId).orElseThrow()
+    fun hentDetaljertBehandling(behandlingId: Long): DetaljertBehandling {
+        val behandling = hentBehandling(behandlingId)
 
         val journalpostResult = safClient.hentOppdatertJournalpost(behandling.journalpostId)
         val dokumenter = if (journalpostResult?.journalpost?.dokumenter != null) {
@@ -121,7 +121,7 @@ class BehandlingService(
 
     @Transactional
     fun overtaBehandling(behandlingId: Long): BehandlingDto {
-        val behandling = behandlingRepository.findById(behandlingId).orElseThrow()
+        val behandling = hentBehandling(behandlingId)
 
         // sjekk at behandling ikke allerede tilhører en annen saksbehandler
         if (behandling.saksbehandlingsansvarligIdent != null && behandling.saksbehandlingsansvarligIdent != autentisertBruker.preferredUsername) {
@@ -140,7 +140,7 @@ class BehandlingService(
 
     @Transactional
     fun ferdigstillBehandling(ferdigstillBehandling: FerdigstillBehandling) : BehandlingDto {
-        val behandling = behandlingRepository.findById(ferdigstillBehandling.behandlingId).orElseThrow()
+        val behandling = hentBehandling(ferdigstillBehandling.behandlingId)
 
         // kan kun ferdigstille behandling som har status UNDER_BEHANDLING
         if (behandling.status != Behandlingsstatus.UNDER_BEHANDLING) {
@@ -203,7 +203,7 @@ class BehandlingService(
 
     @Transactional
     fun leggTilbakeBehandling(behandlingId: Long): BehandlingDto {
-        val behandling = behandlingRepository.findById(behandlingId).orElseThrow()
+        val behandling = hentBehandling(behandlingId)
 
         if (behandling.saksbehandlingsansvarligIdent == null) {
             throw IllegalStateException("${behandling.behandlingId} er ikke tildelt")
@@ -218,5 +218,9 @@ class BehandlingService(
 
         val kodeverkHolder = KodeverkHolder.init(kodeverkService = kodeverkService)
         return BehandlingDto.fromEntity(behandlingRepository.save(oppdatertBehandling), KodeverdiMapper(kodeverkHolder))
+    }
+
+    fun hentBehandling(behandlingId: Long): BehandlingEntity {
+        return behandlingRepository.findById(behandlingId).orElseThrow()
     }
 }

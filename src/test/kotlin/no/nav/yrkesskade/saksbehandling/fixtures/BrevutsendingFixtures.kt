@@ -3,6 +3,7 @@ package no.nav.yrkesskade.saksbehandling.fixtures
 import no.nav.yrkesskade.saksbehandling.model.Brev
 import no.nav.yrkesskade.saksbehandling.model.BrevutsendingBestiltHendelse
 import no.nav.yrkesskade.saksbehandling.model.BrevutsendingMetadata
+import no.nav.yrkesskade.saksbehandling.model.Mottaker
 import no.nav.yrkesskade.saksbehandling.model.pdf.PdfData
 import no.nav.yrkesskade.saksbehandling.model.pdf.PdfInnholdElement
 import no.nav.yrkesskade.saksbehandling.model.pdf.PdfTekstElement
@@ -29,8 +30,8 @@ fun brevutsendingBestiltHendelse(): BrevutsendingBestiltHendelse {
                 )
             )
         ),
+        mottaker = Mottaker(foedselsnummer = "012345678910"),
         metadata = BrevutsendingMetadata(
-            innkommendeJournalpostId = "12345678",
             tidspunktBestilt = Instant.now(),
             navCallId = UUID.randomUUID().toString()
         )
