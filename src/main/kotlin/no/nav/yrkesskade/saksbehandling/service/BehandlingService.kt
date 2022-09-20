@@ -29,8 +29,7 @@ class BehandlingService(
     private val autentisertBruker: AutentisertBruker,
     private val behandlingRepository: BehandlingRepository,
     private val dokarkivClient: DokarkivClient,
-    @Qualifier("safClient") private val safClient: ISafClient,
-    private val kodeverkService: KodeverkService
+    @Qualifier("safClient") private val safClient: ISafClient
 ) {
 
     companion object {
@@ -86,18 +85,16 @@ class BehandlingService(
 
     fun hentBehandlinger(page: Pageable): Page<BehandlingDto> {
         val behandlingEntities = behandlingRepository.findAll(page)
-        val kodeverkHolder = KodeverkHolder.init(kodeverkService = kodeverkService)
-        return behandlingEntities.map { BehandlingDto.fromEntity(it, KodeverdiMapper(kodeverkHolder)) }
+        return behandlingEntities.map { BehandlingDto.fromEntity(it) }
     }
 
     fun hentAapneBehandlinger(behandlingsfilter: Behandlingsfilter?, page: Pageable): BehandlingsPage {
         val status = Behandlingsstatus.fromKode(behandlingsfilter?.status.orEmpty())
         val behandlingstype = Behandlingstype.fromKode(behandlingsfilter?.behandlingstype.orEmpty())
         val behandlingEntities = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(status, behandlingsfilter?.dokumentkategori, behandlingstype, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), false, page)
-        val kodeverkHolder = KodeverkHolder.init(kodeverkService = kodeverkService)
 
         return BehandlingsPage(
-            behandlinger = behandlingEntities.content.map { BehandlingDto.fromEntity(it, KodeverdiMapper(kodeverkHolder)) },
+            behandlinger = behandlingEntities.content.map { BehandlingDto.fromEntity(it) },
             antallSider = behandlingEntities.totalPages,
             gjeldendeSide = page.pageNumber,
             totaltAntallBehandlinger = behandlingEntities.totalElements
@@ -109,10 +106,9 @@ class BehandlingService(
     fun hentEgneBehandlinger(behandlingsstatus: String?, page: Pageable) : BehandlingsPage {
         val status = Behandlingsstatus.valueOfOrNull(behandlingsstatus.orEmpty()) ?: Behandlingsstatus.UNDER_BEHANDLING
         val behandlingEntities = behandlingRepository.findBySaksbehandlingsansvarligIdentAndStatus(autentisertBruker.preferredUsername, status, page)
-        val kodeverkHolder = KodeverkHolder.init(kodeverkService = kodeverkService)
 
         return BehandlingsPage(
-            behandlinger = behandlingEntities.content.map { BehandlingDto.fromEntity(it, KodeverdiMapper(kodeverkHolder)) },
+            behandlinger = behandlingEntities.content.map { BehandlingDto.fromEntity(it)},
             antallSider = behandlingEntities.totalPages,
             gjeldendeSide = page.pageNumber,
             totaltAntallBehandlinger = behandlingEntities.totalElements
@@ -134,8 +130,7 @@ class BehandlingService(
             endretAv = autentisertBruker.preferredUsername
         )
 
-        val kodeverkHolder = KodeverkHolder.init(kodeverkService = kodeverkService)
-        return BehandlingDto.fromEntity(behandlingRepository.save(oppdatertBehandling), KodeverdiMapper(kodeverkHolder))
+        return BehandlingDto.fromEntity(behandlingRepository.save(oppdatertBehandling))
     }
 
     @Transactional
@@ -158,9 +153,8 @@ class BehandlingService(
             endretAv = autentisertBruker.preferredUsername
         )
 
-        val kodeverkHolder = KodeverkHolder.init(kodeverkService = kodeverkService)
         val lagretBehandling = behandlingRepository.save(oppdatertBehandling)
-        val lagretBehandlingDto = BehandlingDto.fromEntity(lagretBehandling, KodeverdiMapper(kodeverkHolder))
+        val lagretBehandlingDto = BehandlingDto.fromEntity(lagretBehandling)
 
         if (lagretBehandling.behandlingstype == Behandlingstype.JOURNALFOERING) {
             dokarkivClient.ferdigstillJournalpost(behandling.journalpostId,
@@ -216,8 +210,7 @@ class BehandlingService(
 
         val oppdatertBehandling = behandling.copy(saksbehandlingsansvarligIdent = null, endretAv = autentisertBruker.preferredUsername)
 
-        val kodeverkHolder = KodeverkHolder.init(kodeverkService = kodeverkService)
-        return BehandlingDto.fromEntity(behandlingRepository.save(oppdatertBehandling), KodeverdiMapper(kodeverkHolder))
+        return BehandlingDto.fromEntity(behandlingRepository.save(oppdatertBehandling))
     }
 
     fun hentBehandling(behandlingId: Long): BehandlingEntity {

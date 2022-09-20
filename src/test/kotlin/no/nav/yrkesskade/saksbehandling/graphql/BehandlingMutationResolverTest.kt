@@ -32,21 +32,12 @@ class BehandlingMutationResolverTest : AbstractTest() {
     @Autowired
     lateinit var autentisertBruker: AutentisertBruker
 
-    @Autowired
-    lateinit var kodeverkService: KodeverkService
-
     private val aapenBehandling: BehandlingEntity = genererBehandling(1L, null, Behandlingsstatus.IKKE_PAABEGYNT, genererSak())
     private val paabegyntBehandling: BehandlingEntity = genererBehandling(1L, "test", Behandlingsstatus.UNDER_BEHANDLING, genererSak())
 
     @BeforeEach
     fun startup() {
-        Mockito.`when`(kodeverkService.hentKodeverk(eq("behandlingstype"), eq(null), any())).thenReturn(behandlingstyper())
-        Mockito.`when`(kodeverkService.hentKodeverk(eq("behandlingsstatus"), eq(null), any())).thenReturn(
-            behandlingsstatus()
-        )
-        Mockito.`when`(kodeverkService.hentKodeverk(eq("framdriftsstatus"), eq(null), any())).thenReturn(
-            framdriftsstatus()
-        )
+
     }
 
     @Test
@@ -57,7 +48,7 @@ class BehandlingMutationResolverTest : AbstractTest() {
         }
         val response = graphQLTestTemplate.postForResource("graphql/behandling/overta_behandling.graphql")
         assertThat(response.statusCode.is2xxSuccessful).isTrue
-        assertThat(response.get("$.data.overtaBehandling.status")).isEqualTo("Under behandling")
+        assertThat(response.get("$.data.overtaBehandling.status")).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING.kode)
     }
 
     @Test
@@ -90,7 +81,7 @@ class BehandlingMutationResolverTest : AbstractTest() {
         }
         val response = graphQLTestTemplate.postForResource("graphql/behandling/ferdigstill_behandling.graphql")
         assertThat(response.statusCode.is2xxSuccessful).isTrue
-        assertThat(response.get("$.data.ferdigstillBehandling.status")).isEqualTo("Ferdig")
+        assertThat(response.get("$.data.ferdigstillBehandling.status")).isEqualTo(Behandlingsstatus.FERDIG.kode)
     }
 
     @Test
@@ -134,7 +125,7 @@ class BehandlingMutationResolverTest : AbstractTest() {
         }
         val response = graphQLTestTemplate.postForResource("graphql/behandling/ferdigstill_journalfoering_behandling.graphql")
         assertThat(response.statusCode.is2xxSuccessful).isTrue
-        assertThat(response.get("$.data.ferdigstillBehandling.status")).isEqualTo("Ferdig")
+        assertThat(response.get("$.data.ferdigstillBehandling.status")).isEqualTo(Behandlingsstatus.FERDIG.kode)
     }
 
     @Test
@@ -148,6 +139,6 @@ class BehandlingMutationResolverTest : AbstractTest() {
 
         val response = graphQLTestTemplate.postForResource("graphql/behandling/legg_tilbake_behandling.graphql")
         assertThat(response.statusCode.is2xxSuccessful).isTrue
-        assertThat(response.get("$.data.leggTilbakeBehandling.status")).isEqualTo("Under behandling")
+        assertThat(response.get("$.data.leggTilbakeBehandling.status")).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING.kode)
     }
 }
