@@ -62,6 +62,8 @@ internal class BehandlingControllerTest : AbstractTest() {
 
     var behandlingId: Long = 0
 
+    var jwt: String = ""
+
     @BeforeEach
     fun setUp() {
         resetDatabase()
@@ -81,6 +83,10 @@ internal class BehandlingControllerTest : AbstractTest() {
         Mockito.`when`(pdlClient.hentIdenter(eq("12345"), eq(listOf(IdentGruppe.FOLKEREGISTERIDENT)), eq(false))).thenReturn(
             hentIdenterResultMedFnrUtenHistorikk()
         )
+        val tekstBytes = "Dette er en test".toByteArray(Charsets.UTF_8)
+        Mockito.`when`(jsonToPdfClient.genererPdfFraJson(any())).thenReturn(tekstBytes)
+
+        jwt = token("azuread", "test@nav.test.no", "aad-client-id")
     }
 
     @Transactional
@@ -91,21 +97,37 @@ internal class BehandlingControllerTest : AbstractTest() {
 
     @Test
     fun `send tannlegeerklæring veiledningsbrev`() {
-        val tekstBytes = "Dette er en test".toByteArray(Charsets.UTF_8)
-        Mockito.`when`(jsonToPdfClient.genererPdfFraJson(any())).thenReturn(tekstBytes)
-
-        val jwt = token("azuread", "test@nav.test.no", "aad-client-id")
-        val brevSomStreng = tannlegeerklaeringVeiledningbrev()
-        val brev = jacksonObjectMapper().readValue(brevSomStreng, Brev::class.java)
-        Assertions.assertThat(brev).isNotNull
+        val brevSomStreng = hentTannlegeerklaeringVeiledningbrev()
 
         mvc.perform(
-            MockMvcRequestBuilders.post("$PATH/{behandlingId}", behandlingId)
+            MockMvcRequestBuilders.post("$PATH/{behandlingId}/brev", behandlingId)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer $jwt")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding(Charsets.UTF_8)
                 .content(brevSomStreng)
         ).andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isAccepted)
+    }
+
+    @Test
+    fun `send tannlegeerklæring veiledningsbrev - ikkeeksisterende behandlingId`() {
+        val brevSomStreng = hentTannlegeerklaeringVeiledningbrev()
+        val ikkeeksisterendeBehandlingId = 999999
+
+        mvc.perform(
+            MockMvcRequestBuilders.post("$PATH/{behandlingId}/brev", ikkeeksisterendeBehandlingId)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer $jwt")
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding(Charsets.UTF_8)
+                .content(brevSomStreng)
+        ).andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().is4xxClientError)
+    }
+
+    private fun hentTannlegeerklaeringVeiledningbrev(): String {
+        val brevSomStreng = tannlegeerklaeringVeiledningbrev()
+        val brev = jacksonObjectMapper().readValue(brevSomStreng, Brev::class.java)
+        Assertions.assertThat(brev).isNotNull
+        return brevSomStreng
     }
 }

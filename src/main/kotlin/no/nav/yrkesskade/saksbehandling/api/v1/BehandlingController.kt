@@ -20,7 +20,7 @@ class BehandlingController(
     private val brevService: BrevService
 ) {
 
-    @PostMapping(path = ["{behandlingId}"], consumes = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(path = ["{behandlingId}/brev"], consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun opprettBrev(
         @Parameter(description = "brev data som skal brukes til å generere PDF") @RequestBody brev: Brev,
         @Parameter(description = "Id på behandlingen som skal få distribuert brev") @PathVariable behandlingId: Long

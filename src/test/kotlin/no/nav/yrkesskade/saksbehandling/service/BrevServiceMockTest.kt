@@ -62,6 +62,7 @@ internal class BrevServiceMockTest {
         brevService.sendTilBrevutsending(1, brev)
 
         verify(exactly = 1) { brevutsendingClientMock.sendTilBrevutsending(any()) }
+        verify(exactly = 1) { pdlClientMock.hentIdenter(any(), any(), any()) }
     }
 
     @Test
@@ -85,7 +86,7 @@ internal class BrevServiceMockTest {
                 brukerIdType = BrukerIdType.ORGNR
             )
         }
-        val runtimeException = assertThrows<RuntimeException> {
+        val runtimeException = assertThrows<IllegalArgumentException> {
             brevService.sendTilBrevutsending(1, brev)
         }
         assertThat(runtimeException.localizedMessage).isEqualTo("Utsending av brev for brukerIdType ${BrukerIdType.ORGNR.name} støttes ikke")

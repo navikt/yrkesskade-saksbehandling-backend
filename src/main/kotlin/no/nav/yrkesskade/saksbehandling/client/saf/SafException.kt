@@ -1,5 +1,3 @@
 package no.nav.yrkesskade.saksbehandling.client.saf
 
-class SafException : Exception {
-    constructor(message: String?) : super(message)
-}
+class SafException(message: String?) : Exception(message)
