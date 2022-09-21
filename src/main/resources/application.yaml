@@ -43,6 +43,12 @@ spring:
         ddl-auto: none
   codec:
     max-in-memory-size: 16MB # øker max størrelse på input streams i en WebClient
+  cloud:
+    gcp:
+      bigquery:
+        dataset-name: yrkesskade_metrikker
+        project-id: ${GCP_TEAM_PROJECT_ID}
+        enabled: true
 
 no.nav.security.jwt:
   issuer:
