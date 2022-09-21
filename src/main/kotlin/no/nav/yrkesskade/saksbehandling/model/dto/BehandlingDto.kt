@@ -30,7 +30,7 @@ data class BehandlingDto(
 ) {
 
     companion object {
-        fun fromEntity(entity: BehandlingEntity, kodeverdiMapper: KodeverdiMapper): BehandlingDto {
+        fun fromEntity(entity: BehandlingEntity): BehandlingDto {
             return BehandlingDto(
                 entity.behandlingId,
                 entity.tema,
@@ -38,14 +38,14 @@ data class BehandlingDto(
                 entity.brukerIdType,
                 entity.behandlendeEnhet,
                 entity.saksbehandlingsansvarligIdent,
-                kodeverdiMapper.mapBehandlingstype(entity.behandlingstype),
-                kodeverdiMapper.mapBehandlingsstatus(entity.status),
+                entity.behandlingstype.kode,
+                entity.status.kode,
                 entity.behandlingsfrist,
                 entity.journalpostId,
                 entity.utgaaendeJournalpostId,
                 entity.dokumentkategori,
                 entity.systemreferanse,
-                kodeverdiMapper.mapFramdriftsstatus(entity.framdriftsstatus),
+                entity.framdriftsstatus.kode,
                 entity.opprettetTidspunkt,
                 entity.opprettetAv,
                 entity.endretAv,

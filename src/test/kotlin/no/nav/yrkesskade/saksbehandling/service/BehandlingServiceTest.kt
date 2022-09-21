@@ -7,6 +7,7 @@ import no.nav.yrkesskade.saksbehandling.graphql.client.saf.SafClient
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.*
 import no.nav.yrkesskade.saksbehandling.model.Behandlingsstatus
 import no.nav.yrkesskade.saksbehandling.model.Behandlingstype
+import no.nav.yrkesskade.saksbehandling.model.Framdriftsstatus
 import no.nav.yrkesskade.saksbehandling.model.SakEntity
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
 import no.nav.yrkesskade.saksbehandling.repository.SakRepository
@@ -19,7 +20,6 @@ import org.junit.jupiter.api.assertThrows
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito
 import org.mockito.kotlin.any
-import org.mockito.kotlin.eq
 import org.mockito.kotlin.never
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -41,9 +41,6 @@ class BehandlingServiceTest : AbstractTest() {
     @MockBean
     lateinit var safClient: SafClient
 
-    @MockBean
-    lateinit var kodeverkService: KodeverkService
-
     @Autowired
     lateinit var behandlingService: BehandlingService
 
@@ -60,14 +57,6 @@ class BehandlingServiceTest : AbstractTest() {
         resetDatabase()
         sak = genererSak()
         sak = sakRepository.save(sak)
-
-        Mockito.`when`(kodeverkService.hentKodeverk(eq("behandlingstype"), eq(null), any())).thenReturn(behandlingstyper())
-        Mockito.`when`(kodeverkService.hentKodeverk(eq("behandlingsstatus"), eq(null), any())).thenReturn(
-            behandlingsstatus()
-        )
-        Mockito.`when`(kodeverkService.hentKodeverk(eq("framdriftsstatus"), eq(null), any())).thenReturn(
-            framdriftsstatus()
-        )
     }
 
     @Transactional
@@ -78,7 +67,7 @@ class BehandlingServiceTest : AbstractTest() {
 
     @Test
     fun `lagre behandling`() {
-        var behandling = genererBehandling(1L, "test", Behandlingsstatus.IKKE_PAABEGYNT, sak)
+        val behandling = genererBehandling(1L, "test", Behandlingsstatus.IKKE_PAABEGYNT, sak)
         behandlingService.lagreBehandling(behandling)
         val behandlinger = behandlingService.hentBehandlinger(Pageable.unpaged())
         assertThat(behandlinger.size).isEqualTo(1)
@@ -146,7 +135,7 @@ class BehandlingServiceTest : AbstractTest() {
 
         val lagretBehandling = behandlingService.overtaBehandling(behandling.behandlingId)
         assertThat(lagretBehandling.saksbehandlingsansvarligIdent).isEqualTo("test")
-        assertThat(lagretBehandling.status).isEqualTo("Under behandling")
+        assertThat(lagretBehandling.status).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING.kode)
         assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
     }
 
@@ -195,7 +184,7 @@ class BehandlingServiceTest : AbstractTest() {
 
         val lagretBehandling = behandlingService.leggTilbakeBehandling(behandling.behandlingId)
         assertThat(lagretBehandling.saksbehandlingsansvarligIdent).isNull()
-        assertThat(lagretBehandling.status).isEqualTo("Under behandling")
+        assertThat(lagretBehandling.status).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING.kode)
         assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
     }
 
@@ -209,7 +198,7 @@ class BehandlingServiceTest : AbstractTest() {
 
         val lagretBehandling = behandlingService.ferdigstillBehandling(FerdigstillBehandling(behandling.behandlingId))
         assertThat(lagretBehandling.saksbehandlingsansvarligIdent).isEqualTo("test")
-        assertThat(lagretBehandling.status).isEqualTo("Ferdig")
+        assertThat(lagretBehandling.status).isEqualTo(Behandlingsstatus.FERDIG.kode)
         assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(2)
         Mockito.verify(dokarkivClient).ferdigstillJournalpost(any(), any())
     }
@@ -224,7 +213,7 @@ class BehandlingServiceTest : AbstractTest() {
 
         val lagretBehandling = behandlingService.ferdigstillBehandling(FerdigstillBehandling(behandling.behandlingId))
         assertThat(lagretBehandling.saksbehandlingsansvarligIdent).isEqualTo("test")
-        assertThat(lagretBehandling.status).isEqualTo("Ferdig")
+        assertThat(lagretBehandling.status).isEqualTo(Behandlingsstatus.FERDIG.kode)
         assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
         Mockito.verify(dokarkivClient, never()).ferdigstillJournalpost(any(), any())
     }
@@ -258,9 +247,6 @@ class BehandlingServiceTest : AbstractTest() {
     @Test
     fun `hent behandling dtos`() {
         Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
-        Mockito.`when`(kodeverkService.hentKodeverk(eq("behandlingstype"), eq(null), any())).thenReturn(behandlingstyper())
-        Mockito.`when`(kodeverkService.hentKodeverk(eq("behandlingsstatus"), eq(null), any())).thenReturn(behandlingsstatus())
-        Mockito.`when`(kodeverkService.hentKodeverk(eq("framdriftsstatus"), eq(null), any())).thenReturn(framdriftsstatus())
 
         behandlingRepository.save(genererBehandling(1L, "test", Behandlingsstatus.IKKE_PAABEGYNT, sak))
 
@@ -274,14 +260,14 @@ class BehandlingServiceTest : AbstractTest() {
         assertThat(dto.brukerIdType).isEqualTo(BrukerIdType.AKTOERID)
         assertThat(dto.behandlendeEnhet).isEqualTo("9999")
         assertThat(dto.saksbehandlingsansvarligIdent).isEqualTo("test")
-        assertThat(dto.behandlingstype).isEqualTo("Veiledning")
-        assertThat(dto.status).isEqualTo("Ikke påbegynt")
+        assertThat(dto.behandlingstype).isEqualTo(Behandlingstype.VEILEDNING.kode)
+        assertThat(dto.status).isEqualTo(Behandlingsstatus.IKKE_PAABEGYNT.kode)
         assertThat(dto.behandlingsfrist.truncatedTo(ChronoUnit.DAYS))
             .isEqualTo(Instant.now().plus(30, ChronoUnit.DAYS).truncatedTo(ChronoUnit.DAYS))
         assertThat(dto.journalpostId).isEqualTo("213123123")
         assertThat(dto.dokumentkategori).isEqualTo("enFinKategori")
         assertThat(dto.systemreferanse).isEqualTo("referanse")
-        assertThat(dto.framdriftsstatus).isEqualTo("Ikke påbegynt")
+        assertThat(dto.framdriftsstatus).isEqualTo(Framdriftsstatus.IKKE_PAABEGYNT.kode)
         assertThat(dto.opprettetTidspunkt.truncatedTo(ChronoUnit.DAYS))
             .isEqualTo(Instant.now().truncatedTo(ChronoUnit.DAYS))
         assertThat(dto.opprettetAv).isEqualTo("test")
@@ -303,7 +289,7 @@ class BehandlingServiceTest : AbstractTest() {
 
         // then
         assertThat(behandlingsPage.behandlinger.size).isEqualTo(2)
-        assertThat(behandlingsPage.behandlinger.first().behandlingstype).isEqualTo("Journalføring")
+        assertThat(behandlingsPage.behandlinger.first().behandlingstype).isEqualTo(Behandlingstype.JOURNALFOERING.kode)
     }
 
     @Test
@@ -319,7 +305,7 @@ class BehandlingServiceTest : AbstractTest() {
 
         // then
         assertThat(behandlingsPage.behandlinger.size).isEqualTo(2)
-        assertThat(behandlingsPage.behandlinger.first().status).isEqualTo("Under behandling")
+        assertThat(behandlingsPage.behandlinger.first().status).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING.kode)
     }
 
     @Test
