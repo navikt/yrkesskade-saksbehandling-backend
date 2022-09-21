@@ -27,16 +27,22 @@ class Dokumentmottak(
         private val logger = getLogger(javaClass.enclosingClass)
         private val secureLogger = getSecureLogger()
 
+        /**
+         * Utleder dokumentkategori basert på første dokumentinformasjon sin brevkode.
+         */
         fun utledDokumentkategori(dokumentInfos: List<DokumentInfo?>?): String {
             val dokumentkategorier: List<String?> =
-                dokumentInfos?.mapNotNull { dokumentInfo -> utledDokumentkategori(dokumentInfo?.tittel) } ?: emptyList()
-            return dokumentkategorier.firstOrNull() ?: " "
+                dokumentInfos?.mapNotNull { dokumentInfo -> utledDokumentkategori(dokumentInfo?.brevkode) } ?: emptyList()
+            return dokumentkategorier.firstOrNull() ?: "ingenBrevkode"
         }
 
-        private fun utledDokumentkategori(tittel: String?): String? =
-            when (tittel) {
-                "Tannlegeerklæring ved yrkesskade" -> "tannlegeerklaering"
-                else -> null
+        /**
+         * Koder fra https://kodeverk-web.dev.intern.nav.no/kodeverksoversikt/kodeverk/BrevkodeMottak
+         */
+        private fun utledDokumentkategori(brevkode: String?): String? =
+            when (brevkode) {
+                "NAV 13-00.08" -> "tannlegeerklaering"
+                else -> null // blir ikke mappet
             }
     }
 
@@ -50,7 +56,7 @@ class Dokumentmottak(
 
 //        val eksisterendeSak = sakService.hentSak(journalpost.bruker!!.id!!)
 
-        val behandling: BehandlingEntity = BehandlingEntity(
+        val behandling = BehandlingEntity(
             behandlingId = 0,
             tema = journalpost.tema!!.name,
             brukerId = journalpost.bruker!!.id!!,
