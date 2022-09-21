@@ -66,6 +66,21 @@ input Page {
     page: Int
 }
 
+input BehandlingSortering {
+    sortField: BehandlingSortFieldType
+    sortDirection: SortDirectionType
+}
+
+enum SortDirectionType {
+    ASC
+    DESC
+}
+
+enum BehandlingSortFieldType {
+    opprettetTidspunkt
+    behandlingsfrist
+}
+
 input Behandlingsfilter {
     behandlingstype: String
     dokumentkategori: String
@@ -87,9 +102,9 @@ input Journalfoeringdetaljer {
 }
 
 type Query {
-    hentBehandlinger(page: Page!): [Behandling]!
-    hentEgneBehandlinger(status: String, page: Page!): BehandlingsPage!
-    hentAapneBehandlinger(behandlingsfilter: Behandlingsfilter, page: Page!): BehandlingsPage!
+    hentBehandlinger(page: Page!, behandlingSortering: BehandlingSortering): [Behandling]!
+    hentEgneBehandlinger(status: String, page: Page!, behandlingSortering: BehandlingSortering): BehandlingsPage!
+    hentAapneBehandlinger(behandlingsfilter: Behandlingsfilter, page: Page!, behandlingSortering: BehandlingSortering): BehandlingsPage!
     antallBehandlinger: Int!
     hentBehandling(behandlingId: ID!): DetaljertBehandling
     hentPerson(foedselsnummer: ID!): Person!

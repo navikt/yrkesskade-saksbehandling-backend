@@ -1,0 +1,16 @@
+query {
+  hentEgneBehandlinger(
+    page: {
+        size: 10,
+        page: 1
+    },
+    behandlingSortering: {
+        sortField: behandlingsfrist,
+        sortDirection: DESC
+    }
+  ) {
+    behandlinger {
+        behandlingId
+    }
+  }
+}
