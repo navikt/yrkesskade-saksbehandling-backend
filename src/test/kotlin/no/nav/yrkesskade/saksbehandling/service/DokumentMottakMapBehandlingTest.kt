@@ -18,7 +18,7 @@ class DokumentMottakMapBehandlingTest {
     fun `returner blank når dokumentkategori ikke kan utledes`() {
         val dokumentInfos = listOf(DokumentInfo("id-99", "Dokument hvor kategori ikke kan utledes", "Brevkode xyz"))
         val dokumentkategori = Dokumentmottak.utledDokumentkategori(dokumentInfos)
-        assertThat(dokumentkategori).isEqualTo(" ")
+        assertThat(dokumentkategori).isEqualTo("ingenBrevkode")
     }
 
 }
