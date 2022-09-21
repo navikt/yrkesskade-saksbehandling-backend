@@ -61,6 +61,17 @@ class BehandlingQueryResolverTest : AbstractTest() {
     }
 
     @Test
+    fun `hent egne behandlinger med sortering`() {
+        val behandling = genererBehandling(1, "test", Behandlingsstatus.UNDER_BEHANDLING, genererSak())
+        Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
+        Mockito.`when`(behandlingRepository.findBySaksbehandlingsansvarligIdentAndStatus(any(), any(), any())).thenReturn(PageImpl(listOf(behandling)))
+
+        val response = graphQLTestTemplate.postForResource("graphql/behandling/hent_egne_behandlinger_med_sortering.graphql")
+        assertThat(response.statusCode.is2xxSuccessful).isTrue
+        assertThat(response.get("$.data.hentEgneBehandlinger.behandlinger.length()")).isEqualTo("1")
+    }
+
+    @Test
     fun `hent aapne behandlinger`() {
         // given
         val underBehandling = genererBehandling(1, "test", Behandlingsstatus.UNDER_BEHANDLING, genererSak())
