@@ -20,6 +20,8 @@ class TokenUtil(
 
     fun getAppAccessWithKodeverkScope() = getTokenForRegistration("kodeverk-maskintilmaskin")
 
+    fun getAppAccessTokenWithOppgaveScope() = getTokenForRegistration("oppgave-maskintilmaskin")
+
     private fun getTokenForRegistration(registration: String): String {
         val clientProperties = clientConfigurationProperties.registration[registration]
         val response = oAuth2AccessTokenService.getAccessToken(clientProperties)

@@ -16,4 +16,6 @@ class BehandlingMutationResolver(
 
     fun ferdigstillBehandling(ferdigstillBehandling: FerdigstillBehandling) : BehandlingDto = behandlingService.ferdigstillBehandling(ferdigstillBehandling)
     fun leggTilbakeBehandling(behandlingId: Long) : BehandlingDto = behandlingService.leggTilbakeBehandling(behandlingId)
+
+    fun overforBehandlingTilLegacy(behandlingId: Long, avviksgrunn: String): Boolean = behandlingService.overforBehandlingTilLegacy(behandlingId, avviksgrunn)
 }

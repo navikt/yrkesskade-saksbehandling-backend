@@ -3,7 +3,8 @@ package no.nav.yrkesskade.saksbehandling.model
 enum class Behandlingsstatus(val kode: String) {
     FERDIG("ferdig"),
     IKKE_PAABEGYNT("ikkePaabegynt"),
-    UNDER_BEHANDLING("underBehandling");
+    UNDER_BEHANDLING("underBehandling"),
+    OVERFOERT_LEGACY("overfoertLegacy");
 
     companion object {
         private val map = Behandlingsstatus.values().associateBy(Behandlingsstatus::kode)

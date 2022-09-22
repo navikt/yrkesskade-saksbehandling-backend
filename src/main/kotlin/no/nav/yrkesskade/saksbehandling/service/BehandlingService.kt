@@ -1,8 +1,14 @@
 package no.nav.yrkesskade.saksbehandling.service
 
 import DetaljertBehandling
+import com.expediagroup.graphql.generated.enums.BrukerIdType
+import com.expediagroup.graphql.generated.journalpost.Bruker
+import hentBrevkode
+import hentHovedDokumentTittel
 import no.nav.yrkesskade.saksbehandling.client.dokarkiv.DokarkivClient
 import no.nav.yrkesskade.saksbehandling.client.dokarkiv.FerdigstillJournalpostRequest
+import no.nav.yrkesskade.saksbehandling.client.oppgave.*
+import no.nav.yrkesskade.saksbehandling.graphql.client.pdl.PdlClient
 import no.nav.yrkesskade.saksbehandling.graphql.client.saf.ISafClient
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.BehandlingsPage
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.Behandlingsfilter
@@ -11,25 +17,29 @@ import no.nav.yrkesskade.saksbehandling.model.*
 import no.nav.yrkesskade.saksbehandling.model.dto.BehandlingDto
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
 import no.nav.yrkesskade.saksbehandling.security.AutentisertBruker
+import no.nav.yrkesskade.saksbehandling.util.FristFerdigstillelseTimeManager
 import no.nav.yrkesskade.saksbehandling.util.getLogger
-import no.nav.yrkesskade.saksbehandling.util.kodeverk.KodeverdiMapper
-import no.nav.yrkesskade.saksbehandling.util.kodeverk.KodeverkHolder
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 import java.time.ZoneOffset
-import java.time.temporal.ChronoUnit
 import java.util.*
 
 @Service
 class BehandlingService(
     private val autentisertBruker: AutentisertBruker,
     private val behandlingRepository: BehandlingRepository,
+    private val behandlingsoverfoeringLogService: BehandlingsoverfoeringLogService,
     private val dokarkivClient: DokarkivClient,
-    @Qualifier("safClient") private val safClient: ISafClient
+    private val oppgaveClient: OppgaveClient,
+    private val pdlClient: PdlClient,
+    @Qualifier("safClient") private val safClient: ISafClient,
+    @Value("\${application.pretty.name}") private val applicationShortName: String,
+    @Value("\${spring.application.name}") private val applicationName: String
 ) {
 
     companion object {
@@ -181,14 +191,14 @@ class BehandlingService(
             behandlendeEnhet = journalfoering.behandlendeEnhet,
             behandlingstype = Behandlingstype.VEILEDNING,
             status = Behandlingsstatus.IKKE_PAABEGYNT,
-            behandlingsfrist = Instant.now().plus(30, ChronoUnit.DAYS),
+            behandlingsfrist = FristFerdigstillelseTimeManager.nesteGyldigeFristForFerdigstillelseInstant(Behandlingstype.VEILEDNING, Instant.now()),
             journalpostId = journalfoering.journalpostId,
             utgaaendeJournalpostId = null,
             dokumentkategori = journalfoering.dokumentkategori,
             systemreferanse = UUID.randomUUID().toString(),
             framdriftsstatus = Framdriftsstatus.IKKE_PAABEGYNT,
             opprettetTidspunkt = Instant.now(),
-            opprettetAv = "yrkesskade-saksbehandling-backend",
+            opprettetAv = applicationName,
             behandlingResultater = emptyList(),
             sak = null,
         )
@@ -215,5 +225,80 @@ class BehandlingService(
 
     fun hentBehandling(behandlingId: Long): BehandlingEntity {
         return behandlingRepository.findById(behandlingId).orElseThrow()
+    }
+
+    /**
+     * Overfører behandling som ikke er ferdigstilt til legacy system ved hjelp av Oppgave API
+     */
+    @Transactional
+    fun overforBehandlingTilLegacy(behandligId: Long, avviksbegrunnelse: String): Boolean {
+        val behandling = hentBehandling(behandligId)
+
+        if (behandling.status == Behandlingsstatus.FERDIG) {
+            throw IllegalStateException("Behandling '${behandling.behandlingId}' er allerede ferdigstilt og kan ikke overføres")
+        }
+
+        if (behandling.status == Behandlingsstatus.OVERFOERT_LEGACY) {
+            throw IllegalStateException("Behandling '${behandling.behandlingId}' er allerede overført")
+        }
+
+        if (behandling.behandlingstype != Behandlingstype.JOURNALFOERING) {
+            throw IllegalStateException("Behandling er av type ${behandling.behandlingstype} og kan ikke oversendes. Forventet ${Behandlingstype.JOURNALFOERING}")
+        }
+
+        if (behandling.saksbehandlingsansvarligIdent != autentisertBruker.preferredUsername) {
+            throw IllegalStateException("Behandling kan kun overføres av ansvarlig saksbehandler")
+        }
+
+        val journalpostResult = safClient.hentOppdatertJournalpost(behandling.journalpostId)
+        val journalpost = journalpostResult?.journalpost
+            ?: throw IllegalStateException("Kunne ikke finne en journalpost for journalpostId: '${behandling.journalpostId} for behandling: '${behandling.behandlingId}'")
+
+        val aktoerId = hentAktoerId(journalpost.bruker)
+
+        val krutkoder = KrutkodeMapping.fromBrevkode(journalpost.hentBrevkode())
+
+        // flytt behandling til legacy
+        val journalfoeringOppgave = OpprettJournalfoeringOppgave(
+            beskrivelse = "${journalpost.hentHovedDokumentTittel()} - overført fra ${applicationShortName}",
+            journalpostId = journalpost.journalpostId,
+            aktoerId = aktoerId,
+            tema = journalpost.tema.toString(),
+            tildeltEnhetsnr = behandling.behandlendeEnhet,
+            oppgavetype = Oppgavetype.JOURNALFOERING.kortnavn,
+            behandlingstema = krutkoder.behandlingstema,
+            behandlingstype = krutkoder.behandlingstype,
+            prioritet = Prioritet.NORM,
+            fristFerdigstillelse = FristFerdigstillelseTimeManager
+                .nesteGyldigeFristForFerdigstillelseLocalDate(
+                    behandling.behandlingstype,
+                    journalpost.datoOpprettet.toInstant(
+                        ZoneOffset.UTC
+                    )
+                ),
+            aktivDato = journalpost.datoOpprettet.toLocalDate()
+        )
+
+        val oppgave = oppgaveClient.opprettOppgave(journalfoeringOppgave)
+
+        // log overføringen
+        behandlingsoverfoeringLogService.overfoerBehandling(behandling, oppgave, avviksbegrunnelse)
+
+        // hard slett behandling
+        behandlingRepository.delete(behandling)
+
+        return true
+    }
+
+    private fun hentAktoerId(bruker: Bruker?): String? {
+        if (bruker?.id.isNullOrEmpty()) {
+            logger.warn("Journalposten har ingen brukerId.")
+            return null
+        }
+        return when (bruker!!.type) {
+            BrukerIdType.AKTOERID -> bruker.id
+            BrukerIdType.FNR -> pdlClient.hentAktorId(bruker.id!!)
+            else -> throw RuntimeException("Ugyldig brukerIdType: ${bruker.type}")
+        }
     }
 }
