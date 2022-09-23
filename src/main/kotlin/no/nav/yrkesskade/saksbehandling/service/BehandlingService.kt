@@ -8,6 +8,7 @@ import hentHovedDokumentTittel
 import no.nav.yrkesskade.saksbehandling.client.dokarkiv.DokarkivClient
 import no.nav.yrkesskade.saksbehandling.client.dokarkiv.FerdigstillJournalpostRequest
 import no.nav.yrkesskade.saksbehandling.client.oppgave.*
+import no.nav.yrkesskade.saksbehandling.graphql.client.pdl.IPdlClient
 import no.nav.yrkesskade.saksbehandling.graphql.client.pdl.PdlClient
 import no.nav.yrkesskade.saksbehandling.graphql.client.saf.ISafClient
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.BehandlingsPage
@@ -36,7 +37,7 @@ class BehandlingService(
     private val behandlingsoverfoeringLogService: BehandlingsoverfoeringLogService,
     private val dokarkivClient: DokarkivClient,
     private val oppgaveClient: OppgaveClient,
-    private val pdlClient: PdlClient,
+    @Qualifier("pdlClient") private val pdlClient: IPdlClient,
     @Qualifier("safClient") private val safClient: ISafClient,
     @Value("\${application.pretty.name}") private val applicationShortName: String,
     @Value("\${spring.application.name}") private val applicationName: String
@@ -231,15 +232,11 @@ class BehandlingService(
      * Overfører behandling som ikke er ferdigstilt til legacy system ved hjelp av Oppgave API
      */
     @Transactional
-    fun overforBehandlingTilLegacy(behandligId: Long, avviksbegrunnelse: String): Boolean {
-        val behandling = hentBehandling(behandligId)
+    fun overforBehandlingTilLegacy(behandlingId: Long, avviksbegrunnelse: String): Boolean {
+        val behandling = hentBehandling(behandlingId)
 
         if (behandling.status == Behandlingsstatus.FERDIG) {
             throw IllegalStateException("Behandling '${behandling.behandlingId}' er allerede ferdigstilt og kan ikke overføres")
-        }
-
-        if (behandling.status == Behandlingsstatus.OVERFOERT_LEGACY) {
-            throw IllegalStateException("Behandling '${behandling.behandlingId}' er allerede overført")
         }
 
         if (behandling.behandlingstype != Behandlingstype.JOURNALFOERING) {
