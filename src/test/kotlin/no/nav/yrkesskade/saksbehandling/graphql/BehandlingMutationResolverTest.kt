@@ -3,15 +3,18 @@ package no.nav.yrkesskade.saksbehandling.graphql
 import com.graphql.spring.boot.test.GraphQLTest
 import com.graphql.spring.boot.test.GraphQLTestTemplate
 import no.nav.yrkesskade.saksbehandling.config.GraphQLScalarsConfig
-import no.nav.yrkesskade.saksbehandling.fixtures.*
+import no.nav.yrkesskade.saksbehandling.fixtures.genererBehandling
+import no.nav.yrkesskade.saksbehandling.fixtures.genererSak
+import no.nav.yrkesskade.saksbehandling.fixtures.okRespons
 import no.nav.yrkesskade.saksbehandling.graphql.client.saf.SafClient
-import no.nav.yrkesskade.saksbehandling.model.*
+import no.nav.yrkesskade.saksbehandling.model.BehandlingEntity
+import no.nav.yrkesskade.saksbehandling.model.BehandlingEntityFactory
 import no.nav.yrkesskade.saksbehandling.model.BehandlingEntityFactory.Companion.medBehandlingstype
-import no.nav.yrkesskade.saksbehandling.model.BehandlingEntityFactory.Companion.medFramdriftsstatus
 import no.nav.yrkesskade.saksbehandling.model.BehandlingEntityFactory.Companion.medStatus
+import no.nav.yrkesskade.saksbehandling.model.Behandlingsstatus
+import no.nav.yrkesskade.saksbehandling.model.Behandlingstype
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
 import no.nav.yrkesskade.saksbehandling.security.AutentisertBruker
-import no.nav.yrkesskade.saksbehandling.service.KodeverkService
 import no.nav.yrkesskade.saksbehandling.test.AbstractTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -19,7 +22,6 @@ import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito
 import org.mockito.kotlin.any
-import org.mockito.kotlin.eq
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
 import java.util.*
@@ -164,6 +166,6 @@ class BehandlingMutationResolverTest : AbstractTest() {
 
         // then
         assertThat(response.statusCode.is2xxSuccessful).isTrue
-        assertThat(response.get("$.data.overforBehandlingTilLegacy")).isEqualTo(true)
+        assertThat(response.get("$.data.overforBehandlingTilLegacy")).isEqualTo("true")
     }
 }
