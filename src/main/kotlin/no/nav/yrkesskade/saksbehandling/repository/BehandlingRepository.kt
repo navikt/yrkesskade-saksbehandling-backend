@@ -16,6 +16,8 @@ interface BehandlingRepository : JpaRepository<BehandlingEntity, Long> {
 
     fun findByBehandlingId(behandlingId: Long): BehandlingEntity?
 
+    fun findByJournalpostIdAndBehandlingstype(journalpostId: String, behandlingstype: Behandlingstype): BehandlingEntity?
+
     @Query("""
         SELECT b FROM BehandlingEntity b
         WHERE b.status = :status

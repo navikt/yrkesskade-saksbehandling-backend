@@ -12,8 +12,6 @@ import no.nav.yrkesskade.saksbehandling.model.dto.BehandlingDto
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
 import no.nav.yrkesskade.saksbehandling.security.AutentisertBruker
 import no.nav.yrkesskade.saksbehandling.util.getLogger
-import no.nav.yrkesskade.saksbehandling.util.kodeverk.KodeverdiMapper
-import no.nav.yrkesskade.saksbehandling.util.kodeverk.KodeverkHolder
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -23,6 +21,7 @@ import java.time.Instant
 import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
 import java.util.*
+import kotlin.NoSuchElementException
 
 @Service
 class BehandlingService(
@@ -215,5 +214,41 @@ class BehandlingService(
 
     fun hentBehandling(behandlingId: Long): BehandlingEntity {
         return behandlingRepository.findById(behandlingId).orElseThrow()
+    }
+
+    fun ferdigstillEtterFullfoertBrevutsending(behandlingId: Long, journalpostId: String) {
+        val behandling = hentBehandling(behandlingId)
+
+        if (behandling.status != Behandlingsstatus.UNDER_BEHANDLING) {
+            throw BehandlingException("Kan ikke ferdigstille behandling. Behandling har status ${behandling.status}")
+        }
+
+        if (behandling.utgaaendeJournalpostId != null) {
+            throw BehandlingException("Kan ikke ferdigstille behandling. Behandling har allerede utgående journalpostId ${behandling.utgaaendeJournalpostId}")
+        }
+
+        val ferdigstiltBehandling = behandling.copy(
+            utgaaendeJournalpostId = journalpostId,
+            status = Behandlingsstatus.FERDIG
+        )
+
+        behandlingRepository.save(ferdigstiltBehandling)
+        knyttUtgaaendeJournalpostTilVeiledningsbehandling(ferdigstiltBehandling.journalpostId, journalpostId)
+    }
+
+    private fun knyttUtgaaendeJournalpostTilVeiledningsbehandling(
+        inngaaendeJournalpostId: String,
+        utgaaendeJournalpostId: String
+    ) {
+        val korresponderendeJournalfoeringsbehandling = behandlingRepository.findByJournalpostIdAndBehandlingstype(
+            inngaaendeJournalpostId,
+            Behandlingstype.JOURNALFOERING
+        ) ?: throw NoSuchElementException("Fant ikke behandling")
+
+        behandlingRepository.save(
+            korresponderendeJournalfoeringsbehandling.copy(
+                utgaaendeJournalpostId = utgaaendeJournalpostId
+            )
+        )
     }
 }

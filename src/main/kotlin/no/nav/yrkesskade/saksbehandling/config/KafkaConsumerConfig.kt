@@ -1,5 +1,6 @@
 package no.nav.yrkesskade.saksbehandling.config
 
+import no.nav.yrkesskade.saksbehandling.model.BrevutsendingUtfoertHendelse
 import no.nav.yrkesskade.saksbehandling.model.DokumentTilSaksbehandlingHendelse
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties
 import org.springframework.context.annotation.Bean
@@ -20,6 +21,21 @@ class KafkaConsumerConfig : AbstractKafkaConfig() {
         val consumerFactory = DefaultKafkaConsumerFactory<String, DokumentTilSaksbehandlingHendelse>(consumerProperties)
 
         return ConcurrentKafkaListenerContainerFactory<String, DokumentTilSaksbehandlingHendelse>().apply {
+            this.setConsumerFactory(consumerFactory)
+            this.setCommonErrorHandler(CommonContainerStoppingErrorHandler())
+            this.setRetryTemplate(retryTemplate())
+        }
+    }
+
+    @Bean
+    fun brevutsendingUtfoertHendelseListenerContainerFactory(
+        kafkaProperties: KafkaProperties
+    ): ConcurrentKafkaListenerContainerFactory<String, BrevutsendingUtfoertHendelse> {
+
+        val consumerProperties = kafkaProperties.buildConsumerProperties()
+        val consumerFactory = DefaultKafkaConsumerFactory<String, BrevutsendingUtfoertHendelse>(consumerProperties)
+
+        return ConcurrentKafkaListenerContainerFactory<String, BrevutsendingUtfoertHendelse>().apply {
             this.setConsumerFactory(consumerFactory)
             this.setCommonErrorHandler(CommonContainerStoppingErrorHandler())
             this.setRetryTemplate(retryTemplate())

@@ -86,6 +86,7 @@ kafka:
     dokument-til-saksbehandling:
       name: yrkesskade.privat-yrkesskade-dokument-til-saksbehandling
     brevutsending-bestilt: yrkesskade.privat-yrkesskade-brevutsending-bestilt
+    brevutsending-utfoert: yrkesskade.privat-yrkesskade-brevutsending-utfoert
     aapen-oppgave-opprettet: aapen-oppgave-opprettet-v1-preprod
     aapen-oppgave-endret: aapen-oppgave-endret-v1-preprod
 

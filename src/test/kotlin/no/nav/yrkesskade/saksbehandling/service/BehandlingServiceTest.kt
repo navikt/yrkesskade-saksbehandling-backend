@@ -219,6 +219,36 @@ class BehandlingServiceTest : AbstractTest() {
     }
 
     @Test
+    fun `ferdigstill veiledingsbehandling etter brevutsending `() {
+        Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
+        var journalfoeringsbehandling = genererBehandling(1L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak, Behandlingstype.JOURNALFOERING)
+        journalfoeringsbehandling = behandlingRepository.save(journalfoeringsbehandling)
+        assertThat(journalfoeringsbehandling.status).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING)
+        assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
+
+        var veiledningsbehandling = genererBehandling(2L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak, Behandlingstype.VEILEDNING)
+        veiledningsbehandling = behandlingRepository.save(veiledningsbehandling)
+        assertThat(veiledningsbehandling.status).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING)
+        assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(2)
+
+        val utgaaendejournalpostId = "1234"
+        behandlingService.ferdigstillEtterFullfoertBrevutsending(
+            behandlingId = veiledningsbehandling.behandlingId,
+            journalpostId = utgaaendejournalpostId
+        )
+
+        val oppdatertJournalfoeringsbehandling = behandlingRepository.findByBehandlingId(journalfoeringsbehandling.behandlingId)!!
+        val oppdatertVeiledningsbehandling = behandlingRepository.findByBehandlingId(veiledningsbehandling.behandlingId)!!
+
+        assertThat(oppdatertJournalfoeringsbehandling.utgaaendeJournalpostId).isEqualTo(utgaaendejournalpostId)
+        assertThat(oppdatertJournalfoeringsbehandling.utgaaendeJournalpostId)
+            .isEqualTo(oppdatertVeiledningsbehandling.utgaaendeJournalpostId)
+        assertThat(oppdatertVeiledningsbehandling.status).isEqualTo(Behandlingsstatus.FERDIG)
+
+        assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(2)
+    }
+
+    @Test
     fun `ferdigstill behandling som tilhører en annen saksbehandler`() {
         Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("todd")
         var behandling = genererBehandling(1L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak)
