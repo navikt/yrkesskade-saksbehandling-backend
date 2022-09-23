@@ -102,3 +102,6 @@ api:
     pdl:
       clientId: prod-fss.pdl.pdl-api
       url: https://pdl-api.prod-fss-pub.nais.io
+    oppgave:
+      clientId: 50346823-61a0-49e7-ad89-ea2b1a0e90f8
+      url: https://oppgave.prod-fss-pub.nais.io

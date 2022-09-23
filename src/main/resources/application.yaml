@@ -1,5 +1,9 @@
 SAKSBEHANDLING_CLIENT_ID: ${AZURE_APP_CLIENT_ID}
 
+application:
+  pretty:
+    name: "Kompys"
+
 spring:
   application:
     name: yrkesskade-saksbehandling-backend
@@ -118,3 +122,6 @@ api:
       url:
         rest: https://saf.dev-fss-pub.nais.io/
         graphql: https://saf.dev-fss-pub.nais.io/graphql
+    oppgave:
+      clientId: bef7cd4d-e65e-41f8-a743-b643e81f2aea
+      url: https://oppgave-q1.dev-fss-pub.nais.io

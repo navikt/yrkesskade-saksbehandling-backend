@@ -1,0 +1,3 @@
+mutation {
+    overforBehandlingTilLegacy(behandlingId: 1, avviksgrunn: "Test")
+}
