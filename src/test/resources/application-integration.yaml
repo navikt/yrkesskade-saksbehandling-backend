@@ -1,5 +1,6 @@
 SAKSBEHANDLING_CLIENT_ID: unknown
 AZURE_APP_WELL_KNOWN_URL: http://localhost:${mock-oauth2-server.port}/azuread/.well-known/openid-configuration
+GCP_TEAM_PROJECT_ID: stub
 
 spring:
   flyway:
@@ -10,6 +11,10 @@ spring:
       auto-offset-reset: earliest
       group-id: yrkesskade-saksbehandling-test
     client-id: yrkesskade-saksbehandling-test
+  cloud:
+    gcp:
+      bigquery:
+        enabled: false
 
 funksjonsbrytere:
   enabled: false
