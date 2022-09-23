@@ -194,6 +194,11 @@
                for å kunne emulere 3. parts integrasjoner
            -->
         </dependency>
+        <dependency>
+            <groupId>no.bekk.bekkopen</groupId>
+            <artifactId>nocommons</artifactId>
+            <version>0.12.0</version>
+        </dependency>
 
         <!-- Test -->
         <dependency>
@@ -405,7 +410,7 @@
                                         <limit>
                                             <counter>INSTRUCTION</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.59</minimum>
+                                            <minimum>0.64</minimum>
                                         </limit>
                                     </limits>
                                 </rule>

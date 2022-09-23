@@ -12,7 +12,8 @@ import reactor.netty.http.client.HttpClient
 class WebClientConfiguration(private val webClientBuilder: WebClient.Builder,
                              @Value("\${api.client.kodeverk.url}") val kodeverkServiceURL: String,
                              @Value("\${api.client.json-to-pdf.url}") val jsonToPdfServiceURL: String,
-                             @Value("\${api.client.dokarkiv.url}") val dokarkivServiceURL: String
+                             @Value("\${api.client.dokarkiv.url}") val dokarkivServiceURL: String,
+                             @Value("\${api.client.oppgave.url}") val oppgaveServiceURL: String
 ) {
 
     companion object {
@@ -21,25 +22,20 @@ class WebClientConfiguration(private val webClientBuilder: WebClient.Builder,
     }
 
     @Bean
-    fun dokarkivWebClient(): WebClient {
-        return webClientBuilder
-            .baseUrl(dokarkivServiceURL)
-            .clientConnector(ReactorClientHttpConnector(HttpClient.newConnection()))
-            .build()
-    }
+    fun dokarkivWebClient() = opprettWebClient(dokarkivServiceURL)
 
     @Bean
-    fun kodeverkWebClient(): WebClient {
-        return webClientBuilder
-            .baseUrl(kodeverkServiceURL)
-            .clientConnector(ReactorClientHttpConnector(HttpClient.newConnection()))
-            .build()
-    }
+    fun kodeverkWebClient() = opprettWebClient(kodeverkServiceURL)
 
     @Bean
-    fun jsonToPdfServiceWebClient(): WebClient {
+    fun jsonToPdfServiceWebClient() = opprettWebClient(jsonToPdfServiceURL)
+
+    @Bean
+    fun oppgaveWebClient() = opprettWebClient(oppgaveServiceURL)
+
+    private fun opprettWebClient(url: String) : WebClient {
         return webClientBuilder
-            .baseUrl(jsonToPdfServiceURL)
+            .baseUrl(url)
             .clientConnector(ReactorClientHttpConnector(HttpClient.newConnection()))
             .build()
     }

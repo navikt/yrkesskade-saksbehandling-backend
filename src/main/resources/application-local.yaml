@@ -8,6 +8,10 @@ AZURE_APP_WELL_KNOWN_URL: https://fakedings.dev-gcp.nais.io/fake/.well-known/ope
 server:
   port: 9081
 
+application:
+  pretty:
+    name: "Kompys - LOCAL"
+
 spring:
   kafka:
     bootstrap-servers: ${KAFKA_BROKERS}

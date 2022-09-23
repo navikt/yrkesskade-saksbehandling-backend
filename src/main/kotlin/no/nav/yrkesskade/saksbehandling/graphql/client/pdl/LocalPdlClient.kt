@@ -15,8 +15,10 @@ import java.util.*
 @Qualifier("pdlClient")
 @Profile("local")
 class LocalPdlClient : IPdlClient {
-    override fun hentAktorId(fodselsnummer: String): String? {
-        TODO("Not yet implemented")
+    override fun hentAktorId(foedselsnummer: String): String? {
+        val faker = Faker(Random(foedselsnummer.hashCode().toLong()))
+
+        return faker.regexify("[0-9]{8}")
     }
 
     override fun hentPerson(foedselsnummer: String): Person? {
