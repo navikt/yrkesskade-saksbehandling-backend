@@ -1,8 +1,8 @@
-package no.nav.yrkesskade.saksbehandling.graphql.server.hendelser
+package no.nav.yrkesskade.saksbehandling.hendelser
 
+import no.nav.yrkesskade.saksbehandling.config.KafkaTestConfig
 import no.nav.yrkesskade.saksbehandling.fixtures.journalpost.journalpostResultWithBrukerAktoerid
 import no.nav.yrkesskade.saksbehandling.graphql.client.saf.SafClient
-import no.nav.yrkesskade.saksbehandling.hendelser.DokumentTilSaksbehandlingHendelseConsumer
 import no.nav.yrkesskade.saksbehandling.model.DokumentTilSaksbehandling
 import no.nav.yrkesskade.saksbehandling.model.DokumentTilSaksbehandlingHendelse
 import no.nav.yrkesskade.saksbehandling.model.DokumentTilSaksbehandlingMetadata
@@ -13,23 +13,18 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.mockito.kotlin.any
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties
-import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Primary
 import org.springframework.kafka.annotation.KafkaListener
-import org.springframework.kafka.core.DefaultKafkaProducerFactory
 import org.springframework.kafka.core.KafkaTemplate
-import org.springframework.kafka.core.ProducerFactory
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
-const val TOPIC = "dokument-til-saksbehandling-hendelse-test"
+const val DOKUMENT_TIL_SAKSBEHANDLING_TOPIC = "dokument-til-saksbehandling-hendelse-test"
 
 @Import(KafkaTestConfig::class)
 class DokumentTilSaksbehandlingHendelseConsumerTest : AbstractTest() {
@@ -55,10 +50,7 @@ class DokumentTilSaksbehandlingHendelseConsumerTest : AbstractTest() {
             DokumentTilSaksbehandlingMetadata(UUID.randomUUID().toString())
         )
 
-        kafkaTemplate.send(
-            TOPIC,
-            payload
-        )
+        kafkaTemplate.send(DOKUMENT_TIL_SAKSBEHANDLING_TOPIC, payload)
 
         // vent på at oppgavene i consumer blir fullført før vi gjennomfører testene
         consumer.latch.await(10000, TimeUnit.MILLISECONDS)
@@ -76,7 +68,7 @@ class DokumentTilSaksbehandlingHendelseConsumerForTest(
     lateinit var payload: DokumentTilSaksbehandlingHendelse
 
     @KafkaListener(
-        topics = [TOPIC],
+        topics = [DOKUMENT_TIL_SAKSBEHANDLING_TOPIC],
         containerFactory = "dokumentTilSaksbehandlingHendelseListenerContainerFactory"
     )
     @Transactional
@@ -85,20 +77,4 @@ class DokumentTilSaksbehandlingHendelseConsumerForTest(
         payload = record
         latch.countDown()
     }
-}
-
-@TestConfiguration
-class KafkaTestConfig {
-
-    @Bean
-    fun dokumentTilSaksbehandlingHendelseProducerFactory(
-        properties: KafkaProperties
-    ): DefaultKafkaProducerFactory<String, DokumentTilSaksbehandlingHendelse> =
-        DefaultKafkaProducerFactory(properties.buildProducerProperties())
-
-    @Bean
-    fun dokumentTilSaksbehandlingHendelse(
-        dokumentTilSaksbehandlingHendelseProducerFactory: ProducerFactory<String, DokumentTilSaksbehandlingHendelse>
-    ): KafkaTemplate<String, DokumentTilSaksbehandlingHendelse> =
-        KafkaTemplate(dokumentTilSaksbehandlingHendelseProducerFactory)
 }
