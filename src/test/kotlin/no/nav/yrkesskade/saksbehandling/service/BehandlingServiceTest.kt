@@ -251,8 +251,8 @@ class BehandlingServiceTest : AbstractTest() {
             journalpostId = utgaaendejournalpostId
         )
 
-        val oppdatertJournalfoeringsbehandling = behandlingRepository.findByBehandlingId(journalfoeringsbehandling.behandlingId)!!
-        val oppdatertVeiledningsbehandling = behandlingRepository.findByBehandlingId(veiledningsbehandling.behandlingId)!!
+        val oppdatertJournalfoeringsbehandling = behandlingRepository.findById(journalfoeringsbehandling.behandlingId).get()!!
+        val oppdatertVeiledningsbehandling = behandlingRepository.findById(veiledningsbehandling.behandlingId).get()!!
 
         assertThat(oppdatertJournalfoeringsbehandling.utgaaendeJournalpostId).isEqualTo(utgaaendejournalpostId)
         assertThat(oppdatertJournalfoeringsbehandling.utgaaendeJournalpostId)
