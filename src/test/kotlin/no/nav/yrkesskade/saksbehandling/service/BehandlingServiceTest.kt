@@ -9,7 +9,6 @@ import no.nav.yrkesskade.saksbehandling.graphql.client.saf.SafClient
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.*
 import no.nav.yrkesskade.saksbehandling.model.*
 import no.nav.yrkesskade.saksbehandling.model.BehandlingEntityFactory.Companion.medBehandlingstype
-import no.nav.yrkesskade.saksbehandling.model.BehandlingEntityFactory.Companion.medJournalpostId
 import no.nav.yrkesskade.saksbehandling.model.BehandlingEntityFactory.Companion.medSak
 import no.nav.yrkesskade.saksbehandling.model.BehandlingEntityFactory.Companion.medStatus
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
@@ -17,7 +16,6 @@ import no.nav.yrkesskade.saksbehandling.repository.BehandlingsoverfoeringLogRepo
 import no.nav.yrkesskade.saksbehandling.repository.SakRepository
 import no.nav.yrkesskade.saksbehandling.security.AutentisertBruker
 import no.nav.yrkesskade.saksbehandling.test.AbstractTest
-import org.apache.coyote.http11.Constants.a
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -33,7 +31,6 @@ import org.springframework.data.domain.Pageable
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 import java.time.temporal.ChronoUnit
-import java.util.*
 import kotlin.NoSuchElementException
 
 @Suppress("NonAsciiCharacters")
