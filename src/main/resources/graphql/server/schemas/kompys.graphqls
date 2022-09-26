@@ -114,6 +114,7 @@ type Mutation {
     overtaBehandling(behandlingId: ID!): Behandling
     ferdigstillBehandling(ferdigstillBehandling: FerdigstillBehandling!): Behandling
     leggTilbakeBehandling(behandlingId: ID!): Behandling
+    overforBehandlingTilLegacy(behandlingId: ID!, avviksgrunn: String!): Boolean!
 }
 
 type Person {

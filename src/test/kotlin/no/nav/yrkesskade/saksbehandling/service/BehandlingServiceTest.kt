@@ -2,17 +2,22 @@ package no.nav.yrkesskade.saksbehandling.service
 
 import com.expediagroup.graphql.generated.enums.BrukerIdType
 import no.nav.yrkesskade.saksbehandling.client.dokarkiv.DokarkivClient
+import no.nav.yrkesskade.saksbehandling.client.oppgave.OppgaveClient
+import no.nav.yrkesskade.saksbehandling.client.oppgave.OppgaveFactory
 import no.nav.yrkesskade.saksbehandling.fixtures.*
 import no.nav.yrkesskade.saksbehandling.graphql.client.saf.SafClient
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.*
-import no.nav.yrkesskade.saksbehandling.model.Behandlingsstatus
-import no.nav.yrkesskade.saksbehandling.model.Behandlingstype
-import no.nav.yrkesskade.saksbehandling.model.Framdriftsstatus
-import no.nav.yrkesskade.saksbehandling.model.SakEntity
+import no.nav.yrkesskade.saksbehandling.model.*
+import no.nav.yrkesskade.saksbehandling.model.BehandlingEntityFactory.Companion.medBehandlingstype
+import no.nav.yrkesskade.saksbehandling.model.BehandlingEntityFactory.Companion.medJournalpostId
+import no.nav.yrkesskade.saksbehandling.model.BehandlingEntityFactory.Companion.medSak
+import no.nav.yrkesskade.saksbehandling.model.BehandlingEntityFactory.Companion.medStatus
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
+import no.nav.yrkesskade.saksbehandling.repository.BehandlingsoverfoeringLogRepository
 import no.nav.yrkesskade.saksbehandling.repository.SakRepository
 import no.nav.yrkesskade.saksbehandling.security.AutentisertBruker
 import no.nav.yrkesskade.saksbehandling.test.AbstractTest
+import org.apache.coyote.http11.Constants.a
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -28,6 +33,8 @@ import org.springframework.data.domain.Pageable
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 import java.time.temporal.ChronoUnit
+import java.util.*
+import kotlin.NoSuchElementException
 
 @Suppress("NonAsciiCharacters")
 class BehandlingServiceTest : AbstractTest() {
@@ -41,11 +48,17 @@ class BehandlingServiceTest : AbstractTest() {
     @MockBean
     lateinit var safClient: SafClient
 
+    @MockBean
+    lateinit var oppgaveClient: OppgaveClient
+
     @Autowired
     lateinit var behandlingService: BehandlingService
 
     @Autowired
     lateinit var behandlingRepository: BehandlingRepository
+
+    @Autowired
+    lateinit var behandlingsoverfoeringLogRepository: BehandlingsoverfoeringLogRepository
 
     @Autowired
     lateinit var sakRepository: SakRepository
@@ -55,13 +68,14 @@ class BehandlingServiceTest : AbstractTest() {
     @BeforeEach
     fun setUp() {
         resetDatabase()
-        sak = genererSak()
+        sak = SakEntityFactory.enSak()
         sak = sakRepository.save(sak)
     }
 
     @Transactional
     fun resetDatabase() {
         behandlingRepository.deleteAll()
+        behandlingsoverfoeringLogRepository.deleteAll()
         sakRepository.deleteAll()
     }
 
@@ -354,4 +368,98 @@ class BehandlingServiceTest : AbstractTest() {
         assertThat(behandlingsPage.behandlinger.first().dokumentkategori).isEqualTo("enFinKategori")
     }
 
+    @Test
+    fun `overfoer behandling til legacy system (opprett journalpostoppgave)`() {
+        // given
+        Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
+        Mockito.`when`(safClient.hentOppdatertJournalpost(anyString())).thenReturn(okRespons().data)
+        Mockito.`when`(oppgaveClient.opprettOppgave(any())).thenReturn(OppgaveFactory.enOppgave())
+        val behandling = behandlingRepository.save(
+            BehandlingEntityFactory.enBehandling("test")
+                .medSak(sak)
+                .medBehandlingstype(Behandlingstype.JOURNALFOERING)
+                .medStatus(Behandlingsstatus.UNDER_BEHANDLING)
+        )
+
+        // when
+        behandlingService.overforBehandlingTilLegacy(behandling.behandlingId, "Ikke en tannlegeerkæring")
+
+        // then
+        val resultater = behandlingsoverfoeringLogRepository.count()
+        assertThat(resultater).isEqualTo(1)
+
+        val ikkeEksisterendeBehandling = behandlingRepository.findById(behandling.behandlingId)
+        assertThat(ikkeEksisterendeBehandling.isEmpty).isTrue()
+    }
+
+    @Test
+    fun `overfoer behandling til legacy system (opprett journalpostoppgave) - feil saksbehandlinger`() {
+        // given
+        Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("ingen")
+        Mockito.`when`(safClient.hentOppdatertJournalpost(anyString())).thenReturn(okRespons().data)
+        val behandling = behandlingRepository.save(
+            BehandlingEntityFactory.enBehandling("test")
+                .medSak(sak)
+                .medBehandlingstype(Behandlingstype.JOURNALFOERING)
+                .medStatus(Behandlingsstatus.UNDER_BEHANDLING)
+        )
+
+        // when
+        assertThrows<IllegalStateException> {
+            behandlingService.overforBehandlingTilLegacy(behandling.behandlingId, "ingen")
+        }
+    }
+
+    @Test
+    fun `overfoer behandling til legacy system (opprett journalpostoppgave) - ingen journalføring funnet`() {
+        // given
+        Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
+        val behandling = behandlingRepository.save(
+            BehandlingEntityFactory.enBehandling("test")
+                .medSak(sak)
+                .medBehandlingstype(Behandlingstype.JOURNALFOERING)
+                .medStatus(Behandlingsstatus.UNDER_BEHANDLING)
+        )
+
+        // when
+        assertThrows<IllegalStateException> {
+            behandlingService.overforBehandlingTilLegacy(behandling.behandlingId, "ingen")
+        }
+    }
+
+    @Test
+    fun `overfoer behandling til legacy system (opprett journalpostoppgave) - er ikke journalfoering`() {
+        // given
+        Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
+        Mockito.`when`(safClient.hentOppdatertJournalpost(anyString())).thenReturn(okRespons().data)
+        val behandling = behandlingRepository.save(
+            BehandlingEntityFactory.enBehandling("test")
+                .medSak(sak)
+                .medBehandlingstype(Behandlingstype.VEILEDNING)
+                .medStatus(Behandlingsstatus.UNDER_BEHANDLING)
+        )
+
+        // when
+        assertThrows<IllegalStateException> {
+            behandlingService.overforBehandlingTilLegacy(behandling.behandlingId, "ingen")
+        }
+    }
+
+    @Test
+    fun `overfoer behandling til legacy system (opprett journalpostoppgave) - er ferdig`() {
+        // given
+        Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
+        Mockito.`when`(safClient.hentOppdatertJournalpost(anyString())).thenReturn(okRespons().data)
+        val behandling = behandlingRepository.save(
+            BehandlingEntityFactory.enBehandling("test")
+                .medSak(sak)
+                .medBehandlingstype(Behandlingstype.JOURNALFOERING)
+                .medStatus(Behandlingsstatus.FERDIG)
+        )
+
+        // when
+        assertThrows<IllegalStateException> {
+            behandlingService.overforBehandlingTilLegacy(behandling.behandlingId, "ingen")
+        }
+    }
 }

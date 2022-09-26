@@ -4,9 +4,14 @@ SAKSBEHANDLING_CLIENT_ID: api://dev-gcp.yrkesskade.yrkesskade-saksbehandling-bac
 AUTH_SERVER: https://fakedings.dev-gcp.nais.io/fake
 AZURE_APP_JWK: local
 AZURE_APP_WELL_KNOWN_URL: https://fakedings.dev-gcp.nais.io/fake/.well-known/openid-configuration
+GCP_TEAM_PROJECT_ID: stub
 
 server:
   port: 9081
+
+application:
+  pretty:
+    name: "Kompys - LOCAL"
 
 spring:
   kafka:
@@ -24,6 +29,10 @@ spring:
     url: jdbc:postgresql://localhost:5432/yrkesskade_saksbehandling
   flyway:
     enabled: true
+  cloud:
+    gcp:
+      bigquery:
+        enabled: false
 
 
 funksjonsbrytere:

@@ -14,8 +14,6 @@ interface BehandlingRepository : JpaRepository<BehandlingEntity, Long> {
 
     fun findBySak(sak: SakEntity): List<BehandlingEntity>
 
-    fun findByBehandlingId(behandlingId: Long): BehandlingEntity?
-
     fun findByJournalpostIdAndBehandlingstype(journalpostId: String, behandlingstype: Behandlingstype): BehandlingEntity?
 
     @Query("""
