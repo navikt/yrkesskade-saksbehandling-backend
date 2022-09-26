@@ -9,6 +9,7 @@ import no.nav.yrkesskade.saksbehandling.graphql.client.saf.SafClient
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.*
 import no.nav.yrkesskade.saksbehandling.model.*
 import no.nav.yrkesskade.saksbehandling.model.BehandlingEntityFactory.Companion.medBehandlingstype
+import no.nav.yrkesskade.saksbehandling.model.BehandlingEntityFactory.Companion.medJournalpostId
 import no.nav.yrkesskade.saksbehandling.model.BehandlingEntityFactory.Companion.medSak
 import no.nav.yrkesskade.saksbehandling.model.BehandlingEntityFactory.Companion.medStatus
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
@@ -232,13 +233,22 @@ class BehandlingServiceTest : AbstractTest() {
     @Test
     fun `ferdigstill veiledingsbehandling etter brevutsending `() {
         Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
-        var journalfoeringsbehandling = genererBehandling(1L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak, Behandlingstype.JOURNALFOERING)
-        journalfoeringsbehandling = behandlingRepository.save(journalfoeringsbehandling)
+        val journalfoeringsbehandling = behandlingRepository.save(
+            BehandlingEntityFactory.enBehandling("test")
+                .medSak(sak)
+                .medBehandlingstype(Behandlingstype.JOURNALFOERING)
+                .medStatus(Behandlingsstatus.UNDER_BEHANDLING)
+        )
         assertThat(journalfoeringsbehandling.status).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING)
         assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
 
-        var veiledningsbehandling = genererBehandling(2L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak, Behandlingstype.VEILEDNING)
-        veiledningsbehandling = behandlingRepository.save(veiledningsbehandling)
+        val veiledningsbehandling = behandlingRepository.save(
+            BehandlingEntityFactory.enBehandling("test")
+                .medSak(sak)
+                .medBehandlingstype(Behandlingstype.VEILEDNING)
+                .medStatus(Behandlingsstatus.UNDER_BEHANDLING)
+                .medJournalpostId(journalfoeringsbehandling.journalpostId)
+        )
         assertThat(veiledningsbehandling.status).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING)
         assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(2)
 
