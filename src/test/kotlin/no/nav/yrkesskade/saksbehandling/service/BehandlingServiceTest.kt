@@ -17,7 +17,6 @@ import no.nav.yrkesskade.saksbehandling.repository.BehandlingsoverfoeringLogRepo
 import no.nav.yrkesskade.saksbehandling.repository.SakRepository
 import no.nav.yrkesskade.saksbehandling.security.AutentisertBruker
 import no.nav.yrkesskade.saksbehandling.test.AbstractTest
-import org.apache.coyote.http11.Constants.a
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -33,7 +32,6 @@ import org.springframework.data.domain.Pageable
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 import java.time.temporal.ChronoUnit
-import java.util.*
 import kotlin.NoSuchElementException
 
 @Suppress("NonAsciiCharacters")
@@ -233,6 +231,45 @@ class BehandlingServiceTest : AbstractTest() {
     }
 
     @Test
+    fun `ferdigstill veiledingsbehandling etter brevutsending `() {
+        Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
+        val journalfoeringsbehandling = behandlingRepository.save(
+            BehandlingEntityFactory.enBehandling("test")
+                .medSak(sak)
+                .medBehandlingstype(Behandlingstype.JOURNALFOERING)
+                .medStatus(Behandlingsstatus.UNDER_BEHANDLING)
+        )
+        assertThat(journalfoeringsbehandling.status).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING)
+        assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
+
+        val veiledningsbehandling = behandlingRepository.save(
+            BehandlingEntityFactory.enBehandling("test")
+                .medSak(sak)
+                .medBehandlingstype(Behandlingstype.VEILEDNING)
+                .medStatus(Behandlingsstatus.UNDER_BEHANDLING)
+                .medJournalpostId(journalfoeringsbehandling.journalpostId)
+        )
+        assertThat(veiledningsbehandling.status).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING)
+        assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(2)
+
+        val utgaaendejournalpostId = "1234"
+        behandlingService.ferdigstillEtterFullfoertBrevutsending(
+            behandlingId = veiledningsbehandling.behandlingId,
+            journalpostId = utgaaendejournalpostId
+        )
+
+        val oppdatertJournalfoeringsbehandling = behandlingService.hentBehandling(journalfoeringsbehandling.behandlingId)
+        val oppdatertVeiledningsbehandling = behandlingService.hentBehandling(veiledningsbehandling.behandlingId)
+
+        assertThat(oppdatertJournalfoeringsbehandling.utgaaendeJournalpostId).isEqualTo(utgaaendejournalpostId)
+        assertThat(oppdatertJournalfoeringsbehandling.utgaaendeJournalpostId)
+            .isEqualTo(oppdatertVeiledningsbehandling.utgaaendeJournalpostId)
+        assertThat(oppdatertVeiledningsbehandling.status).isEqualTo(Behandlingsstatus.FERDIG)
+
+        assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(2)
+    }
+
+    @Test
     fun `ferdigstill behandling som tilhører en annen saksbehandler`() {
         Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("todd")
         var behandling = genererBehandling(1L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak)
@@ -309,10 +346,10 @@ class BehandlingServiceTest : AbstractTest() {
     @Test
     fun `hent aapne behandlinger med status underBehandling`() {
         // given
-        behandlingRepository.save(genererBehandling(10L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
-        behandlingRepository.save(genererBehandling(11L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak, Behandlingstype.JOURNALFOERING))
-        behandlingRepository.save(genererBehandling(12L, null, Behandlingsstatus.UNDER_BEHANDLING, sak))
-        behandlingRepository.save(genererBehandling(13L, null, Behandlingsstatus.UNDER_BEHANDLING, sak, Behandlingstype.JOURNALFOERING))
+        behandlingRepository.save(genererBehandling(14L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
+        behandlingRepository.save(genererBehandling(15L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak, Behandlingstype.JOURNALFOERING))
+        behandlingRepository.save(genererBehandling(16L, null, Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(17L, null, Behandlingsstatus.UNDER_BEHANDLING, sak, Behandlingstype.JOURNALFOERING))
 
         // when
         val behandlingsPage = behandlingService.hentAapneBehandlinger(behandlingsfilter = Behandlingsfilter(behandlingstype = null, null, status = Behandlingsstatus.UNDER_BEHANDLING.kode), page = PageRequest.of(0, 10))
@@ -325,10 +362,10 @@ class BehandlingServiceTest : AbstractTest() {
     @Test
     fun `hent aapne behandlinger med dokumentkategori tannlegeerklaering`() {
         // given
-        behandlingRepository.save(genererBehandling(10L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
-        behandlingRepository.save(genererBehandling(11L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak, Behandlingstype.JOURNALFOERING))
-        behandlingRepository.save(genererBehandling(12L, null, Behandlingsstatus.UNDER_BEHANDLING, sak))
-        behandlingRepository.save(genererBehandling(13L, null, Behandlingsstatus.UNDER_BEHANDLING, sak, Behandlingstype.JOURNALFOERING))
+        behandlingRepository.save(genererBehandling(18L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
+        behandlingRepository.save(genererBehandling(19L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak, Behandlingstype.JOURNALFOERING))
+        behandlingRepository.save(genererBehandling(20L, null, Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(21L, null, Behandlingsstatus.UNDER_BEHANDLING, sak, Behandlingstype.JOURNALFOERING))
 
         // when
         val behandlingsPage = behandlingService.hentAapneBehandlinger(behandlingsfilter = Behandlingsfilter(behandlingstype = null, dokumentkategori = "enFinKategori", status = null), page = PageRequest.of(0, 10))

@@ -52,6 +52,7 @@ class BrevService(
         brevutsendingClient.sendTilBrevutsending(
             BrevutsendingBestiltHendelse(
                 brev = brev,
+                behandlingId = behandlingId,
                 mottaker = Mottaker(foedselsnummer = foedselsnummer),
                 metadata = BrevutsendingMetadata(
                     tidspunktBestilt = Instant.now(),
