@@ -346,10 +346,10 @@ class BehandlingServiceTest : AbstractTest() {
     @Test
     fun `hent aapne behandlinger med status underBehandling`() {
         // given
-        behandlingRepository.save(genererBehandling(10L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
-        behandlingRepository.save(genererBehandling(11L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak, Behandlingstype.JOURNALFOERING))
-        behandlingRepository.save(genererBehandling(12L, null, Behandlingsstatus.UNDER_BEHANDLING, sak))
-        behandlingRepository.save(genererBehandling(13L, null, Behandlingsstatus.UNDER_BEHANDLING, sak, Behandlingstype.JOURNALFOERING))
+        behandlingRepository.save(genererBehandling(14L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
+        behandlingRepository.save(genererBehandling(15L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak, Behandlingstype.JOURNALFOERING))
+        behandlingRepository.save(genererBehandling(16L, null, Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(17L, null, Behandlingsstatus.UNDER_BEHANDLING, sak, Behandlingstype.JOURNALFOERING))
 
         // when
         val behandlingsPage = behandlingService.hentAapneBehandlinger(behandlingsfilter = Behandlingsfilter(behandlingstype = null, null, status = Behandlingsstatus.UNDER_BEHANDLING.kode), page = PageRequest.of(0, 10))
@@ -362,10 +362,10 @@ class BehandlingServiceTest : AbstractTest() {
     @Test
     fun `hent aapne behandlinger med dokumentkategori tannlegeerklaering`() {
         // given
-        behandlingRepository.save(genererBehandling(10L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
-        behandlingRepository.save(genererBehandling(11L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak, Behandlingstype.JOURNALFOERING))
-        behandlingRepository.save(genererBehandling(12L, null, Behandlingsstatus.UNDER_BEHANDLING, sak))
-        behandlingRepository.save(genererBehandling(13L, null, Behandlingsstatus.UNDER_BEHANDLING, sak, Behandlingstype.JOURNALFOERING))
+        behandlingRepository.save(genererBehandling(18L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
+        behandlingRepository.save(genererBehandling(19L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak, Behandlingstype.JOURNALFOERING))
+        behandlingRepository.save(genererBehandling(20L, null, Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(21L, null, Behandlingsstatus.UNDER_BEHANDLING, sak, Behandlingstype.JOURNALFOERING))
 
         // when
         val behandlingsPage = behandlingService.hentAapneBehandlinger(behandlingsfilter = Behandlingsfilter(behandlingstype = null, dokumentkategori = "enFinKategori", status = null), page = PageRequest.of(0, 10))
