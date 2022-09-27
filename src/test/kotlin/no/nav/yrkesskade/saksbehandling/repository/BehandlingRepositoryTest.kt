@@ -49,9 +49,9 @@ class BehandlingRepositoryTest : AbstractTest() {
     @Test
     fun `hent egne behandlinger - ferdig`() {
         val sak = sakRepository.findAll().first()
-        behandlingRepository.save(genererBehandling(2L, "test", Behandlingsstatus.IKKE_PAABEGYNT, sak))
-        behandlingRepository.save(genererBehandling(30L, "test", Behandlingsstatus.FERDIG, sak))
-        val behandling = genererBehandling(1L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak)
+        behandlingRepository.save(genererBehandling(4L, "test", Behandlingsstatus.IKKE_PAABEGYNT, sak))
+        behandlingRepository.save(genererBehandling(5L, "test", Behandlingsstatus.FERDIG, sak))
+        val behandling = genererBehandling(6L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak)
 
         behandlingRepository.save(behandling)
 
@@ -62,7 +62,7 @@ class BehandlingRepositoryTest : AbstractTest() {
     @Test
     fun `hent egne behandlinger - under behandling`() {
         val sak = sakRepository.findAll().first()
-        val behandling = genererBehandling(1L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak)
+        val behandling = genererBehandling(7L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak)
 
         behandlingRepository.save(behandling)
 
@@ -73,7 +73,7 @@ class BehandlingRepositoryTest : AbstractTest() {
     @Test
     fun `hent egne behandlinger - ingen treff`() {
         val sak = sakRepository.findAll().first()
-        val behandling = genererBehandling(1L, "todd", Behandlingsstatus.IKKE_PAABEGYNT, sak)
+        val behandling = genererBehandling(8L, "todd", Behandlingsstatus.IKKE_PAABEGYNT, sak)
 
         behandlingRepository.save(behandling)
 
@@ -85,10 +85,10 @@ class BehandlingRepositoryTest : AbstractTest() {
     fun `hent aapne behandlinger med alle filter`() {
         // given
         val sak = sakRepository.findAll().first()
-        behandlingRepository.save(genererBehandling(1L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
-        behandlingRepository.save(genererBehandling(2L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak))
-        behandlingRepository.save(genererBehandling(4L, null, Behandlingsstatus.UNDER_BEHANDLING, sak))
-        behandlingRepository.save(genererBehandling(3L, "test", Behandlingsstatus.FERDIG, sak))
+        behandlingRepository.save(genererBehandling(9L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
+        behandlingRepository.save(genererBehandling(10L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(11L, null, Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(12L, "test", Behandlingsstatus.FERDIG, sak))
 
         //when
         val behandlinger = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(Behandlingsstatus.UNDER_BEHANDLING, "enFinKategori", Behandlingstype.VEILEDNING, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), false, Pageable.unpaged())
@@ -101,10 +101,10 @@ class BehandlingRepositoryTest : AbstractTest() {
     fun `hent aapne behandlinger med status filter`() {
         // given
         val sak = sakRepository.findAll().first()
-        behandlingRepository.save(genererBehandling(1L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
-        behandlingRepository.save(genererBehandling(2L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak))
-        behandlingRepository.save(genererBehandling(4L, null, Behandlingsstatus.UNDER_BEHANDLING, sak))
-        behandlingRepository.save(genererBehandling(3L, "test", Behandlingsstatus.FERDIG, sak))
+        behandlingRepository.save(genererBehandling(13L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
+        behandlingRepository.save(genererBehandling(14L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(15L, null, Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(16L, "test", Behandlingsstatus.FERDIG, sak))
 
         //when
         val behandlinger = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(Behandlingsstatus.UNDER_BEHANDLING, null, null, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), false, Pageable.unpaged())
@@ -117,10 +117,10 @@ class BehandlingRepositoryTest : AbstractTest() {
     fun `hent aapne behandlinger med dokumentkategori filter`() {
         // given
         val sak = sakRepository.findAll().first()
-        behandlingRepository.save(genererBehandling(100L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
-        behandlingRepository.save(genererBehandling(200L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak))
-        behandlingRepository.save(genererBehandling(54L, null, Behandlingsstatus.UNDER_BEHANDLING, sak))
-        behandlingRepository.save(genererBehandling(300L, "test", Behandlingsstatus.FERDIG, sak))
+        behandlingRepository.save(genererBehandling(17L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
+        behandlingRepository.save(genererBehandling(18L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(19L, null, Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(20L, "test", Behandlingsstatus.FERDIG, sak))
 
         //when
         val behandlinger = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(null, "enFinKategori", null, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), false, Pageable.unpaged())
@@ -133,10 +133,10 @@ class BehandlingRepositoryTest : AbstractTest() {
     fun `hent aapne behandlinger med behandlingstype VEILEDNING filter`() {
         // given
         val sak = sakRepository.findAll().first()
-        behandlingRepository.save(genererBehandling(61L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
-        behandlingRepository.save(genererBehandling(62L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak))
-        behandlingRepository.save(genererBehandling(64L, null, Behandlingsstatus.UNDER_BEHANDLING, sak))
-        behandlingRepository.save(genererBehandling(63L, "test", Behandlingsstatus.FERDIG, sak))
+        behandlingRepository.save(genererBehandling(21L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
+        behandlingRepository.save(genererBehandling(22L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(24L, null, Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(23L, "test", Behandlingsstatus.FERDIG, sak))
 
         //when
         val behandlinger = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(null, null, Behandlingstype.VEILEDNING, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), false, Pageable.unpaged())
@@ -149,10 +149,10 @@ class BehandlingRepositoryTest : AbstractTest() {
     fun `hent aapne behandlinger med behandlingstype VEILEDNING filter inkludert behandlinger med saksbehandler`() {
         // given
         val sak = sakRepository.findAll().first()
-        behandlingRepository.save(genererBehandling(51L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
-        behandlingRepository.save(genererBehandling(52L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak))
-        behandlingRepository.save(genererBehandling(54L, null, Behandlingsstatus.UNDER_BEHANDLING, sak))
-        behandlingRepository.save(genererBehandling(53L, "test", Behandlingsstatus.FERDIG, sak))
+        behandlingRepository.save(genererBehandling(25L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
+        behandlingRepository.save(genererBehandling(26L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(27L, null, Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(28L, "test", Behandlingsstatus.FERDIG, sak))
 
         //when
         val behandlinger = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(null, null, Behandlingstype.VEILEDNING, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), true, Pageable.unpaged())
@@ -165,9 +165,9 @@ class BehandlingRepositoryTest : AbstractTest() {
     fun `hent aapne behandlinger med behandlingstype JOURNALFORING filter`() {
         // given
         val sak = sakRepository.findAll().first()
-        behandlingRepository.save(genererBehandling(51L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
-        behandlingRepository.save(genererBehandling(52L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak, Behandlingstype.JOURNALFOERING))
-        behandlingRepository.save(genererBehandling(53L, "test", Behandlingsstatus.FERDIG, sak, Behandlingstype.JOURNALFOERING))
+        behandlingRepository.save(genererBehandling(29L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
+        behandlingRepository.save(genererBehandling(30L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak, Behandlingstype.JOURNALFOERING))
+        behandlingRepository.save(genererBehandling(31L, "test", Behandlingsstatus.FERDIG, sak, Behandlingstype.JOURNALFOERING))
 
         //when
         val behandlinger = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(null, null, Behandlingstype.VEILEDNING, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), false, Pageable.unpaged())
@@ -180,10 +180,10 @@ class BehandlingRepositoryTest : AbstractTest() {
     fun `hent aapne behandlinger med uten filter`() {
         // given
         val sak = sakRepository.findAll().first()
-        behandlingRepository.save(genererBehandling(1L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
-        behandlingRepository.save(genererBehandling(2L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak))
-        behandlingRepository.save(genererBehandling(4L, null, Behandlingsstatus.UNDER_BEHANDLING, sak))
-        behandlingRepository.save(genererBehandling(3L, "test", Behandlingsstatus.FERDIG, sak))
+        behandlingRepository.save(genererBehandling(32L, null, Behandlingsstatus.IKKE_PAABEGYNT, sak))
+        behandlingRepository.save(genererBehandling(33L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(34L, null, Behandlingsstatus.UNDER_BEHANDLING, sak))
+        behandlingRepository.save(genererBehandling(35L, "test", Behandlingsstatus.FERDIG, sak))
 
         //when
         val behandlinger = behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(null, null, null, listOf(Behandlingsstatus.UNDER_BEHANDLING, Behandlingsstatus.IKKE_PAABEGYNT), false, Pageable.unpaged())
