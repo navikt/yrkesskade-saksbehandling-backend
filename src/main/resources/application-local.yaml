@@ -55,6 +55,14 @@ no.nav.security.jwt:
       cookie_name: auth_token
   client:
     registration:
+      dokarkiv-maskintilmaskin:
+        token-endpoint-url: ${AUTH_SERVER}/token
+        grant-type: client_credentials
+        scope: dokarkiv
+        authentication:
+          client-id: dummy-client-id
+          client-secret: dummy-secret
+          client-auth-method: client_secret_basic
       saf-maskintilmaskin:
         token-endpoint-url: ${AUTH_SERVER}/token
         grant-type: client_credentials
