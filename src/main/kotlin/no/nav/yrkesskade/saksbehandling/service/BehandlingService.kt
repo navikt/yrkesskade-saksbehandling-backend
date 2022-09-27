@@ -7,6 +7,7 @@ import hentBrevkode
 import hentHovedDokumentTittel
 import no.nav.yrkesskade.saksbehandling.client.dokarkiv.DokarkivClient
 import no.nav.yrkesskade.saksbehandling.client.dokarkiv.FerdigstillJournalpostRequest
+import no.nav.yrkesskade.saksbehandling.client.dokarkiv.IDokarkivClient
 import no.nav.yrkesskade.saksbehandling.client.oppgave.*
 import no.nav.yrkesskade.saksbehandling.graphql.client.pdl.IPdlClient
 import no.nav.yrkesskade.saksbehandling.graphql.client.pdl.PdlClient
@@ -16,6 +17,7 @@ import no.nav.yrkesskade.saksbehandling.graphql.common.model.Behandlingsfilter
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.FerdigstillBehandling
 import no.nav.yrkesskade.saksbehandling.model.*
 import no.nav.yrkesskade.saksbehandling.model.dto.BehandlingDto
+import no.nav.yrkesskade.saksbehandling.model.dto.FerdigstiltBehandlingDto
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
 import no.nav.yrkesskade.saksbehandling.security.AutentisertBruker
 import no.nav.yrkesskade.saksbehandling.util.FristFerdigstillelseTimeManager
@@ -35,7 +37,7 @@ class BehandlingService(
     private val autentisertBruker: AutentisertBruker,
     private val behandlingRepository: BehandlingRepository,
     private val behandlingsoverfoeringLogService: BehandlingsoverfoeringLogService,
-    private val dokarkivClient: DokarkivClient,
+    @Qualifier("dokarkivClient") private val dokarkivClient: IDokarkivClient,
     private val oppgaveClient: OppgaveClient,
     @Qualifier("pdlClient") private val pdlClient: IPdlClient,
     @Qualifier("safClient") private val safClient: ISafClient,
@@ -49,8 +51,8 @@ class BehandlingService(
     }
 
     @Transactional
-    fun lagreBehandling(behandlingEntity: BehandlingEntity) {
-        behandlingRepository.save(behandlingEntity).also {
+    fun lagreBehandling(behandlingEntity: BehandlingEntity): BehandlingEntity {
+        return behandlingRepository.save(behandlingEntity).also {
             logger.info("Lagret behandling (${behandlingEntity.behandlingstype.name}) med journalpostId ${behandlingEntity.journalpostId} og behandlingId ${behandlingEntity.behandlingId}")
         }
     }
@@ -145,7 +147,7 @@ class BehandlingService(
     }
 
     @Transactional
-    fun ferdigstillBehandling(ferdigstillBehandling: FerdigstillBehandling) : BehandlingDto {
+    fun ferdigstillBehandling(ferdigstillBehandling: FerdigstillBehandling) : FerdigstiltBehandlingDto {
         val behandling = hentBehandling(ferdigstillBehandling.behandlingId)
 
         // kan kun ferdigstille behandling som har status UNDER_BEHANDLING
@@ -166,6 +168,7 @@ class BehandlingService(
 
         val lagretBehandling = behandlingRepository.save(oppdatertBehandling)
         val lagretBehandlingDto = BehandlingDto.fromEntity(lagretBehandling)
+        var ferdigstiltBehandlingDto = FerdigstiltBehandlingDto(lagretBehandlingDto)
 
         if (lagretBehandling.behandlingstype == Behandlingstype.JOURNALFOERING) {
             dokarkivClient.ferdigstillJournalpost(behandling.journalpostId,
@@ -174,16 +177,17 @@ class BehandlingService(
                 )
             )
 
-            opprettVeiledningsbehandling(lagretBehandling)
+            val veiledningsbehandling = opprettVeiledningsbehandling(lagretBehandling)
+            ferdigstiltBehandlingDto = FerdigstiltBehandlingDto(lagretBehandlingDto, BehandlingDto.fromEntity(veiledningsbehandling))
         }
         else {
             logger.info("Forsøkte å ferdigstille journalpost ${behandling.journalpostId} med behandlingstype ${behandling.behandlingstype}!")
         }
 
-        return lagretBehandlingDto
+        return ferdigstiltBehandlingDto
     }
 
-    private fun opprettVeiledningsbehandling(journalfoering: BehandlingEntity) {
+    private fun opprettVeiledningsbehandling(journalfoering: BehandlingEntity): BehandlingEntity {
         val veiledningsbehandling = BehandlingEntity(
             behandlingId = 0,
             tema = journalfoering.tema,
@@ -191,7 +195,7 @@ class BehandlingService(
             brukerIdType = journalfoering.brukerIdType,
             behandlendeEnhet = journalfoering.behandlendeEnhet,
             behandlingstype = Behandlingstype.VEILEDNING,
-            status = Behandlingsstatus.IKKE_PAABEGYNT,
+            status = Behandlingsstatus.UNDER_BEHANDLING,
             behandlingsfrist = FristFerdigstillelseTimeManager.nesteGyldigeFristForFerdigstillelseInstant(Behandlingstype.VEILEDNING, Instant.now()),
             journalpostId = journalfoering.journalpostId,
             utgaaendeJournalpostId = null,
@@ -202,8 +206,9 @@ class BehandlingService(
             opprettetAv = applicationName,
             behandlingResultater = emptyList(),
             sak = null,
+            saksbehandlingsansvarligIdent = journalfoering.saksbehandlingsansvarligIdent
         )
-        lagreBehandling(veiledningsbehandling)
+        return lagreBehandling(veiledningsbehandling)
     }
 
     @Transactional

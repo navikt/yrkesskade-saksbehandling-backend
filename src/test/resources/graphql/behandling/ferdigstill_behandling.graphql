@@ -2,7 +2,9 @@ mutation {
     ferdigstillBehandling(ferdigstillBehandling: {
         behandlingId: 1
     }) {
-        behandlingId,
-        status
+        behandling {
+            behandlingId,
+            status
+        }
     }
 }
