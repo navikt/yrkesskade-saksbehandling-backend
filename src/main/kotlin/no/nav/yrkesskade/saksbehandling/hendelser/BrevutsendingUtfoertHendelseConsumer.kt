@@ -12,9 +12,10 @@ class BrevutsendingUtfoertHendelseConsumer(private val behandlingService: Behand
 
     @KafkaListener(
         id = "brevutsending-utfoert",
-        topics = ["\${kafka.topic.brevutsending-utfoert}"],
+        topics = ["\${kafka.topic.brevutsending-utfoert.name}"],
         containerFactory = "brevutsendingUtfoertHendelseListenerContainerFactory",
-        idIsGroup = false
+        idIsGroup = false,
+        autoStartup = "\${kafka.topic.brevutsending-utfoert.auto-startup:true}"
     )
     @Transactional
     fun listen(record: BrevutsendingUtfoertHendelse) {
