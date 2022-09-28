@@ -31,6 +31,11 @@ type Behandling {
     sak: Sak
 }
 
+type FerdigstiltBehandling {
+    behandling: Behandling!
+    nesteBehandling: Behandling
+}
+
 type DetaljertBehandling {
     behandlingId: ID!,
     tema: String
@@ -112,7 +117,7 @@ type Query {
 
 type Mutation {
     overtaBehandling(behandlingId: ID!): Behandling
-    ferdigstillBehandling(ferdigstillBehandling: FerdigstillBehandling!): Behandling
+    ferdigstillBehandling(ferdigstillBehandling: FerdigstillBehandling!): FerdigstiltBehandling
     leggTilbakeBehandling(behandlingId: ID!): Behandling
     overforBehandlingTilLegacy(behandlingId: ID!, avviksgrunn: String!): Boolean!
 }

@@ -56,12 +56,13 @@ class BehandlingEntityFactory {
         }
         fun enBehandledeEnhet() = faker.regexify("[0-9]{4}")
 
+        fun BehandlingEntity.medBehandlingId(behandlingId: Long) = this.copy(behandlingId = behandlingId)
         fun BehandlingEntity.medUtgaaendeJournalpostId(journalpostId: String) = this.copy(utgaaendeJournalpostId = journalpostId)
         fun BehandlingEntity.medSak(sak: SakEntity) = this.copy(sak = sak)
         fun BehandlingEntity.medStatus(status: Behandlingsstatus) = this.copy(status = status)
         fun BehandlingEntity.medJournalpostId(journalpostId: String) = this.copy(journalpostId = journalpostId)
         fun BehandlingEntity.medBehandlingstype(behandlingstype: Behandlingstype) = this.copy(behandlingstype = behandlingstype)
         fun BehandlingEntity.medFramdriftsstatus(framdriftsstatus: Framdriftsstatus) = this.copy(framdriftsstatus = framdriftsstatus)
-        fun BehandlingEntity.saksbehandlingsansvarligIdent(saksbehandlingsansvarligIdent: String) = this.copy(saksbehandlingsansvarligIdent = saksbehandlingsansvarligIdent)
+        fun BehandlingEntity.medSaksbehandlingsansvarligIdent(saksbehandlingsansvarligIdent: String?) = this.copy(saksbehandlingsansvarligIdent = saksbehandlingsansvarligIdent)
     }
 }
