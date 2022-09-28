@@ -81,6 +81,9 @@ kafka:
     dokument-til-saksbehandling:
       name: yrkesskade.privat-yrkesskade-dokument-til-saksbehandling
       auto-startup: false
+    brevutsending-utfoert:
+      name: yrkesskade.privat-yrkesskade-brevutsending-utfoert
+      auto-startup: false
     aapen-oppgave-opprettet: aapen-oppgave-opprettet-v1-local
     aapen-oppgave-endret: aapen-oppgave-endret-v1-local
 
