@@ -5,7 +5,13 @@ mutation {
             avsender: "012345678910"
         }
     }) {
-        behandlingId,
-        status
+        behandling {
+            behandlingId,
+            status
+        },
+        nesteBehandling {
+            behandlingId,
+            status
+        }
     }
 }
