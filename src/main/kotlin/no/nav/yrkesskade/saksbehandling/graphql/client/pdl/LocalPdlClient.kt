@@ -4,6 +4,8 @@ import com.expediagroup.graphql.generated.HentIdenter
 import com.expediagroup.graphql.generated.enums.AdressebeskyttelseGradering
 import com.expediagroup.graphql.generated.enums.IdentGruppe
 import com.expediagroup.graphql.generated.enums.KjoennType
+import com.expediagroup.graphql.generated.hentidenter.IdentInformasjon
+import com.expediagroup.graphql.generated.hentidenter.Identliste
 import com.expediagroup.graphql.generated.hentperson.*
 import net.datafaker.Faker
 import org.springframework.beans.factory.annotation.Qualifier
@@ -58,6 +60,26 @@ class LocalPdlClient : IPdlClient {
     }
 
     override fun hentIdenter(ident: String, grupper: List<IdentGruppe>, historikk: Boolean): HentIdenter.Result? {
-        TODO("Not yet implemented")
+        val identliste = mutableListOf<IdentInformasjon>()
+        if (grupper.contains(IdentGruppe.FOLKEREGISTERIDENT)) {
+            identliste.add(
+                IdentInformasjon(
+                    ident = Faker().regexify("[0-9]{11}"),
+                    historisk = false,
+                    gruppe = IdentGruppe.FOLKEREGISTERIDENT
+                )
+            )
+        }
+        if (grupper.contains(IdentGruppe.AKTORID)) {
+            identliste.add(
+                IdentInformasjon(
+                    ident = Faker().regexify("[0-9]{8}"),
+                    historisk = false,
+                    gruppe = IdentGruppe.FOLKEREGISTERIDENT
+                )
+            )
+        }
+
+        return HentIdenter.Result(Identliste(identliste))
     }
 }

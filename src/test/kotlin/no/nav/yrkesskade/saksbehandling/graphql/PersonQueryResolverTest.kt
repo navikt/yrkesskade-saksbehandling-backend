@@ -5,6 +5,7 @@ import com.graphql.spring.boot.test.GraphQLTestTemplate
 import no.nav.yrkesskade.meldingmottak.fixtures.gyldigPersonMedNavnOgVegadresse
 import no.nav.yrkesskade.saksbehandling.config.GraphQLScalarsConfig
 import no.nav.yrkesskade.saksbehandling.graphql.client.pdl.PdlClient
+import no.nav.yrkesskade.saksbehandling.service.PdlService
 import no.nav.yrkesskade.saksbehandling.test.AbstractTest
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
@@ -21,11 +22,11 @@ class PersonQueryResolverTest : AbstractTest() {
     lateinit var graphQLTestTemplate: GraphQLTestTemplate
 
     @Autowired
-    lateinit var pdlClient: PdlClient
+    lateinit var pdlService: PdlService
 
     @Test
     fun `hent person`() {
-        Mockito.`when`(pdlClient.hentPerson(anyString())).thenReturn(gyldigPersonMedNavnOgVegadresse())
+        Mockito.`when`(pdlService.hentPerson(anyString())).thenReturn(gyldigPersonMedNavnOgVegadresse())
 
         val response = graphQLTestTemplate.postForResource("graphql/person/hent_person.graphql")
         Assertions.assertThat(response.statusCode.is2xxSuccessful).isTrue

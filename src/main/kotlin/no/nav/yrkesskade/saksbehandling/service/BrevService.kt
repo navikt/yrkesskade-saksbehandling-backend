@@ -22,38 +22,17 @@ import java.util.Base64
 class BrevService(
     private val brevutsendingClient: BrevutsendingClient,
     private val jsonToPdfClient: JsonToPdfClient,
-    private val pdlClient: IPdlClient,
-    private val behandlingService: BehandlingService
-    ) {
-
-    private fun hentFoedselsnummer(behandling: BehandlingEntity): String {
-        return when (behandling.brukerIdType) {
-            BrukerIdType.FNR -> behandling.brukerId
-            BrukerIdType.AKTOERID -> hentFoedselsnummerFraPdl(behandling.brukerId)
-            else -> throw IllegalArgumentException("Utsending av brev for brukerIdType ${behandling.brukerIdType} støttes ikke")
-        }
-    }
-
-    private fun hentFoedselsnummerFraPdl(aktoerId: String): String {
-        val hentIdenter: HentIdenter.Result? = pdlClient.hentIdenter(aktoerId, listOf(IdentGruppe.FOLKEREGISTERIDENT), false)
-        return extractFoedselsnummer(hentIdenter)
-    }
-
-    private fun extractFoedselsnummer(identerResult: HentIdenter.Result?): String {
-        return identerResult?.hentIdenter?.identer?.first {
-                identInfo -> identInfo.gruppe == IdentGruppe.FOLKEREGISTERIDENT
-        }?.ident ?: throw PdlException("Fant ikke fødselsnummer i PDL")
-    }
+    private val behandlingService: BehandlingService,
+) {
 
     fun sendTilBrevutsending(behandlingId: Long, brev: Brev) {
         val behandling = behandlingService.hentBehandling(behandlingId)
-        val foedselsnummer = hentFoedselsnummer(behandling)
 
         brevutsendingClient.sendTilBrevutsending(
             BrevutsendingBestiltHendelse(
                 brev = brev,
                 behandlingId = behandlingId,
-                mottaker = Mottaker(foedselsnummer = foedselsnummer),
+                mottaker = Mottaker(foedselsnummer = behandling.brukerId),
                 metadata = BrevutsendingMetadata(
                     tidspunktBestilt = Instant.now(),
                     navCallId = MDC.get(MDCConstants.MDC_CALL_ID)

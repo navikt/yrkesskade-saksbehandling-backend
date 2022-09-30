@@ -18,9 +18,8 @@ import java.util.*
 @Component
 class Dokumentmottak(
     private val behandlingService: BehandlingService,
-    private val sakService: SakService,
     @Qualifier("safClient") private val safClient: ISafClient,
-    private val brevutsendingClient: BrevutsendingClient
+    private val pdlService: PdlService
 ) {
     companion object {
         @Suppress("JAVA_CLASS_ON_COMPANION")
@@ -51,6 +50,7 @@ class Dokumentmottak(
         // hente JP i SAF
         val dokumentTilSaksbehandling = dokumentTilSaksbehandlingHendelse.dokumentTilSaksbehandling
         val journalpost = hentJournalpostFraSaf(dokumentTilSaksbehandling.journalpostId)
+        val foedselsnummer = hentFoedselsnummerFraJournalpost(journalpost)
 
         // lete etter SakEntity basert på brukerId, evt. fagsakId
 
@@ -59,8 +59,8 @@ class Dokumentmottak(
         val behandling = BehandlingEntity(
             behandlingId = 0,
             tema = journalpost.tema!!.name,
-            brukerId = journalpost.bruker!!.id!!,
-            brukerIdType = journalpost.bruker.type!!,
+            brukerId = foedselsnummer,
+            brukerIdType = BrukerIdType.FNR,
             behandlendeEnhet = dokumentTilSaksbehandling.enhet,
             behandlingstype = Behandlingstype.JOURNALFOERING,
             status = Behandlingsstatus.IKKE_PAABEGYNT,
@@ -75,7 +75,13 @@ class Dokumentmottak(
             sak = null,
         )
         behandlingService.lagreBehandling(behandling)
+    }
 
+    private fun hentFoedselsnummerFraJournalpost(journalpost: Journalpost): String {
+        if (journalpost.bruker!!.type == BrukerIdType.FNR) {
+            return journalpost.bruker.id!!
+        }
+        return pdlService.hentFoedselsnummer(journalpost.bruker.id!!)
     }
 
     /**

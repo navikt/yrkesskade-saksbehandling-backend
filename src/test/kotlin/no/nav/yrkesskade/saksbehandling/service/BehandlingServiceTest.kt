@@ -316,8 +316,8 @@ class BehandlingServiceTest : AbstractTest() {
         val dto = behandlingDtos.first()
         assertThat(dto.behandlingId).isNotNull
         assertThat(dto.tema).isEqualTo("YRK")
-        assertThat(dto.brukerId).isEqualTo("12345")
-        assertThat(dto.brukerIdType).isEqualTo(BrukerIdType.AKTOERID)
+        assertThat(dto.brukerId).isEqualTo("01010112345")
+        assertThat(dto.brukerIdType).isEqualTo(BrukerIdType.FNR)
         assertThat(dto.behandlendeEnhet).isEqualTo("9999")
         assertThat(dto.saksbehandlingsansvarligIdent).isEqualTo("test")
         assertThat(dto.behandlingstype).isEqualTo(Behandlingstype.VEILEDNING.kode)

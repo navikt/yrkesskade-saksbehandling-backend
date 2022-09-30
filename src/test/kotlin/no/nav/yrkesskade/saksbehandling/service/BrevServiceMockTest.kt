@@ -25,7 +25,6 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.slf4j.MDC
 import tannlegeerklaeringVeiledningbrev
-import java.lang.RuntimeException
 import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
@@ -33,7 +32,6 @@ internal class BrevServiceMockTest {
 
     private val brevutsendingClientMock: BrevutsendingClient = mockk()
     private val jsonToPdfClientMock: JsonToPdfClient = mockk()
-    private val pdlClientMock: PdlClient = mockk()
     private val behandlingServiceMock: BehandlingService = mockk()
 
     private val brev = jacksonObjectMapper().readValue(tannlegeerklaeringVeiledningbrev(), Brev::class.java)
@@ -41,7 +39,6 @@ internal class BrevServiceMockTest {
     private val brevService = BrevService(
         brevutsendingClient = brevutsendingClientMock,
         jsonToPdfClient = jsonToPdfClientMock,
-        pdlClient = pdlClientMock,
         behandlingService = behandlingServiceMock
     )
 
@@ -51,45 +48,12 @@ internal class BrevServiceMockTest {
         every { behandlingServiceMock.hentBehandling(eq(1)) } answers {
             genererBehandling(1, "123", Behandlingsstatus.FERDIG, genererSak())
         }
-        every { pdlClientMock.hentIdenter(eq("12345"), eq(listOf(IdentGruppe.FOLKEREGISTERIDENT)), eq(false)) } answers {
-            hentIdenterResultMedFnrUtenHistorikk()
-        }
         justRun { brevutsendingClientMock.sendTilBrevutsending(any()) }
     }
 
     @Test
-    fun `sendTilBrevutsending - behandling med AKTOERID`() {
-        brevService.sendTilBrevutsending(1, brev)
-
-        verify(exactly = 1) { brevutsendingClientMock.sendTilBrevutsending(any()) }
-        verify(exactly = 1) { pdlClientMock.hentIdenter(any(), any(), any()) }
-    }
-
-    @Test
     fun `sendTilBrevutsending - behandling med FNR`() {
-        every { behandlingServiceMock.hentBehandling(eq(1)) } answers {
-            genererBehandling(1, "123", Behandlingsstatus.FERDIG, genererSak()).copy(
-                brukerIdType = BrukerIdType.FNR
-            )
-        }
-
         brevService.sendTilBrevutsending(1, brev)
-
         verify(exactly = 1) { brevutsendingClientMock.sendTilBrevutsending(any()) }
-        verify(exactly = 0) { pdlClientMock.hentIdenter(any(), any(), any()) }
-    }
-
-    @Test
-    fun `sendTilBrevutsending feiler naar brukerIdType ikke er FNR eller AKTOERID`() {
-        every { behandlingServiceMock.hentBehandling(eq(1)) } answers {
-            genererBehandling(1, "123", Behandlingsstatus.FERDIG, genererSak()).copy(
-                brukerIdType = BrukerIdType.ORGNR
-            )
-        }
-        val runtimeException = assertThrows<IllegalArgumentException> {
-            brevService.sendTilBrevutsending(1, brev)
-        }
-        assertThat(runtimeException.localizedMessage).isEqualTo("Utsending av brev for brukerIdType ${BrukerIdType.ORGNR.name} støttes ikke")
-
     }
 }
