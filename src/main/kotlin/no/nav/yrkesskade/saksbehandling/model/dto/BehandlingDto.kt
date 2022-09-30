@@ -4,7 +4,6 @@ import com.expediagroup.graphql.generated.enums.BrukerIdType
 import no.nav.yrkesskade.saksbehandling.model.BehandlingEntity
 import no.nav.yrkesskade.saksbehandling.model.BehandlingsresultatEntity
 import no.nav.yrkesskade.saksbehandling.model.SakEntity
-import no.nav.yrkesskade.saksbehandling.util.kodeverk.KodeverdiMapper
 import java.time.Instant
 
 data class BehandlingDto(
@@ -24,6 +23,7 @@ data class BehandlingDto(
     val framdriftsstatus: String,
     val opprettetTidspunkt: Instant,
     val opprettetAv: String,
+    val endretTidspunkt: Instant? = null,
     val endretAv: String? = null,
     val sak: SakEntity? = null, // TODO: sak dto
     val behandlingResultater: List<BehandlingsresultatEntity> // TODO: liste med behandlingsresultater dtos
@@ -48,6 +48,7 @@ data class BehandlingDto(
                 entity.framdriftsstatus.kode,
                 entity.opprettetTidspunkt,
                 entity.opprettetAv,
+                entity.endretTidspunkt,
                 entity.endretAv,
                 entity.sak,
                 entity.behandlingResultater

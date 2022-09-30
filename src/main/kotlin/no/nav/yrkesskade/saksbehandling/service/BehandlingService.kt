@@ -5,12 +5,10 @@ import com.expediagroup.graphql.generated.enums.BrukerIdType
 import com.expediagroup.graphql.generated.journalpost.Bruker
 import hentBrevkode
 import hentHovedDokumentTittel
-import no.nav.yrkesskade.saksbehandling.client.dokarkiv.DokarkivClient
 import no.nav.yrkesskade.saksbehandling.client.dokarkiv.FerdigstillJournalpostRequest
 import no.nav.yrkesskade.saksbehandling.client.dokarkiv.IDokarkivClient
 import no.nav.yrkesskade.saksbehandling.client.oppgave.*
 import no.nav.yrkesskade.saksbehandling.graphql.client.pdl.IPdlClient
-import no.nav.yrkesskade.saksbehandling.graphql.client.pdl.PdlClient
 import no.nav.yrkesskade.saksbehandling.graphql.client.saf.ISafClient
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.BehandlingsPage
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.Behandlingsfilter
@@ -31,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 import java.time.ZoneOffset
 import java.util.*
-import kotlin.NoSuchElementException
 
 @Service
 class BehandlingService(
@@ -164,6 +161,7 @@ class BehandlingService(
         val oppdatertBehandling = behandling.copy(
             status = Behandlingsstatus.FERDIG,
             saksbehandlingsansvarligIdent = autentisertBruker.preferredUsername,
+            endretTidspunkt = Instant.now(),
             endretAv = autentisertBruker.preferredUsername
         )
 
