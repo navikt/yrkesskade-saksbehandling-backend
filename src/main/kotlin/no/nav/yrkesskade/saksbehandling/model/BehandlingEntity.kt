@@ -62,6 +62,9 @@ data class BehandlingEntity (
     @Column(name = "opprettet_av", nullable = false)
     val opprettetAv: String,
 
+    @Column(name = "endret_tidspunkt", nullable = true)
+    val endretTidspunkt: Instant? = null,
+
     @Column(name = "endret_av", nullable = true)
     val endretAv: String? = null,
 
