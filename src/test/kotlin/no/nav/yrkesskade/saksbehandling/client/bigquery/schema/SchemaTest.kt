@@ -35,8 +35,8 @@ internal class SchemaTest {
         assertThat(content["behandlingsstatus"]).isEqualTo(payload.behandlingsstatus)
         assertThat(content["enhetsnr"]).isEqualTo(payload.enhetsnr)
         assertThat(content["overfoertLegacy"]).isEqualTo(payload.overfoertLegacy)
-        assertThat(content["opprettet"]).isEqualTo(payload.opprettet)
-        assertThat(content["endret"]).isEqualTo(payload.endret)
+        assertThat(content["opprettet"]).isEqualTo(payload.opprettet.toString())
+        assertThat(content["endret"]).isEqualTo(payload.endret.toString())
     }
 
     @Test

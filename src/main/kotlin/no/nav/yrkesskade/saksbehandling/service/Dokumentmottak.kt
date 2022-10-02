@@ -3,6 +3,8 @@ package no.nav.yrkesskade.saksbehandling.service
 import com.expediagroup.graphql.generated.enums.BrukerIdType
 import com.expediagroup.graphql.generated.journalpost.DokumentInfo
 import com.expediagroup.graphql.generated.journalpost.Journalpost
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.yrkesskade.saksbehandling.client.BrevutsendingClient
 import no.nav.yrkesskade.saksbehandling.client.bigquery.BigQueryClient
@@ -137,9 +139,10 @@ class Dokumentmottak(
             opprettet = behandling.opprettetTidspunkt,
             endret = behandling.endretTidspunkt
         )
+        val jsonNode = jacksonObjectMapper().registerModule(JavaTimeModule()).valueToTree<JsonNode>(payload)
         bigQueryClient.insert(
             behandling_v1,
-            behandling_v1.transform(jacksonObjectMapper().valueToTree(payload))
+            behandling_v1.transform(jsonNode)
         )
     }
 
