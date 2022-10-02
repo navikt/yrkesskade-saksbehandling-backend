@@ -3,6 +3,7 @@ package no.nav.yrkesskade.saksbehandling.service
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.yrkesskade.saksbehandling.client.BrevutsendingClient
+import no.nav.yrkesskade.saksbehandling.client.bigquery.BigQueryClient
 import no.nav.yrkesskade.saksbehandling.fixtures.dokumentTilSaksbehandlingHendelse
 import no.nav.yrkesskade.saksbehandling.fixtures.journalpost.journalpostResultTannlegeerklaeringWithBrukerAktoerid
 import no.nav.yrkesskade.saksbehandling.graphql.client.saf.SafClient
@@ -37,6 +38,9 @@ class DokumentmottakTest : AbstractTest() {
     @Autowired
     lateinit var behandlingRepository: BehandlingRepository
 
+    @Autowired
+    lateinit var bigQueryClient: BigQueryClient
+
     @BeforeEach
     fun setup() {
         MDC.put(MDCConstants.MDC_CALL_ID, UUID.randomUUID().toString())
@@ -44,7 +48,8 @@ class DokumentmottakTest : AbstractTest() {
             behandlingService = behandlingService,
             sakService = sakService,
             safClient = safClientMock,
-            brevutsendingClient = brevutsendingClient
+            brevutsendingClient = brevutsendingClient,
+            bigQueryClient = bigQueryClient
         )
         klargjorDatabase()
     }
