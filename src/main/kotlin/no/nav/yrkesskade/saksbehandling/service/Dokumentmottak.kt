@@ -3,7 +3,13 @@ package no.nav.yrkesskade.saksbehandling.service
 import com.expediagroup.graphql.generated.enums.BrukerIdType
 import com.expediagroup.graphql.generated.journalpost.DokumentInfo
 import com.expediagroup.graphql.generated.journalpost.Journalpost
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.yrkesskade.saksbehandling.client.BrevutsendingClient
+import no.nav.yrkesskade.saksbehandling.client.bigquery.BigQueryClient
+import no.nav.yrkesskade.saksbehandling.client.bigquery.schema.BehandlingPayload
+import no.nav.yrkesskade.saksbehandling.client.bigquery.schema.behandling_v1
 import no.nav.yrkesskade.saksbehandling.graphql.client.saf.ISafClient
 import no.nav.yrkesskade.saksbehandling.model.*
 import no.nav.yrkesskade.saksbehandling.util.getLogger
@@ -20,7 +26,8 @@ class Dokumentmottak(
     private val behandlingService: BehandlingService,
     private val sakService: SakService,
     @Qualifier("safClient") private val safClient: ISafClient,
-    private val brevutsendingClient: BrevutsendingClient
+    private val brevutsendingClient: BrevutsendingClient,
+    private val bigQueryClient: BigQueryClient
 ) {
     companion object {
         @Suppress("JAVA_CLASS_ON_COMPANION")
@@ -74,8 +81,8 @@ class Dokumentmottak(
             behandlingResultater = emptyList(),
             sak = null,
         )
-        behandlingService.lagreBehandling(behandling)
-
+        val lagretBehandling = behandlingService.lagreBehandling(behandling)
+        foerMetrikkIBigQuery(lagretBehandling)
     }
 
     /**
@@ -113,4 +120,30 @@ class Dokumentmottak(
         validerJournalpost(journalpost)
         return journalpost
     }
+
+    /**
+     * Legger til en rad i BigQuery-metrikkene om en behandling er opprettet/endret.
+     *
+     * @param behandling behandlingen som ble opprettet
+     */
+    private fun foerMetrikkIBigQuery(behandling: BehandlingEntity) {
+        val payload = BehandlingPayload(
+            behandlingId = behandling.behandlingId.toString(),
+            journalpostId = behandling.journalpostId,
+            utgaaendeJournalpostId = behandling.utgaaendeJournalpostId,
+            dokumentkategori = behandling.dokumentkategori,
+            behandlingstype = behandling.behandlingstype.kode,
+            behandlingsstatus = behandling.status.kode,
+            enhetsnr = behandling.behandlendeEnhet ?: "9999",
+            overfoertLegacy = false,
+            opprettet = behandling.opprettetTidspunkt,
+            endret = behandling.endretTidspunkt
+        )
+        val jsonNode = jacksonObjectMapper().registerModule(JavaTimeModule()).valueToTree<JsonNode>(payload)
+        bigQueryClient.insert(
+            behandling_v1,
+            behandling_v1.transform(jsonNode)
+        )
+    }
+
 }

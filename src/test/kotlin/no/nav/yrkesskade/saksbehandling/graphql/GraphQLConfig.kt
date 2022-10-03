@@ -1,11 +1,11 @@
 package no.nav.yrkesskade.saksbehandling.graphql
 
+import no.nav.yrkesskade.saksbehandling.client.bigquery.BigQueryClient
 import no.nav.yrkesskade.saksbehandling.client.dokarkiv.DokarkivClient
 import no.nav.yrkesskade.saksbehandling.client.oppgave.OppgaveClient
 import no.nav.yrkesskade.saksbehandling.graphql.client.pdl.PdlClient
 import no.nav.yrkesskade.saksbehandling.graphql.client.saf.SafClient
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
-import no.nav.yrkesskade.saksbehandling.repository.BehandlingsoverfoeringLogRepository
 import no.nav.yrkesskade.saksbehandling.security.AutentisertBruker
 import no.nav.yrkesskade.saksbehandling.service.BehandlingService
 import no.nav.yrkesskade.saksbehandling.service.BehandlingsoverfoeringLogService
@@ -41,6 +41,9 @@ class GraphQLConfig {
     @MockBean
     lateinit var oppgaveClient: OppgaveClient
 
+    @MockBean
+    lateinit var bigQueryClient: BigQueryClient
+
     @Bean
     fun behandlingService(): BehandlingService {
         return BehandlingService(
@@ -51,6 +54,7 @@ class GraphQLConfig {
             oppgaveClient,
             pdlClient,
             safClient,
+            bigQueryClient,
             "Kompys",
             "Kompys"
         )
