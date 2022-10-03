@@ -22,7 +22,7 @@ val behandling_v1 = object : SchemaDefinition {
             description("journalpostId")
         }
         string("utgaaendeJournalpostId") {
-            required()
+            nullable()
             description("journalpostId på dokument som sendes ut fra saksbehandling")
         }
         string("dokumentkategori") {
