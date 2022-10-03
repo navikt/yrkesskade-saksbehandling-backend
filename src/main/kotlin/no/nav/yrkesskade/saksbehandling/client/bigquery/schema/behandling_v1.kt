@@ -9,7 +9,7 @@ import com.google.cloud.bigquery.Schema
 import java.time.Instant
 
 val behandling_v1 = object : SchemaDefinition {
-    override val schemaId: SchemaId = SchemaId(name = "saksbehandling", version = 1)
+    override val schemaId: SchemaId = SchemaId(name = "behandling", version = 1)
     val objectMapper = jacksonObjectMapper().registerModule(JavaTimeModule())
 
     override fun define(): Schema = schema {
