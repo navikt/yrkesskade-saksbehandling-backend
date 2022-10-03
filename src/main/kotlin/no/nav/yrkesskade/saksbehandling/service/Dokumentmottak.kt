@@ -47,14 +47,9 @@ class Dokumentmottak(
 
     @Transactional
     fun mottaDokument(dokumentTilSaksbehandlingHendelse: DokumentTilSaksbehandlingHendelse) {
-        // hente JP i SAF
         val dokumentTilSaksbehandling = dokumentTilSaksbehandlingHendelse.dokumentTilSaksbehandling
         val journalpost = hentJournalpostFraSaf(dokumentTilSaksbehandling.journalpostId)
         val foedselsnummer = hentFoedselsnummerFraJournalpost(journalpost)
-
-        // lete etter SakEntity basert på brukerId, evt. fagsakId
-
-//        val eksisterendeSak = sakService.hentSak(journalpost.bruker!!.id!!)
 
         val behandling = BehandlingEntity(
             behandlingId = 0,
