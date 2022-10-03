@@ -2,9 +2,8 @@ package no.nav.yrkesskade.saksbehandling.graphql
 
 import com.graphql.spring.boot.test.GraphQLTest
 import com.graphql.spring.boot.test.GraphQLTestTemplate
-import no.nav.yrkesskade.meldingmottak.fixtures.gyldigPersonMedNavnOgVegadresse
+import no.nav.yrkesskade.saksbehandling.fixtures.gyldigPersonMedNavnOgVegadresse
 import no.nav.yrkesskade.saksbehandling.config.GraphQLScalarsConfig
-import no.nav.yrkesskade.saksbehandling.graphql.client.pdl.PdlClient
 import no.nav.yrkesskade.saksbehandling.service.PdlService
 import no.nav.yrkesskade.saksbehandling.test.AbstractTest
 import org.assertj.core.api.Assertions

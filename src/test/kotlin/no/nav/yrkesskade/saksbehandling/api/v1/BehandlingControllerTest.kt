@@ -2,7 +2,7 @@ package no.nav.yrkesskade.saksbehandling.api.v1
 
 import com.expediagroup.graphql.generated.enums.IdentGruppe
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import no.nav.yrkesskade.meldingmottak.fixtures.hentIdenterResultMedFnrUtenHistorikk
+import no.nav.yrkesskade.saksbehandling.fixtures.hentIdenterResultMedFnrUtenHistorikk
 import no.nav.yrkesskade.saksbehandling.client.JsonToPdfClient
 import no.nav.yrkesskade.saksbehandling.fixtures.behandlingsstatus
 import no.nav.yrkesskade.saksbehandling.fixtures.behandlingstyper
