@@ -68,7 +68,7 @@ val behandling_v1 = object : SchemaDefinition {
                 "enhetsnr" to behandlingPayload.enhetsnr,
                 "overfoertLegacy" to behandlingPayload.overfoertLegacy,
                 "opprettet" to behandlingPayload.opprettet.toString(),
-                "endret" to behandlingPayload.endret.toString()
+                "endret" to if (behandlingPayload.endret != null) behandlingPayload.endret.toString() else null
             )
         )
     }
