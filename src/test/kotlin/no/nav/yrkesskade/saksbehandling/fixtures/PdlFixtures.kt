@@ -1,6 +1,8 @@
-package no.nav.yrkesskade.meldingmottak.fixtures
+package no.nav.yrkesskade.saksbehandling.fixtures
 
+import com.expediagroup.graphql.client.jackson.types.JacksonGraphQLError
 import com.expediagroup.graphql.client.jackson.types.JacksonGraphQLResponse
+import com.expediagroup.graphql.client.jackson.types.JacksonGraphQLSourceLocation
 import com.expediagroup.graphql.client.types.GraphQLClientResponse
 import com.expediagroup.graphql.generated.HentIdenter
 import com.expediagroup.graphql.generated.HentPerson
@@ -90,14 +92,56 @@ fun okResponsStrengtFortroligPersonFraPdl(): GraphQLClientResponse<HentPerson.Re
     )
 }
 
-fun hentIdenterResultMedFnrUtenHistorikk(): HentIdenter.Result {
-    return HentIdenter.Result(gyldigIdentlisteUtenFnrHistorikk())
+fun hentIdenterErrorRespons(): GraphQLClientResponse<HentIdenter.Result> {
+    return JacksonGraphQLResponse(
+        data = null,
+        errors = listOf(
+            JacksonGraphQLError(
+                message = "Validation error",
+                locations = listOf(JacksonGraphQLSourceLocation(line = 1, column = 1))
+            )
+        ),
+        extensions = emptyMap()
+    )
 }
 
-fun gyldigIdentlisteUtenFnrHistorikk() = Identliste(listOf(identInformasjon_Fnr()))
+fun okResponsHentIdenterMedFnrUtenHistorikk(): GraphQLClientResponse<HentIdenter.Result> {
+    return JacksonGraphQLResponse(
+        data = hentIdenterResultMedFnrUtenHistorikk(),
+        errors = null,
+        extensions = emptyMap()
+    )
+}
+
+fun okResponsHentIdenterMedAktoerIdUtenHistorikk(): GraphQLClientResponse<HentIdenter.Result> {
+    return JacksonGraphQLResponse(
+        data = hentIdenterResultMedAktoerIdUtenHistorikk(),
+        errors = null,
+        extensions = emptyMap()
+    )
+}
+
+fun hentIdenterResultMedFnrUtenHistorikk(): HentIdenter.Result {
+    return HentIdenter.Result(gyldigIdentlisteMedFnrUtenHistorikk())
+}
+
+fun hentIdenterResultMedAktoerIdUtenHistorikk(): HentIdenter.Result {
+    return HentIdenter.Result(gyldigIdentlisteMedAktoerIdUtenHistorikk())
+}
+
+fun gyldigIdentlisteMedFnrUtenHistorikk() = Identliste(listOf(identInformasjon_Fnr()))
+
+fun gyldigIdentlisteMedAktoerIdUtenHistorikk() = Identliste(listOf(identInformasjon_aktoerId()))
+
+fun identInformasjon_aktoerId() = IdentInformasjon(
+    ident = "44444444",
+    historisk = false,
+    gruppe = IdentGruppe.AKTORID
+)
 
 fun identInformasjon_Fnr() = IdentInformasjon(
     ident = "33333333333",
     historisk = false,
     gruppe = IdentGruppe.FOLKEREGISTERIDENT
 )
+

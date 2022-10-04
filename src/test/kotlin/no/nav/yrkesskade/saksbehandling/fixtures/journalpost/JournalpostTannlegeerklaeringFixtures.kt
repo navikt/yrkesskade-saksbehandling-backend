@@ -31,6 +31,14 @@ fun journalpostResultTannlegeerklaeringWithBrukerAktoerid(): Journalpost.Result 
     return Journalpost.Result(gyldigJournalpostTannlegeerklaeringMedAktoerId())
 }
 
+fun journalpostResultTannlegeerklaeringWithBrukerFnr(): Journalpost.Result {
+    return Journalpost.Result(
+        gyldigJournalpostTannlegeerklaeringMedAktoerId().copy(
+            bruker = Bruker("01010112345", BrukerIdType.FNR)
+        )
+    )
+}
+
 fun dokumentInfoListeMedTannlegeerklaering(): List<DokumentInfo> {
     val dokInfo1 = DokumentInfo("dok1", "Et vilkårlig dokument", "NAV000-1")
     val dokInfo2 = DokumentInfo("dok2", "Et annet dokument", "NAV000-2")

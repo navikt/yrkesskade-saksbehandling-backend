@@ -5,8 +5,10 @@ query {
         page: 1
     },
     behandlingSortering: {
-        sortField: behandlingsfrist,
-        sortDirection: DESC
+        sortDirection: DESC,
+        sortFields: [
+            behandlingsfrist
+        ]
     }
   ) {
     behandlinger {

@@ -14,7 +14,6 @@ import no.nav.yrkesskade.saksbehandling.client.bigquery.schema.behandling_v1
 import no.nav.yrkesskade.saksbehandling.client.dokarkiv.FerdigstillJournalpostRequest
 import no.nav.yrkesskade.saksbehandling.client.dokarkiv.IDokarkivClient
 import no.nav.yrkesskade.saksbehandling.client.oppgave.*
-import no.nav.yrkesskade.saksbehandling.graphql.client.pdl.IPdlClient
 import no.nav.yrkesskade.saksbehandling.graphql.client.saf.ISafClient
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.BehandlingsPage
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.Behandlingsfilter
@@ -43,7 +42,7 @@ class BehandlingService(
     private val behandlingsoverfoeringLogService: BehandlingsoverfoeringLogService,
     @Qualifier("dokarkivClient") private val dokarkivClient: IDokarkivClient,
     private val oppgaveClient: OppgaveClient,
-    @Qualifier("pdlClient") private val pdlClient: IPdlClient,
+    private val pdlService: PdlService,
     @Qualifier("safClient") private val safClient: ISafClient,
     private val bigQueryClient: BigQueryClient,
     @Value("\${application.pretty.name}") private val applicationShortName: String,
@@ -318,7 +317,7 @@ class BehandlingService(
         }
         return when (bruker!!.type) {
             BrukerIdType.AKTOERID -> bruker.id
-            BrukerIdType.FNR -> pdlClient.hentAktorId(bruker.id!!)
+            BrukerIdType.FNR -> pdlService.hentAktorId(bruker.id!!)
             else -> throw RuntimeException("Ugyldig brukerIdType: ${bruker.type}")
         }
     }

@@ -6,7 +6,6 @@ import com.expediagroup.graphql.generated.journalpost.Journalpost
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import no.nav.yrkesskade.saksbehandling.client.BrevutsendingClient
 import no.nav.yrkesskade.saksbehandling.client.bigquery.BigQueryClient
 import no.nav.yrkesskade.saksbehandling.client.bigquery.schema.BehandlingPayload
 import no.nav.yrkesskade.saksbehandling.client.bigquery.schema.behandling_v1
@@ -24,9 +23,8 @@ import java.util.*
 @Component
 class Dokumentmottak(
     private val behandlingService: BehandlingService,
-    private val sakService: SakService,
     @Qualifier("safClient") private val safClient: ISafClient,
-    private val brevutsendingClient: BrevutsendingClient,
+    private val pdlService: PdlService,
     private val bigQueryClient: BigQueryClient
 ) {
     companion object {
@@ -55,19 +53,15 @@ class Dokumentmottak(
 
     @Transactional
     fun mottaDokument(dokumentTilSaksbehandlingHendelse: DokumentTilSaksbehandlingHendelse) {
-        // hente JP i SAF
         val dokumentTilSaksbehandling = dokumentTilSaksbehandlingHendelse.dokumentTilSaksbehandling
         val journalpost = hentJournalpostFraSaf(dokumentTilSaksbehandling.journalpostId)
-
-        // lete etter SakEntity basert på brukerId, evt. fagsakId
-
-//        val eksisterendeSak = sakService.hentSak(journalpost.bruker!!.id!!)
+        val foedselsnummer = hentFoedselsnummerFraJournalpost(journalpost)
 
         val behandling = BehandlingEntity(
             behandlingId = 0,
             tema = journalpost.tema!!.name,
-            brukerId = journalpost.bruker!!.id!!,
-            brukerIdType = journalpost.bruker.type!!,
+            brukerId = foedselsnummer,
+            brukerIdType = BrukerIdType.FNR,
             behandlendeEnhet = dokumentTilSaksbehandling.enhet,
             behandlingstype = Behandlingstype.JOURNALFOERING,
             status = Behandlingsstatus.IKKE_PAABEGYNT,
@@ -83,6 +77,13 @@ class Dokumentmottak(
         )
         val lagretBehandling = behandlingService.lagreBehandling(behandling)
         foerMetrikkIBigQuery(lagretBehandling)
+    }
+
+    private fun hentFoedselsnummerFraJournalpost(journalpost: Journalpost): String {
+        if (journalpost.bruker!!.type == BrukerIdType.FNR) {
+            return journalpost.bruker.id!!
+        }
+        return pdlService.hentFoedselsnummerMedMaskinTilMaskinToken(journalpost.bruker.id!!)
     }
 
     /**

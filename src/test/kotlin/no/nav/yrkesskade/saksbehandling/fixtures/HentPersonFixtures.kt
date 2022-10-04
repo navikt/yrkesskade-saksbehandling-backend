@@ -1,4 +1,4 @@
-package no.nav.yrkesskade.meldingmottak.fixtures
+package no.nav.yrkesskade.saksbehandling.fixtures
 
 import com.expediagroup.graphql.generated.enums.AdressebeskyttelseGradering
 import com.expediagroup.graphql.generated.enums.KjoennType

@@ -96,6 +96,30 @@ class BehandlingQueryResolverTest : AbstractTest() {
     }
 
     @Test
+    fun `hent aapne behandlinger med sortering`() {
+        // given
+        val underBehandling = genererBehandling(1, "test", Behandlingsstatus.UNDER_BEHANDLING, genererSak())
+        val ikkePaabegynt = genererBehandling(1, "test", Behandlingsstatus.IKKE_PAABEGYNT, genererSak())
+        Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
+        val page = PageImpl(listOf(underBehandling, ikkePaabegynt))
+        Mockito.`when`(behandlingRepository.findBehandlingerBegrensetTilBehandlingsstatuser(
+            status = org.mockito.kotlin.isNull(),
+            dokumentkategori = org.mockito.kotlin.isNull(),
+            behandlingstype = org.mockito.kotlin.isNull(),
+            gyldigeStatuser = any(),
+            inkluderSaksbehandlingansvarlige = any(),
+            pageable = any())
+        ).thenReturn(page)
+
+        // when
+        val response = graphQLTestTemplate.postForResource("graphql/behandling/hent_aapne_behandlinger_med_sortering.graphql")
+
+        // then
+        assertThat(response.statusCode.is2xxSuccessful).isTrue
+        assertThat(response.get("$.data.hentAapneBehandlinger.behandlinger.length()")).isEqualTo("2")
+    }
+
+    @Test
     fun `hent behandling`() {
         val behandling = genererBehandling(1, "test", Behandlingsstatus.UNDER_BEHANDLING, genererSak())
         Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")

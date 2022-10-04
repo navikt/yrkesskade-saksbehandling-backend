@@ -1,0 +1,18 @@
+query {
+  hentAapneBehandlinger(
+        page: {
+            size: 10,
+            page: 0
+        },
+        behandlingSortering: {
+            sortDirection: DESC,
+            sortFields: [
+                behandlingsfrist
+            ]
+        }
+  ) {
+    behandlinger {
+        behandlingId
+    }
+  }
+}
