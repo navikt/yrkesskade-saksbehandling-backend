@@ -5,6 +5,7 @@ import no.nav.yrkesskade.saksbehandling.model.BrevutsendingBestiltHendelse
 import no.nav.yrkesskade.saksbehandling.test.AbstractTest
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationContextInitializer
@@ -29,7 +30,10 @@ internal class BrevutsendingClientTest : AbstractTest() {
     @Test
     fun sendTilBrevutsending() {
         val brevutsendingBestiltHendelse = brevutsendingBestiltHendelse()
-        brevutsendingClient.sendTilBrevutsending(brevutsendingBestiltHendelse)
+
+        assertDoesNotThrow {
+            brevutsendingClient.sendTilBrevutsending(brevutsendingBestiltHendelse)
+        }
 
         brevutsendingConsumer.getLatch().await(10000, TimeUnit.MILLISECONDS)
 

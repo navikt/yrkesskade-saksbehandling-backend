@@ -11,6 +11,7 @@ import com.expediagroup.graphql.generated.hentperson.Person
 import kotlinx.coroutines.runBlocking
 import no.nav.yrkesskade.saksbehandling.util.MDCConstants
 import no.nav.yrkesskade.saksbehandling.util.TokenUtil
+import no.nav.yrkesskade.saksbehandling.util.Tokentype
 import no.nav.yrkesskade.saksbehandling.util.getLogger
 import no.nav.yrkesskade.saksbehandling.util.getSecureLogger
 import org.slf4j.MDC
@@ -38,15 +39,19 @@ class PdlClient(
     private val client = GraphQLWebClient(url = pdlGraphqlUrl)
 
     override fun hentAktorId(fodselsnummer: String): String? {
-        val identerResult = hentIdenter(fodselsnummer, listOf(IdentGruppe.AKTORID), false)
+        val identerResult = hentIdenter(fodselsnummer, listOf(IdentGruppe.AKTORID), false, Tokentype.ON_BEHALF_OF)
         return extractAktorId(identerResult)
     }
 
     /**
      * @param ident fødselsnummer eller aktørId
      */
-    override fun hentIdenter(ident: String, grupper: List<IdentGruppe>, historikk: Boolean): HentIdenter.Result? {
-        val token = tokenUtil.getAppAccessOnBehalfOfTokenWithPdlScope()
+    override fun hentIdenter(ident: String, grupper: List<IdentGruppe>, historikk: Boolean, tokentype: Tokentype): HentIdenter.Result? {
+        val token = when (tokentype) {
+            Tokentype.ON_BEHALF_OF -> tokenUtil.getAppAccessOnBehalfOfTokenWithPdlScope()
+            Tokentype.MASKIN_TIL_MASKIN -> tokenUtil.getAppAccessMaskinTilMaskinTokenWithPdlScope()
+        }
+
         val hentIdenterQuery = HentIdenter(
             HentIdenter.Variables(
                 ident = ident,

@@ -8,6 +8,7 @@ import com.expediagroup.graphql.generated.hentidenter.IdentInformasjon
 import com.expediagroup.graphql.generated.hentidenter.Identliste
 import com.expediagroup.graphql.generated.hentperson.*
 import net.datafaker.Faker
+import no.nav.yrkesskade.saksbehandling.util.Tokentype
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
@@ -59,7 +60,7 @@ class LocalPdlClient : IPdlClient {
         )
     }
 
-    override fun hentIdenter(ident: String, grupper: List<IdentGruppe>, historikk: Boolean): HentIdenter.Result? {
+    override fun hentIdenter(ident: String, grupper: List<IdentGruppe>, historikk: Boolean, tokentype: Tokentype): HentIdenter.Result? {
         val identliste = mutableListOf<IdentInformasjon>()
         if (grupper.contains(IdentGruppe.FOLKEREGISTERIDENT)) {
             identliste.add(

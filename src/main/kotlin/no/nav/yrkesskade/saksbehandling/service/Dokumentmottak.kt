@@ -85,7 +85,7 @@ class Dokumentmottak(
         if (journalpost.bruker!!.type == BrukerIdType.FNR) {
             return journalpost.bruker.id!!
         }
-        return pdlService.hentFoedselsnummer(journalpost.bruker.id!!)
+        return pdlService.hentFoedselsnummerMedMaskinTilMaskinToken(journalpost.bruker.id!!)
     }
 
     /**
