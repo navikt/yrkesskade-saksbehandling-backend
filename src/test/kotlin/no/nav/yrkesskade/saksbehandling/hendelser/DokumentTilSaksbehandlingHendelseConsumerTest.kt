@@ -47,7 +47,7 @@ class DokumentTilSaksbehandlingHendelseConsumerTest : AbstractTest() {
     fun listen() {
         val journalpost = journalpostResultWithBrukerAktoerid()
         `when`(safClient.hentOppdatertJournalpost(any())).thenReturn(journalpost)
-        `when`(pdlService.hentFoedselsnummer(eq(journalpost.journalpost!!.bruker!!.id!!))).thenReturn("01010112345")
+        `when`(pdlService.hentFoedselsnummerMedMaskinTilMaskinToken(eq(journalpost.journalpost!!.bruker!!.id!!))).thenReturn("01010112345")
 
         val payload = DokumentTilSaksbehandlingHendelse(
             DokumentTilSaksbehandling(

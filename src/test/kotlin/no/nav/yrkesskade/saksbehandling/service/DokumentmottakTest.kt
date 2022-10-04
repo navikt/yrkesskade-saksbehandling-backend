@@ -3,7 +3,6 @@ package no.nav.yrkesskade.saksbehandling.service
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import no.nav.yrkesskade.saksbehandling.client.BrevutsendingClient
 import no.nav.yrkesskade.saksbehandling.fixtures.dokumentTilSaksbehandlingHendelse
 import no.nav.yrkesskade.saksbehandling.fixtures.journalpost.journalpostResultTannlegeerklaeringWithBrukerAktoerid
 import no.nav.yrkesskade.saksbehandling.fixtures.journalpost.journalpostResultTannlegeerklaeringWithBrukerFnr
@@ -43,14 +42,14 @@ class DokumentmottakTest : AbstractTest() {
             safClient = safClientMock,
             pdlService = pdlServiceMock
         )
+        every { pdlServiceMock.hentFoedselsnummerMedMaskinTilMaskinToken(any()) } returns "01010112345"
+        every { safClientMock.hentOppdatertJournalpost(any()) } returns journalpostResultTannlegeerklaeringWithBrukerAktoerid()
         klargjorDatabase()
     }
 
     @Transactional
     fun klargjorDatabase() {
         behandlingRepository.deleteAll()
-        every { pdlServiceMock.hentFoedselsnummer(any()) } returns "01010112345"
-        every { safClientMock.hentOppdatertJournalpost(any()) } returns journalpostResultTannlegeerklaeringWithBrukerAktoerid()
     }
 
     @Test
@@ -70,7 +69,7 @@ class DokumentmottakTest : AbstractTest() {
     fun `mottaDokument skal hente FNR når journalpost bruker aktørId`() {
         dokumentmottak.mottaDokument(dokumentTilSaksbehandlingHendelse())
 
-        verify(exactly = 1) { pdlServiceMock.hentFoedselsnummer(any()) }
+        verify(exactly = 1) { pdlServiceMock.hentFoedselsnummerMedMaskinTilMaskinToken(any()) }
     }
 
     @Test
@@ -79,6 +78,6 @@ class DokumentmottakTest : AbstractTest() {
 
         dokumentmottak.mottaDokument(dokumentTilSaksbehandlingHendelse())
 
-        verify(exactly = 0) { pdlServiceMock.hentFoedselsnummer(any()) }
+        verify(exactly = 0) { pdlServiceMock.hentFoedselsnummerMedMaskinTilMaskinToken(any()) }
     }
 }

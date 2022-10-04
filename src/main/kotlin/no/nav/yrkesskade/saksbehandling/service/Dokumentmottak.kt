@@ -3,7 +3,6 @@ package no.nav.yrkesskade.saksbehandling.service
 import com.expediagroup.graphql.generated.enums.BrukerIdType
 import com.expediagroup.graphql.generated.journalpost.DokumentInfo
 import com.expediagroup.graphql.generated.journalpost.Journalpost
-import no.nav.yrkesskade.saksbehandling.client.BrevutsendingClient
 import no.nav.yrkesskade.saksbehandling.graphql.client.saf.ISafClient
 import no.nav.yrkesskade.saksbehandling.model.*
 import no.nav.yrkesskade.saksbehandling.util.getLogger
@@ -76,7 +75,7 @@ class Dokumentmottak(
         if (journalpost.bruker!!.type == BrukerIdType.FNR) {
             return journalpost.bruker.id!!
         }
-        return pdlService.hentFoedselsnummer(journalpost.bruker.id!!)
+        return pdlService.hentFoedselsnummerMedMaskinTilMaskinToken(journalpost.bruker.id!!)
     }
 
     /**

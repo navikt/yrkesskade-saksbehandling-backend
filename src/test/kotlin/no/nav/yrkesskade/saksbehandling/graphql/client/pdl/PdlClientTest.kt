@@ -13,6 +13,7 @@ import no.nav.yrkesskade.saksbehandling.fixtures.identInformasjon_aktoerId
 import no.nav.yrkesskade.saksbehandling.fixtures.okResponsHentIdenterMedAktoerIdUtenHistorikk
 import no.nav.yrkesskade.saksbehandling.fixtures.okResponsHentIdenterMedFnrUtenHistorikk
 import no.nav.yrkesskade.saksbehandling.util.TokenUtil
+import no.nav.yrkesskade.saksbehandling.util.Tokentype
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -49,7 +50,12 @@ internal class PdlClientTest {
     @Test
     fun hentIdenter() {
         coEvery { graphQLWebClient.execute<HentIdenter.Result>(any(), any()) } returns okResponsHentIdenterMedFnrUtenHistorikk()
-        val hentIdenterResult = client.hentIdenter("12345", listOf(IdentGruppe.FOLKEREGISTERIDENT), false)
+        val hentIdenterResult = client.hentIdenter(
+            "12345",
+            listOf(IdentGruppe.FOLKEREGISTERIDENT),
+            false,
+            Tokentype.ON_BEHALF_OF
+        )
         assertThat(hentIdenterResult).isEqualTo(hentIdenterResultMedFnrUtenHistorikk())
     }
 
@@ -57,7 +63,7 @@ internal class PdlClientTest {
     fun `hentIdenter skal kaste exception naar PDL gir error respons`() {
         coEvery { graphQLWebClient.execute<HentIdenter.Result>(any(), any()) } returns hentIdenterErrorRespons()
         Assertions.assertThrows(RuntimeException::class.java) {
-            client.hentIdenter("12345", listOf(IdentGruppe.FOLKEREGISTERIDENT), false)
+            client.hentIdenter("12345", listOf(IdentGruppe.FOLKEREGISTERIDENT), false, Tokentype.ON_BEHALF_OF)
         }
     }
 }
