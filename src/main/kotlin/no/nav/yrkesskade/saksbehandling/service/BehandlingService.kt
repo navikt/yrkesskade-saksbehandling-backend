@@ -3,8 +3,14 @@ package no.nav.yrkesskade.saksbehandling.service
 import DetaljertBehandling
 import com.expediagroup.graphql.generated.enums.BrukerIdType
 import com.expediagroup.graphql.generated.journalpost.Bruker
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import hentBrevkode
 import hentHovedDokumentTittel
+import no.nav.yrkesskade.saksbehandling.client.bigquery.BigQueryClient
+import no.nav.yrkesskade.saksbehandling.client.bigquery.schema.BehandlingPayload
+import no.nav.yrkesskade.saksbehandling.client.bigquery.schema.behandling_v1
 import no.nav.yrkesskade.saksbehandling.client.dokarkiv.FerdigstillJournalpostRequest
 import no.nav.yrkesskade.saksbehandling.client.dokarkiv.IDokarkivClient
 import no.nav.yrkesskade.saksbehandling.client.oppgave.*
@@ -38,6 +44,7 @@ class BehandlingService(
     private val oppgaveClient: OppgaveClient,
     private val pdlService: PdlService,
     @Qualifier("safClient") private val safClient: ISafClient,
+    private val bigQueryClient: BigQueryClient,
     @Value("\${application.pretty.name}") private val applicationShortName: String,
     @Value("\${spring.application.name}") private val applicationName: String
 ) {
@@ -51,6 +58,7 @@ class BehandlingService(
     fun lagreBehandling(behandlingEntity: BehandlingEntity): BehandlingEntity {
         return behandlingRepository.save(behandlingEntity).also {
             logger.info("Lagret behandling (${behandlingEntity.behandlingstype.name}) med journalpostId ${behandlingEntity.journalpostId} og behandlingId ${behandlingEntity.behandlingId}")
+            foerMetrikkIBigQuery(it, false)
         }
     }
 
@@ -137,10 +145,11 @@ class BehandlingService(
         val oppdatertBehandling = behandling.copy(
             status = Behandlingsstatus.UNDER_BEHANDLING,
             saksbehandlingsansvarligIdent = autentisertBruker.preferredUsername,
+            endretTidspunkt = Instant.now(),
             endretAv = autentisertBruker.preferredUsername
         )
 
-        return BehandlingDto.fromEntity(behandlingRepository.save(oppdatertBehandling))
+        return BehandlingDto.fromEntity(lagreBehandling(oppdatertBehandling))
     }
 
     @Transactional
@@ -164,7 +173,7 @@ class BehandlingService(
             endretAv = autentisertBruker.preferredUsername
         )
 
-        val lagretBehandling = behandlingRepository.save(oppdatertBehandling)
+        val lagretBehandling = lagreBehandling(oppdatertBehandling)
         val lagretBehandlingDto = BehandlingDto.fromEntity(lagretBehandling)
         var ferdigstiltBehandlingDto = FerdigstiltBehandlingDto(lagretBehandlingDto)
 
@@ -218,13 +227,17 @@ class BehandlingService(
         }
 
         val brukerIdent = autentisertBruker.preferredUsername
-        if (!behandling.saksbehandlingsansvarligIdent.equals(brukerIdent)) {
+        if (behandling.saksbehandlingsansvarligIdent != brukerIdent) {
             throw IllegalStateException("$brukerIdent er ikke saksbehandler for behandling ${behandling.behandlingId}")
         }
 
-        val oppdatertBehandling = behandling.copy(saksbehandlingsansvarligIdent = null, endretAv = autentisertBruker.preferredUsername)
+        val oppdatertBehandling = behandling.copy(
+            saksbehandlingsansvarligIdent = null,
+            endretTidspunkt = Instant.now(),
+            endretAv = autentisertBruker.preferredUsername
+        )
 
-        return BehandlingDto.fromEntity(behandlingRepository.save(oppdatertBehandling))
+        return BehandlingDto.fromEntity(lagreBehandling(oppdatertBehandling))
     }
 
     fun hentBehandling(behandlingId: Long): BehandlingEntity {
@@ -260,7 +273,7 @@ class BehandlingService(
 
         // flytt behandling til legacy
         val journalfoeringOppgave = OpprettJournalfoeringOppgave(
-            beskrivelse = "${journalpost.hentHovedDokumentTittel()} - overført fra ${applicationShortName}",
+            beskrivelse = "${journalpost.hentHovedDokumentTittel()} - overført fra $applicationShortName",
             journalpostId = journalpost.journalpostId,
             aktoerId = aktoerId,
             tema = journalpost.tema.toString(),
@@ -286,6 +299,13 @@ class BehandlingService(
 
         // hard slett behandling
         behandlingRepository.delete(behandling)
+
+        val oppdatertBehandling = behandling.copy(
+            saksbehandlingsansvarligIdent = null,
+            endretTidspunkt = Instant.now(),
+            endretAv = autentisertBruker.preferredUsername,
+        )
+        foerMetrikkIBigQuery(oppdatertBehandling, true)
 
         return true
     }
@@ -315,10 +335,11 @@ class BehandlingService(
 
         val ferdigstiltBehandling = behandling.copy(
             utgaaendeJournalpostId = journalpostId,
-            status = Behandlingsstatus.FERDIG
+            status = Behandlingsstatus.FERDIG,
+            endretTidspunkt = Instant.now()
         )
 
-        behandlingRepository.save(ferdigstiltBehandling)
+        lagreBehandling(ferdigstiltBehandling)
         knyttUtgaaendeJournalpostTilVeiledningsbehandling(ferdigstiltBehandling.journalpostId, journalpostId)
     }
 
@@ -331,10 +352,37 @@ class BehandlingService(
             Behandlingstype.JOURNALFOERING
         ) ?: throw NoSuchElementException("Fant ikke behandling")
 
-        behandlingRepository.save(
+        lagreBehandling(
             korresponderendeJournalfoeringsbehandling.copy(
-                utgaaendeJournalpostId = utgaaendeJournalpostId
+                utgaaendeJournalpostId = utgaaendeJournalpostId,
+                endretTidspunkt = Instant.now()
             )
         )
     }
+
+    /**
+     * Legger til en rad i BigQuery-metrikkene om en behandling er opprettet/endret.
+     *
+     * @param behandling behandlingen som ble opprettet
+     */
+    private fun foerMetrikkIBigQuery(behandling: BehandlingEntity, overfoertLegacy: Boolean = false) {
+        val payload = BehandlingPayload(
+            behandlingId = behandling.behandlingId.toString(),
+            journalpostId = behandling.journalpostId,
+            utgaaendeJournalpostId = behandling.utgaaendeJournalpostId,
+            dokumentkategori = behandling.dokumentkategori,
+            behandlingstype = behandling.behandlingstype.kode,
+            behandlingsstatus = behandling.status.kode,
+            enhetsnr = behandling.behandlendeEnhet ?: "9999",
+            overfoertLegacy = overfoertLegacy,
+            opprettet = behandling.opprettetTidspunkt,
+            endret = behandling.endretTidspunkt
+        )
+        val jsonNode = jacksonObjectMapper().registerModule(JavaTimeModule()).valueToTree<JsonNode>(payload)
+        bigQueryClient.insert(
+            behandling_v1,
+            behandling_v1.transform(jsonNode)
+        )
+    }
+
 }
