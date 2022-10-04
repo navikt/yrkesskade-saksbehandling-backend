@@ -7,6 +7,8 @@ application:
 
 spring:
   kafka:
+    consumer:
+      auto-offset-reset: latest
     properties:
       schema.registry.url: ${KAFKA_SCHEMA_REGISTRY}
       security.protocol: SSL
