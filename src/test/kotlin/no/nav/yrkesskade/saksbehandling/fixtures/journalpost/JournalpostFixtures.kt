@@ -25,7 +25,9 @@ fun gyldigJournalpostMedAktoerId(): com.expediagroup.graphql.generated.journalpo
         ),
         datoOpprettet = LocalDateTime.of(2022, 1, 1, 1, 1, 1, 1)
     )
-}fun gyldigJournalpostMedAktoerIdUtenDokumenter(): com.expediagroup.graphql.generated.journalpost.Journalpost {
+}
+
+fun gyldigJournalpostMedAktoerIdUtenDokumenter(): com.expediagroup.graphql.generated.journalpost.Journalpost {
     return com.expediagroup.graphql.generated.journalpost.Journalpost(
         journalpostId = "1337",
         journalstatus = Journalstatus.MOTTATT,

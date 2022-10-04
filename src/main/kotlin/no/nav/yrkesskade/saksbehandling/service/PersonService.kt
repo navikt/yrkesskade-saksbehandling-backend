@@ -6,10 +6,10 @@ import org.springframework.stereotype.Service
 
 @Service
 class PersonService(
-    private val pdlClient: IPdlClient
+    private val pdlService: PdlService
 ) {
 
     fun hentPerson(foedselsnummer: String): Person? {
-        return pdlClient.hentPerson(foedselsnummer)
+        return pdlService.hentPerson(foedselsnummer)
     }
 }

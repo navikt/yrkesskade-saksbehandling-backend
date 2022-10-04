@@ -3,12 +3,12 @@ package no.nav.yrkesskade.saksbehandling.graphql
 import no.nav.yrkesskade.saksbehandling.client.bigquery.BigQueryClient
 import no.nav.yrkesskade.saksbehandling.client.dokarkiv.DokarkivClient
 import no.nav.yrkesskade.saksbehandling.client.oppgave.OppgaveClient
-import no.nav.yrkesskade.saksbehandling.graphql.client.pdl.PdlClient
 import no.nav.yrkesskade.saksbehandling.graphql.client.saf.SafClient
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
 import no.nav.yrkesskade.saksbehandling.security.AutentisertBruker
 import no.nav.yrkesskade.saksbehandling.service.BehandlingService
 import no.nav.yrkesskade.saksbehandling.service.BehandlingsoverfoeringLogService
+import no.nav.yrkesskade.saksbehandling.service.PdlService
 import no.nav.yrkesskade.saksbehandling.service.PersonService
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.Bean
@@ -36,7 +36,7 @@ class GraphQLConfig {
     lateinit var safClient: SafClient
 
     @MockBean
-    lateinit var pdlClient: PdlClient
+    lateinit var pdlService: PdlService
 
     @MockBean
     lateinit var oppgaveClient: OppgaveClient
@@ -52,7 +52,7 @@ class GraphQLConfig {
             behandlingsoverfoeringLogService,
             dokarkivClient,
             oppgaveClient,
-            pdlClient,
+            pdlService,
             safClient,
             bigQueryClient,
             "Kompys",
@@ -62,6 +62,6 @@ class GraphQLConfig {
 
     @Bean
     fun personService(): PersonService {
-        return PersonService(pdlClient)
+        return PersonService(pdlService)
     }
 }

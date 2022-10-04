@@ -2,10 +2,12 @@ package no.nav.yrkesskade.saksbehandling.service
 
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import no.nav.yrkesskade.saksbehandling.client.BrevutsendingClient
 import no.nav.yrkesskade.saksbehandling.client.bigquery.BigQueryClient
 import no.nav.yrkesskade.saksbehandling.fixtures.dokumentTilSaksbehandlingHendelse
 import no.nav.yrkesskade.saksbehandling.fixtures.journalpost.journalpostResultTannlegeerklaeringWithBrukerAktoerid
+import no.nav.yrkesskade.saksbehandling.fixtures.journalpost.journalpostResultTannlegeerklaeringWithBrukerFnr
 import no.nav.yrkesskade.saksbehandling.graphql.client.saf.SafClient
 import no.nav.yrkesskade.saksbehandling.model.Behandlingstype
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
@@ -27,13 +29,9 @@ class DokumentmottakTest : AbstractTest() {
     @Autowired
     lateinit var behandlingService: BehandlingService
 
-    @Autowired
-    lateinit var sakService: SakService
-
     private val safClientMock: SafClient = mockk()
 
-    @Autowired
-    lateinit var brevutsendingClient: BrevutsendingClient
+    private val pdlServiceMock: PdlService = mockk()
 
     @Autowired
     lateinit var behandlingRepository: BehandlingRepository
@@ -46,10 +44,9 @@ class DokumentmottakTest : AbstractTest() {
         MDC.put(MDCConstants.MDC_CALL_ID, UUID.randomUUID().toString())
         dokumentmottak = Dokumentmottak(
             behandlingService = behandlingService,
-            sakService = sakService,
             safClient = safClientMock,
-            brevutsendingClient = brevutsendingClient,
-            bigQueryClient = bigQueryClient
+            bigQueryClient = bigQueryClient,
+            pdlService = pdlServiceMock
         )
         klargjorDatabase()
     }
@@ -57,11 +54,12 @@ class DokumentmottakTest : AbstractTest() {
     @Transactional
     fun klargjorDatabase() {
         behandlingRepository.deleteAll()
+        every { pdlServiceMock.hentFoedselsnummer(any()) } returns "01010112345"
+        every { safClientMock.hentOppdatertJournalpost(any()) } returns journalpostResultTannlegeerklaeringWithBrukerAktoerid()
     }
 
     @Test
     fun mottaTannlegeerklaering() {
-        every { safClientMock.hentOppdatertJournalpost(any()) } returns journalpostResultTannlegeerklaeringWithBrukerAktoerid()
         dokumentmottak.mottaDokument(dokumentTilSaksbehandlingHendelse())
 
         val behandlingEntities = behandlingRepository.findAll()
@@ -73,4 +71,19 @@ class DokumentmottakTest : AbstractTest() {
         assertThat(behandlingEntity.dokumentkategori).isEqualTo("tannlegeerklaering")
     }
 
+    @Test
+    fun `mottaDokument skal hente FNR når journalpost bruker aktørId`() {
+        dokumentmottak.mottaDokument(dokumentTilSaksbehandlingHendelse())
+
+        verify(exactly = 1) { pdlServiceMock.hentFoedselsnummer(any()) }
+    }
+
+    @Test
+    fun `mottaDokument skal ikke hente FNR når journalpost bruker FNR`() {
+        every { safClientMock.hentOppdatertJournalpost(any()) } returns journalpostResultTannlegeerklaeringWithBrukerFnr()
+
+        dokumentmottak.mottaDokument(dokumentTilSaksbehandlingHendelse())
+
+        verify(exactly = 0) { pdlServiceMock.hentFoedselsnummer(any()) }
+    }
 }
