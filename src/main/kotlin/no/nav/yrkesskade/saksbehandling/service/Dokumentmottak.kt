@@ -3,7 +3,6 @@ package no.nav.yrkesskade.saksbehandling.service
 import com.expediagroup.graphql.generated.enums.BrukerIdType
 import com.expediagroup.graphql.generated.journalpost.DokumentInfo
 import com.expediagroup.graphql.generated.journalpost.Journalpost
-import no.nav.yrkesskade.saksbehandling.client.BrevutsendingClient
 import no.nav.yrkesskade.saksbehandling.graphql.client.saf.ISafClient
 import no.nav.yrkesskade.saksbehandling.model.*
 import no.nav.yrkesskade.saksbehandling.util.getLogger
@@ -18,9 +17,8 @@ import java.util.*
 @Component
 class Dokumentmottak(
     private val behandlingService: BehandlingService,
-    private val sakService: SakService,
     @Qualifier("safClient") private val safClient: ISafClient,
-    private val brevutsendingClient: BrevutsendingClient
+    private val pdlService: PdlService
 ) {
     companion object {
         @Suppress("JAVA_CLASS_ON_COMPANION")
@@ -48,19 +46,15 @@ class Dokumentmottak(
 
     @Transactional
     fun mottaDokument(dokumentTilSaksbehandlingHendelse: DokumentTilSaksbehandlingHendelse) {
-        // hente JP i SAF
         val dokumentTilSaksbehandling = dokumentTilSaksbehandlingHendelse.dokumentTilSaksbehandling
         val journalpost = hentJournalpostFraSaf(dokumentTilSaksbehandling.journalpostId)
-
-        // lete etter SakEntity basert på brukerId, evt. fagsakId
-
-//        val eksisterendeSak = sakService.hentSak(journalpost.bruker!!.id!!)
+        val foedselsnummer = hentFoedselsnummerFraJournalpost(journalpost)
 
         val behandling = BehandlingEntity(
             behandlingId = 0,
             tema = journalpost.tema!!.name,
-            brukerId = journalpost.bruker!!.id!!,
-            brukerIdType = journalpost.bruker.type!!,
+            brukerId = foedselsnummer,
+            brukerIdType = BrukerIdType.FNR,
             behandlendeEnhet = dokumentTilSaksbehandling.enhet,
             behandlingstype = Behandlingstype.JOURNALFOERING,
             status = Behandlingsstatus.IKKE_PAABEGYNT,
@@ -75,7 +69,13 @@ class Dokumentmottak(
             sak = null,
         )
         behandlingService.lagreBehandling(behandling)
+    }
 
+    private fun hentFoedselsnummerFraJournalpost(journalpost: Journalpost): String {
+        if (journalpost.bruker!!.type == BrukerIdType.FNR) {
+            return journalpost.bruker.id!!
+        }
+        return pdlService.hentFoedselsnummerMedMaskinTilMaskinToken(journalpost.bruker.id!!)
     }
 
     /**

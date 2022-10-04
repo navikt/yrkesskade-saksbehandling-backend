@@ -7,11 +7,13 @@ import no.nav.yrkesskade.saksbehandling.model.DokumentTilSaksbehandling
 import no.nav.yrkesskade.saksbehandling.model.DokumentTilSaksbehandlingHendelse
 import no.nav.yrkesskade.saksbehandling.model.DokumentTilSaksbehandlingMetadata
 import no.nav.yrkesskade.saksbehandling.service.Dokumentmottak
+import no.nav.yrkesskade.saksbehandling.service.PdlService
 import no.nav.yrkesskade.saksbehandling.test.AbstractTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.Import
@@ -35,12 +37,17 @@ class DokumentTilSaksbehandlingHendelseConsumerTest : AbstractTest() {
     @MockBean
     lateinit var safClient: SafClient
 
+    @MockBean
+    lateinit var pdlService: PdlService
+
     @Autowired
     lateinit var kafkaTemplate: KafkaTemplate<String, DokumentTilSaksbehandlingHendelse>
 
     @Test
     fun listen() {
-        `when`(safClient.hentOppdatertJournalpost(any())).thenReturn(journalpostResultWithBrukerAktoerid())
+        val journalpost = journalpostResultWithBrukerAktoerid()
+        `when`(safClient.hentOppdatertJournalpost(any())).thenReturn(journalpost)
+        `when`(pdlService.hentFoedselsnummerMedMaskinTilMaskinToken(eq(journalpost.journalpost!!.bruker!!.id!!))).thenReturn("01010112345")
 
         val payload = DokumentTilSaksbehandlingHendelse(
             DokumentTilSaksbehandling(

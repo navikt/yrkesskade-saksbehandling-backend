@@ -30,8 +30,8 @@ internal class BehandlingDtoTest {
 
         assertThat(dto.behandlingId).isEqualTo(123L)
         assertThat(dto.tema).isEqualTo("YRK")
-        assertThat(dto.brukerId).isEqualTo("12345")
-        assertThat(dto.brukerIdType).isEqualTo(BrukerIdType.AKTOERID)
+        assertThat(dto.brukerId).isEqualTo("01010112345")
+        assertThat(dto.brukerIdType).isEqualTo(BrukerIdType.FNR)
         assertThat(dto.behandlendeEnhet).isEqualTo("9999")
         assertThat(dto.saksbehandlingsansvarligIdent).isEqualTo("Mr Ansvarlig")
         assertThat(dto.behandlingstype).isEqualTo(Behandlingstype.VEILEDNING.kode)
