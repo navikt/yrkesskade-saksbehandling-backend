@@ -78,9 +78,7 @@ funksjonsbrytere:
 
 kafka:
   topic:
-    dokument-til-saksbehandling:
-      name: yrkesskade.privat-yrkesskade-dokument-til-saksbehandling
-      auto-startup: false
+    dokument-til-saksbehandling: yrkesskade.privat-yrkesskade-dokument-til-saksbehandling
     brevutsending-utfoert:
       name: yrkesskade.privat-yrkesskade-brevutsending-utfoert
       auto-startup: false
