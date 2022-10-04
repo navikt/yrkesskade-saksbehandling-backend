@@ -131,15 +131,11 @@ class BehandlingService(
         val behandling = hentBehandling(behandlingId)
 
         // sjekk at behandling ikke allerede tilhører en annen saksbehandler
-        if (behandling.saksbehandlingsansvarligIdent != null && behandling.saksbehandlingsansvarligIdent != autentisertBruker.preferredUsername) {
+        if (!behandling.kanOvertaBehandling(autentisertBruker.preferredUsername)) {
             throw BehandlingException("Behandling tilhører en annen saksbehandler")
         }
 
-        val oppdatertBehandling = behandling.copy(
-            status = Behandlingsstatus.UNDER_BEHANDLING,
-            saksbehandlingsansvarligIdent = autentisertBruker.preferredUsername,
-            endretAv = autentisertBruker.preferredUsername
-        )
+        val oppdatertBehandling = behandling.overta(autentisertBruker.preferredUsername)
 
         return BehandlingDto.fromEntity(behandlingRepository.save(oppdatertBehandling))
     }
@@ -337,5 +333,25 @@ class BehandlingService(
                 utgaaendeJournalpostId = utgaaendeJournalpostId
             )
         )
+    }
+
+    /**
+     * Overta flere behandlinger samtidig. Dersom en behandling ikke lar seg overta, vil operasjonen fortsette.
+     *
+     * Hver behandling vil hentes en og en i tilfelle en annen prosess har endret status i mellomtiden.
+     */
+    @Transactional
+    fun overtaBehandlinger(behandlingIder: List<Long>): Int {
+        var antallSuksessfulleOvertakelser = 0
+        for (behandlingId in behandlingIder) {
+            val behandling = hentBehandling(behandlingId)
+            if (behandling.kanOvertaBehandling(autentisertBruker.preferredUsername)) {
+                val oppdatertBehandling = behandling.overta(autentisertBruker.preferredUsername)
+                behandlingRepository.save(oppdatertBehandling)
+                antallSuksessfulleOvertakelser++
+            }
+        }
+
+        return antallSuksessfulleOvertakelser
     }
 }

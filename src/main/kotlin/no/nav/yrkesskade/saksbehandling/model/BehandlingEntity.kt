@@ -76,4 +76,14 @@ data class BehandlingEntity (
     val behandlingResultater: List<BehandlingsresultatEntity>
 ) {
 
+    fun kanOvertaBehandling(brukerIdent: String?) =
+        saksbehandlingsansvarligIdent == null || saksbehandlingsansvarligIdent == brukerIdent
+
+    fun overta(brukerIdent: String): BehandlingEntity {
+        return copy(
+            status = Behandlingsstatus.UNDER_BEHANDLING,
+            saksbehandlingsansvarligIdent = brukerIdent,
+            endretAv = brukerIdent
+        )
+    }
 }

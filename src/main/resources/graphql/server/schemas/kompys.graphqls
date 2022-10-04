@@ -117,6 +117,7 @@ type Query {
 
 type Mutation {
     overtaBehandling(behandlingId: ID!): Behandling
+    overtaBehandlinger(behandlingIder: [ID]!): Int!
     ferdigstillBehandling(ferdigstillBehandling: FerdigstillBehandling!): FerdigstiltBehandling
     leggTilbakeBehandling(behandlingId: ID!): Behandling
     overforBehandlingTilLegacy(behandlingId: ID!, avviksgrunn: String!): Boolean!
