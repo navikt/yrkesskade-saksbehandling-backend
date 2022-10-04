@@ -18,6 +18,8 @@ class TokenUtil(
 
     fun getAppAccessOnBehalfOfTokenWithPdlScope() = getTokenForRegistration("pdl-onbehalfof")
 
+    fun getAppAccessMaskinTilMaskinTokenWithPdlScope() = getTokenForRegistration("pdl-maskintilmaskin")
+
     fun getAppAccessWithKodeverkScope() = getTokenForRegistration("kodeverk-maskintilmaskin")
 
     fun getAppAccessTokenWithOppgaveScope() = getTokenForRegistration("oppgave-maskintilmaskin")
@@ -27,4 +29,9 @@ class TokenUtil(
         val response = oAuth2AccessTokenService.getAccessToken(clientProperties)
         return response.accessToken
     }
+}
+
+enum class Tokentype {
+    ON_BEHALF_OF,
+    MASKIN_TIL_MASKIN
 }

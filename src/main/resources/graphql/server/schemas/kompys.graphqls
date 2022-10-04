@@ -72,7 +72,7 @@ input Page {
 }
 
 input BehandlingSortering {
-    sortField: BehandlingSortFieldType
+    sortFields: [BehandlingSortFieldType]
     sortDirection: SortDirectionType
 }
 

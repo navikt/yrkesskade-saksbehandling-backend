@@ -2,7 +2,7 @@ package no.nav.yrkesskade.saksbehandling.api.v1
 
 import com.expediagroup.graphql.generated.enums.IdentGruppe
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import no.nav.yrkesskade.meldingmottak.fixtures.hentIdenterResultMedFnrUtenHistorikk
+import no.nav.yrkesskade.saksbehandling.fixtures.hentIdenterResultMedFnrUtenHistorikk
 import no.nav.yrkesskade.saksbehandling.client.JsonToPdfClient
 import no.nav.yrkesskade.saksbehandling.fixtures.behandlingsstatus
 import no.nav.yrkesskade.saksbehandling.fixtures.behandlingstyper
@@ -16,6 +16,7 @@ import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
 import no.nav.yrkesskade.saksbehandling.repository.SakRepository
 import no.nav.yrkesskade.saksbehandling.service.KodeverkService
 import no.nav.yrkesskade.saksbehandling.test.AbstractTest
+import no.nav.yrkesskade.saksbehandling.util.Tokentype
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -80,7 +81,12 @@ internal class BehandlingControllerTest : AbstractTest() {
         Mockito.`when`(kodeverkService.hentKodeverk(eq("framdriftsstatus"), eq(null), any())).thenReturn(
             framdriftsstatus()
         )
-        Mockito.`when`(pdlClient.hentIdenter(eq("12345"), eq(listOf(IdentGruppe.FOLKEREGISTERIDENT)), eq(false))).thenReturn(
+        Mockito.`when`(pdlClient.hentIdenter(
+            eq("12345"),
+            eq(listOf(IdentGruppe.FOLKEREGISTERIDENT)),
+            eq(false),
+            eq(Tokentype.ON_BEHALF_OF)
+        )).thenReturn(
             hentIdenterResultMedFnrUtenHistorikk()
         )
         val tekstBytes = "Dette er en test".toByteArray(Charsets.UTF_8)
