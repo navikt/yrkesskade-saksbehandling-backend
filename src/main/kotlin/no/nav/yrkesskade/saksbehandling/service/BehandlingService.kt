@@ -302,27 +302,20 @@ class BehandlingService(
         }
     }
 
-    fun ferdigstillEtterFullfoertBrevutsending(behandlingId: Long, journalpostId: String) {
+    fun lagreUtgaaendeJournalpostFraBrevutsending(behandlingId: Long, journalpostId: String) {
         val behandling = hentBehandling(behandlingId)
-
-        if (behandling.status != Behandlingsstatus.UNDER_BEHANDLING) {
-            throw BehandlingException("Kan ikke ferdigstille behandling. Behandling har status ${behandling.status}")
-        }
 
         if (behandling.utgaaendeJournalpostId != null) {
             throw BehandlingException("Kan ikke ferdigstille behandling. Behandling har allerede utgående journalpostId ${behandling.utgaaendeJournalpostId}")
         }
 
-        val ferdigstiltBehandling = behandling.copy(
-            utgaaendeJournalpostId = journalpostId,
-            status = Behandlingsstatus.FERDIG
-        )
+        val behandlingMedUtgaaendeJournalpostId = behandling.copy(utgaaendeJournalpostId = journalpostId)
 
-        behandlingRepository.save(ferdigstiltBehandling)
-        knyttUtgaaendeJournalpostTilVeiledningsbehandling(ferdigstiltBehandling.journalpostId, journalpostId)
+        behandlingRepository.save(behandlingMedUtgaaendeJournalpostId)
+        knyttUtgaaendeJournalpostTilJournalfoeringsbehandling(behandlingMedUtgaaendeJournalpostId.journalpostId, journalpostId)
     }
 
-    private fun knyttUtgaaendeJournalpostTilVeiledningsbehandling(
+    private fun knyttUtgaaendeJournalpostTilJournalfoeringsbehandling(
         inngaaendeJournalpostId: String,
         utgaaendeJournalpostId: String
     ) {
@@ -332,9 +325,7 @@ class BehandlingService(
         ) ?: throw NoSuchElementException("Fant ikke behandling")
 
         behandlingRepository.save(
-            korresponderendeJournalfoeringsbehandling.copy(
-                utgaaendeJournalpostId = utgaaendeJournalpostId
-            )
+            korresponderendeJournalfoeringsbehandling.copy(utgaaendeJournalpostId = utgaaendeJournalpostId)
         )
     }
 }

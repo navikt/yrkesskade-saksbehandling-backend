@@ -240,29 +240,29 @@ class BehandlingServiceTest : AbstractTest() {
     }
 
     @Test
-    fun `ferdigstill veiledingsbehandling etter brevutsending `() {
+    fun `lagre utgående journalpostId etter brevutsending `() {
         Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
         val journalfoeringsbehandling = behandlingRepository.save(
             BehandlingEntityFactory.enBehandling("test")
                 .medSak(sak)
                 .medBehandlingstype(Behandlingstype.JOURNALFOERING)
-                .medStatus(Behandlingsstatus.UNDER_BEHANDLING)
+                .medStatus(Behandlingsstatus.FERDIG)
         )
-        assertThat(journalfoeringsbehandling.status).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING)
+        assertThat(journalfoeringsbehandling.status).isEqualTo(Behandlingsstatus.FERDIG)
         assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
 
         val veiledningsbehandling = behandlingRepository.save(
             BehandlingEntityFactory.enBehandling("test")
                 .medSak(sak)
                 .medBehandlingstype(Behandlingstype.VEILEDNING)
-                .medStatus(Behandlingsstatus.UNDER_BEHANDLING)
+                .medStatus(Behandlingsstatus.FERDIG)
                 .medJournalpostId(journalfoeringsbehandling.journalpostId)
         )
-        assertThat(veiledningsbehandling.status).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING)
+        assertThat(veiledningsbehandling.status).isEqualTo(Behandlingsstatus.FERDIG)
         assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(2)
 
         val utgaaendejournalpostId = "1234"
-        behandlingService.ferdigstillEtterFullfoertBrevutsending(
+        behandlingService.lagreUtgaaendeJournalpostFraBrevutsending(
             behandlingId = veiledningsbehandling.behandlingId,
             journalpostId = utgaaendejournalpostId
         )
@@ -273,7 +273,6 @@ class BehandlingServiceTest : AbstractTest() {
         assertThat(oppdatertJournalfoeringsbehandling.utgaaendeJournalpostId).isEqualTo(utgaaendejournalpostId)
         assertThat(oppdatertJournalfoeringsbehandling.utgaaendeJournalpostId)
             .isEqualTo(oppdatertVeiledningsbehandling.utgaaendeJournalpostId)
-        assertThat(oppdatertVeiledningsbehandling.status).isEqualTo(Behandlingsstatus.FERDIG)
 
         assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(2)
     }
