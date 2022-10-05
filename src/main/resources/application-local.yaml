@@ -42,7 +42,8 @@ kafka:
   topic:
     dokument-til-saksbehandling: privat-yrkesskade-dokument-til-saksbehandling
     brevutsending-bestilt: privat-yrkesskade-brevutsending-bestilt
-    brevutsending-utfoert: privat-yrkesskade-brevutsending-utfoert
+    brevutsending-utfoert:
+      name: privat-yrkesskade-brevutsending-utfoert
     aapen-oppgave-opprettet: aapen-oppgave-opprettet-v1-local
     aapen-oppgave-endret: aapen-oppgave-endret-v1-local
 
