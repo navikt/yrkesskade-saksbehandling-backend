@@ -23,7 +23,7 @@ internal class TilgangsstyringTest {
         tilgangsstyring = Tilgangsstyring(autentisertBruker, rolleConfig)
 
         // when
-        val harTilgang = tilgangsstyring.sjekkTilgang(Tilgang.LESE_DOKUMENT)
+        val harTilgang = tilgangsstyring.harTilgang(Tilgang.LESE_DOKUMENT)
 
         // then
         assertThat(harTilgang).isTrue
@@ -37,7 +37,7 @@ internal class TilgangsstyringTest {
         tilgangsstyring = Tilgangsstyring(autentisertBruker, rolleConfig)
 
         // when
-        val harTilgang = tilgangsstyring.sjekkTilgang(Tilgang.PRODUSERE_DOKUMENT)
+        val harTilgang = tilgangsstyring.harTilgang(Tilgang.PRODUSERE_DOKUMENT)
 
         // then
         assertThat(harTilgang).isTrue
@@ -51,7 +51,7 @@ internal class TilgangsstyringTest {
         tilgangsstyring = Tilgangsstyring(autentisertBruker, rolleConfig)
 
         // when
-        val harTilgang = tilgangsstyring.sjekkTilgang(Tilgang.PRODUSERE_DOKUMENT)
+        val harTilgang = tilgangsstyring.harTilgang(Tilgang.PRODUSERE_DOKUMENT)
 
         // then
         assertThat(harTilgang).isFalse
@@ -65,7 +65,7 @@ internal class TilgangsstyringTest {
         tilgangsstyring = Tilgangsstyring(autentisertBruker, rolleConfig)
 
         // when
-        val harTilgang = tilgangsstyring.sjekkTilgang(Tilgang.LESE_DOKUMENT)
+        val harTilgang = tilgangsstyring.harTilgang(Tilgang.LESE_DOKUMENT)
 
         // then
         assertThat(harTilgang).isFalse
