@@ -11,7 +11,7 @@ class Tilgangsstyring(
     val rolleConfig: RolleConfig
 ) {
 
-    fun sjekkTilgang(tilgang: Tilgang): Boolean {
+    fun harTilgang(tilgang: Tilgang): Boolean {
         val rolleFraToken = utledRolleFraToken()
         return tilgang.roller.contains(rolleFraToken)
     }
