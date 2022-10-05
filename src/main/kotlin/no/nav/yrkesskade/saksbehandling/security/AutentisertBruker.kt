@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component
 
 const val ISSUER = "azuread"
 const val PID = "preferred_username"
+const val GROUPS = "groups"
 
 @Component
 class AutentisertBruker(
@@ -19,6 +20,14 @@ class AutentisertBruker(
                 claimSet.get(PID) as String
             }
         }
+
+    val groups: List<String>
+        get() =
+            tokenValidationContextHolder
+                .tokenValidationContext
+                .getJwtToken(ISSUER)
+                .jwtTokenClaims
+                .getAsList(GROUPS)
 
     val jwtToken: String
         get() =
