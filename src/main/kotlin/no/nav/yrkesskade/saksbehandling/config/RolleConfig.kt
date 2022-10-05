@@ -8,3 +8,9 @@ class RolleConfig(
     @Value("\${rolle.saksbehandler}")
     val SAKSBEHANDLER_ROLLE: String
 )
+
+enum class Rolle {
+    SAKSBEHANDLER,
+    VEILEDER,
+    UKJENT
+}
