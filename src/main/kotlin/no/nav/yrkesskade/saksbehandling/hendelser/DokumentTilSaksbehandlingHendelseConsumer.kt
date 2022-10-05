@@ -17,7 +17,6 @@ class DokumentTilSaksbehandlingHendelseConsumer(private val dokumentmottak: Doku
         idIsGroup = false,
         autoStartup = "\${kafka.topic.dokument-til-saksbehandling.auto-startup:true}"
     )
-    @Transactional
     fun listen(record: DokumentTilSaksbehandlingHendelse) {
         kallMetodeMedCallId(record.metadata.callId) {
             dokumentmottak.mottaDokument(record)

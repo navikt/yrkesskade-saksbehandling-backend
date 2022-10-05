@@ -37,7 +37,7 @@ class BrevutsendingUtfoertHendelseConsumerTest : AbstractTest() {
 
     @Test
     fun listen() {
-        doNothing().`when`(behandlingService).ferdigstillEtterFullfoertBrevutsending(any(), any())
+        doNothing().`when`(behandlingService).lagreUtgaaendeJournalpostFraBrevutsending(any(), any())
 
         val payload = BrevutsendingUtfoertHendelse(
             behandlingId = 1234,
