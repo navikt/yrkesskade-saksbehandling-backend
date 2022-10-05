@@ -106,8 +106,6 @@ no.nav.security.jwt:
 
 rolle:
   saksbehandler: 044d1494-7e95-4392-86b1-555f4aa6d5c5
-  kode6: 5ef775f2-61f8-4283-bf3d-8d03f428aa14
-  kode7: ea930b6b-9397-44d9-b9e6-f4cf527a632a
 
 api:
   client:

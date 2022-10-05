@@ -6,9 +6,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 @ConfigurationProperties("rolle")
 class RolleConfig(
     @Value("\${rolle.saksbehandler}")
-    val SAKSBEHANDLER_ROLLE: String,
-    @Value("\${rolle.kode6}")
-    val KODE6: String,
-    @Value("\${rolle.kode7}")
-    val KODE7: String
+    val SAKSBEHANDLER_ROLLE: String
 )
