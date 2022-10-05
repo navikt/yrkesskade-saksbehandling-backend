@@ -3,7 +3,6 @@ package no.nav.yrkesskade.saksbehandling.service
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import no.nav.yrkesskade.saksbehandling.client.BrevutsendingClient
 import no.nav.yrkesskade.saksbehandling.client.bigquery.BigQueryClient
 import no.nav.yrkesskade.saksbehandling.fixtures.dokumentTilSaksbehandlingHendelse
 import no.nav.yrkesskade.saksbehandling.fixtures.journalpost.journalpostResultTannlegeerklaeringWithBrukerAktoerid
@@ -45,8 +44,8 @@ class DokumentmottakTest : AbstractTest() {
         dokumentmottak = Dokumentmottak(
             behandlingService = behandlingService,
             safClient = safClientMock,
-            bigQueryClient = bigQueryClient,
-            pdlService = pdlServiceMock
+            pdlService = pdlServiceMock,
+            bigQueryClient = bigQueryClient
         )
         every { pdlServiceMock.hentFoedselsnummerMedMaskinTilMaskinToken(any()) } returns "01010112345"
         every { safClientMock.hentOppdatertJournalpost(any()) } returns journalpostResultTannlegeerklaeringWithBrukerAktoerid()

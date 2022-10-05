@@ -6,7 +6,6 @@ import com.expediagroup.graphql.generated.journalpost.Journalpost
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import no.nav.yrkesskade.saksbehandling.client.BrevutsendingClient
 import no.nav.yrkesskade.saksbehandling.client.bigquery.BigQueryClient
 import no.nav.yrkesskade.saksbehandling.client.bigquery.schema.BehandlingPayload
 import no.nav.yrkesskade.saksbehandling.client.bigquery.schema.behandling_v1
@@ -25,8 +24,8 @@ import java.util.*
 class Dokumentmottak(
     private val behandlingService: BehandlingService,
     @Qualifier("safClient") private val safClient: ISafClient,
-    private val bigQueryClient: BigQueryClient,
-    private val pdlService: PdlService
+    private val pdlService: PdlService,
+    private val bigQueryClient: BigQueryClient
 ) {
     companion object {
         @Suppress("JAVA_CLASS_ON_COMPANION")
@@ -78,7 +77,6 @@ class Dokumentmottak(
         )
         val lagretBehandling = behandlingService.lagreBehandling(behandling)
         foerMetrikkIBigQuery(lagretBehandling)
-        behandlingService.lagreBehandling(behandling)
     }
 
     private fun hentFoedselsnummerFraJournalpost(journalpost: Journalpost): String {

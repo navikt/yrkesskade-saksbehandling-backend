@@ -322,6 +322,7 @@ class BehandlingService(
         }
     }
 
+    @Transactional
     fun lagreUtgaaendeJournalpostFraBrevutsending(behandlingId: Long, journalpostId: String) {
         val behandling = hentBehandling(behandlingId)
 

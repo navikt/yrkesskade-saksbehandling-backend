@@ -240,7 +240,24 @@ class BehandlingServiceTest : AbstractTest() {
     }
 
     @Test
-    fun `lagre utgående journalpostId etter brevutsending `() {
+    fun `transactional ruller tilbake DB-endringer`() {
+        Mockito.`when`(dokarkivClient.ferdigstillJournalpost(any(), any())).thenThrow(RuntimeException())
+        val behandlingFoerRollback = behandlingRepository.save(
+            genererBehandling(1L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak, Behandlingstype.JOURNALFOERING)
+        )
+
+        assertThat(behandlingFoerRollback.status).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING)
+
+        assertThrows<RuntimeException> {
+            behandlingService.ferdigstillBehandling(FerdigstillBehandling(behandlingFoerRollback.behandlingId))
+        }
+        val behandlingEtterRollback = behandlingService.hentBehandling(behandlingId = behandlingFoerRollback.behandlingId)
+        assertThat(behandlingEtterRollback.status).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING)
+        assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
+    }
+
+    @Test
+    fun `lagre utgående journalpostId etter brevutsending`() {
         Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
         val journalfoeringsbehandling = behandlingRepository.save(
             BehandlingEntityFactory.enBehandling("test")
