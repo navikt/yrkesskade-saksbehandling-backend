@@ -17,10 +17,9 @@ class BrevutsendingUtfoertHendelseConsumer(private val behandlingService: Behand
         idIsGroup = false,
         autoStartup = "\${kafka.topic.brevutsending-utfoert.auto-startup:true}"
     )
-    @Transactional
     fun listen(record: BrevutsendingUtfoertHendelse) {
         kallMetodeMedCallId(record.metadata.navCallId) {
-            behandlingService.ferdigstillEtterFullfoertBrevutsending(record.behandlingId, record.journalpostId)
+            behandlingService.lagreUtgaaendeJournalpostFraBrevutsending(record.behandlingId, record.journalpostId)
         }
     }
 }

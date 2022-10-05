@@ -83,6 +83,7 @@ data class BehandlingEntity (
         return copy(
             status = Behandlingsstatus.UNDER_BEHANDLING,
             saksbehandlingsansvarligIdent = brukerIdent,
+            endretTidspunkt = Instant.now(),
             endretAv = brukerIdent
         )
     }

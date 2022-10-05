@@ -11,6 +11,4 @@ tenant: trygdeetaten.no
 gcpProjectId: yrkesskade-dev-6235
 azure:
   groups:
-    - id: "ea930b6b-9397-44d9-b9e6-f4cf527a632a"  # 0000-GA-Fortrolig_Adresse
-    - id: "5ef775f2-61f8-4283-bf3d-8d03f428aa14"  # 0000-GA-Strengt_Fortrolig_Adresse
     - id: "044d1494-7e95-4392-86b1-555f4aa6d5c5"  # 0000-ga-eessi-clerk-yrkesskade

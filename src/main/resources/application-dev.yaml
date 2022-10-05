@@ -77,18 +77,23 @@ no.nav.security.jwt:
           client-id: ${AZURE_APP_CLIENT_ID}
           client-jwk: ${AZURE_APP_JWK}
           client-auth-method: private_key_jwt
+      oppgave-maskintilmaskin:
+        token-endpoint-url: https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token
+        grant-type: client_credentials
+        scope: api://${api.client.oppgave.clientId}/.default
+        authentication:
+          client-id: ${AZURE_APP_CLIENT_ID}
+          client-jwk: ${AZURE_APP_JWK}
+          client-auth-method: private_key_jwt
 
 funksjonsbrytere:
   enabled: false
 
 kafka:
   topic:
-    dokument-til-saksbehandling:
-      name: yrkesskade.privat-yrkesskade-dokument-til-saksbehandling
+    dokument-til-saksbehandling: yrkesskade.privat-yrkesskade-dokument-til-saksbehandling
     aapen-oppgave-opprettet: aapen-oppgave-opprettet-v1-local
     aapen-oppgave-endret: aapen-oppgave-endret-v1-local
 
 rolle:
   saksbehandler: 044d1494-7e95-4392-86b1-555f4aa6d5c5
-  kode6: 5ef775f2-61f8-4283-bf3d-8d03f428aa14
-  kode7: ea930b6b-9397-44d9-b9e6-f4cf527a632a

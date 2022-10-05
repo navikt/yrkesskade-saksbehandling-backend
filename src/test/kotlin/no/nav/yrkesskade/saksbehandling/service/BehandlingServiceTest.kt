@@ -240,29 +240,46 @@ class BehandlingServiceTest : AbstractTest() {
     }
 
     @Test
-    fun `ferdigstill veiledingsbehandling etter brevutsending `() {
+    fun `transactional ruller tilbake DB-endringer`() {
+        Mockito.`when`(dokarkivClient.ferdigstillJournalpost(any(), any())).thenThrow(RuntimeException())
+        val behandlingFoerRollback = behandlingRepository.save(
+            genererBehandling(1L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak, Behandlingstype.JOURNALFOERING)
+        )
+
+        assertThat(behandlingFoerRollback.status).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING)
+
+        assertThrows<RuntimeException> {
+            behandlingService.ferdigstillBehandling(FerdigstillBehandling(behandlingFoerRollback.behandlingId))
+        }
+        val behandlingEtterRollback = behandlingService.hentBehandling(behandlingId = behandlingFoerRollback.behandlingId)
+        assertThat(behandlingEtterRollback.status).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING)
+        assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
+    }
+
+    @Test
+    fun `lagre utgående journalpostId etter brevutsending`() {
         Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
         val journalfoeringsbehandling = behandlingRepository.save(
             BehandlingEntityFactory.enBehandling("test")
                 .medSak(sak)
                 .medBehandlingstype(Behandlingstype.JOURNALFOERING)
-                .medStatus(Behandlingsstatus.UNDER_BEHANDLING)
+                .medStatus(Behandlingsstatus.FERDIG)
         )
-        assertThat(journalfoeringsbehandling.status).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING)
+        assertThat(journalfoeringsbehandling.status).isEqualTo(Behandlingsstatus.FERDIG)
         assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(1)
 
         val veiledningsbehandling = behandlingRepository.save(
             BehandlingEntityFactory.enBehandling("test")
                 .medSak(sak)
                 .medBehandlingstype(Behandlingstype.VEILEDNING)
-                .medStatus(Behandlingsstatus.UNDER_BEHANDLING)
+                .medStatus(Behandlingsstatus.FERDIG)
                 .medJournalpostId(journalfoeringsbehandling.journalpostId)
         )
-        assertThat(veiledningsbehandling.status).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING)
+        assertThat(veiledningsbehandling.status).isEqualTo(Behandlingsstatus.FERDIG)
         assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(2)
 
         val utgaaendejournalpostId = "1234"
-        behandlingService.ferdigstillEtterFullfoertBrevutsending(
+        behandlingService.lagreUtgaaendeJournalpostFraBrevutsending(
             behandlingId = veiledningsbehandling.behandlingId,
             journalpostId = utgaaendejournalpostId
         )
@@ -273,7 +290,6 @@ class BehandlingServiceTest : AbstractTest() {
         assertThat(oppdatertJournalfoeringsbehandling.utgaaendeJournalpostId).isEqualTo(utgaaendejournalpostId)
         assertThat(oppdatertJournalfoeringsbehandling.utgaaendeJournalpostId)
             .isEqualTo(oppdatertVeiledningsbehandling.utgaaendeJournalpostId)
-        assertThat(oppdatertVeiledningsbehandling.status).isEqualTo(Behandlingsstatus.FERDIG)
 
         assertThat(behandlingService.hentAntallBehandlinger()).isEqualTo(2)
     }
