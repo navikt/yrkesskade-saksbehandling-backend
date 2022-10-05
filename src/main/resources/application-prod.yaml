@@ -101,14 +101,19 @@ api:
     dokarkiv:
       clientId: prod-fss.teamdokumenthandtering.dokarkiv
       url: https://dokarkiv.prod-fss-pub.nais.io
+    json-to-pdf:
+      url: https://yrkesskade-json-to-pdf.intern.nav.no
     kodeverk:
       clientId: prod-gcp.yrkesskade.yrkesskade-kodeverk
       url: https://yrkesskade-kodeverk.intern.nav.no
-    json-to-pdf:
-      url: https://yrkesskade-json-to-pdf.intern.nav.no
     pdl:
       clientId: prod-fss.pdl.pdl-api
       url: https://pdl-api.prod-fss-pub.nais.io
+    saf:
+      clientId: prod-fss.teamdokumenthandtering.saf
+      url:
+        rest: https://saf.prod-fss-pub.nais.io/
+        graphql: https://saf.prod-fss-pub.nais.io/graphql
     oppgave:
       clientId: 50346823-61a0-49e7-ad89-ea2b1a0e90f8
       url: https://oppgave.prod-fss-pub.nais.io
