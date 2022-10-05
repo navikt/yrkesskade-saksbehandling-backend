@@ -3,6 +3,7 @@ package no.nav.yrkesskade.saksbehandling.service
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import no.nav.yrkesskade.saksbehandling.client.bigquery.BigQueryClient
 import no.nav.yrkesskade.saksbehandling.fixtures.dokumentTilSaksbehandlingHendelse
 import no.nav.yrkesskade.saksbehandling.fixtures.journalpost.journalpostResultTannlegeerklaeringWithBrukerAktoerid
 import no.nav.yrkesskade.saksbehandling.fixtures.journalpost.journalpostResultTannlegeerklaeringWithBrukerFnr
@@ -34,13 +35,17 @@ class DokumentmottakTest : AbstractTest() {
     @Autowired
     lateinit var behandlingRepository: BehandlingRepository
 
+    @Autowired
+    lateinit var bigQueryClient: BigQueryClient
+
     @BeforeEach
     fun setup() {
         MDC.put(MDCConstants.MDC_CALL_ID, UUID.randomUUID().toString())
         dokumentmottak = Dokumentmottak(
             behandlingService = behandlingService,
             safClient = safClientMock,
-            pdlService = pdlServiceMock
+            pdlService = pdlServiceMock,
+            bigQueryClient = bigQueryClient
         )
         every { pdlServiceMock.hentFoedselsnummerMedMaskinTilMaskinToken(any()) } returns "01010112345"
         every { safClientMock.hentOppdatertJournalpost(any()) } returns journalpostResultTannlegeerklaeringWithBrukerAktoerid()
