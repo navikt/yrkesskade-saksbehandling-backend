@@ -93,8 +93,7 @@ management:
 
 kafka:
   topic:
-    dokument-til-saksbehandling:
-      name: yrkesskade.privat-yrkesskade-dokument-til-saksbehandling
+    dokument-til-saksbehandling: yrkesskade.privat-yrkesskade-dokument-til-saksbehandling
     brevutsending-bestilt: yrkesskade.privat-yrkesskade-brevutsending-bestilt
     brevutsending-utfoert:
       name: yrkesskade.privat-yrkesskade-brevutsending-utfoert

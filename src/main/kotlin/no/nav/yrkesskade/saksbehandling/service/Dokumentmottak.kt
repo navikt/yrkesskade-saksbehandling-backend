@@ -11,6 +11,7 @@ import no.nav.yrkesskade.saksbehandling.client.bigquery.schema.BehandlingPayload
 import no.nav.yrkesskade.saksbehandling.client.bigquery.schema.behandling_v1
 import no.nav.yrkesskade.saksbehandling.graphql.client.saf.ISafClient
 import no.nav.yrkesskade.saksbehandling.model.*
+import no.nav.yrkesskade.saksbehandling.util.FristFerdigstillelseTimeManager
 import no.nav.yrkesskade.saksbehandling.util.getLogger
 import no.nav.yrkesskade.saksbehandling.util.getSecureLogger
 import org.springframework.beans.factory.annotation.Qualifier
@@ -37,7 +38,8 @@ class Dokumentmottak(
          */
         fun utledDokumentkategori(dokumentInfos: List<DokumentInfo?>?): String {
             val dokumentkategorier: List<String?> =
-                dokumentInfos?.mapNotNull { dokumentInfo -> utledDokumentkategori(dokumentInfo?.brevkode) } ?: emptyList()
+                dokumentInfos?.mapNotNull { dokumentInfo -> utledDokumentkategori(dokumentInfo?.brevkode) }
+                    ?: emptyList()
             return dokumentkategorier.firstOrNull() ?: "ingenBrevkode"
         }
 
@@ -65,7 +67,10 @@ class Dokumentmottak(
             behandlendeEnhet = dokumentTilSaksbehandling.enhet,
             behandlingstype = Behandlingstype.JOURNALFOERING,
             status = Behandlingsstatus.IKKE_PAABEGYNT,
-            behandlingsfrist = Instant.now().plus(30, ChronoUnit.DAYS),
+            behandlingsfrist = FristFerdigstillelseTimeManager.nesteGyldigeFristForFerdigstillelseInstant(
+                Behandlingstype.JOURNALFOERING,
+                Instant.now()
+            ),
             journalpostId = journalpost.journalpostId,
             dokumentkategori = utledDokumentkategori(journalpost.dokumenter),
             systemreferanse = UUID.randomUUID().toString(),

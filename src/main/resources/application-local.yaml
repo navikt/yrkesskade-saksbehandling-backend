@@ -40,10 +40,10 @@ funksjonsbrytere:
 
 kafka:
   topic:
-    dokument-til-saksbehandling:
-      name: privat-yrkesskade-dokument-til-saksbehandling
+    dokument-til-saksbehandling: privat-yrkesskade-dokument-til-saksbehandling
     brevutsending-bestilt: privat-yrkesskade-brevutsending-bestilt
-    brevutsending-utfoert: privat-yrkesskade-brevutsending-utfoert
+    brevutsending-utfoert:
+      name: privat-yrkesskade-brevutsending-utfoert
     aapen-oppgave-opprettet: aapen-oppgave-opprettet-v1-local
     aapen-oppgave-endret: aapen-oppgave-endret-v1-local
 
@@ -99,6 +99,14 @@ no.nav.security.jwt:
         token-endpoint-url: ${AUTH_SERVER}/token
         grant-type: client_credentials
         scope: api://dev-gcp.yrkesskade.yrkesskade-kodeverk/.default
+        authentication:
+          client-id: dummy-client-id
+          client-secret: dummy-secret
+          client-auth-method: client_secret_basic
+      oppgave-maskintilmaskin:
+        token-endpoint-url: ${AUTH_SERVER}/token
+        grant-type: client_credentials
+        scope: oppgave
         authentication:
           client-id: dummy-client-id
           client-secret: dummy-secret

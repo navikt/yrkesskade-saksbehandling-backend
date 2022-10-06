@@ -15,6 +15,8 @@ class BehandlingMutationResolver(
 
     fun overtaBehandling(behandlingId: Long) : BehandlingDto = behandlingService.overtaBehandling(behandlingId)
 
+    fun overtaBehandlinger(behandlingIder: List<Long>) = behandlingService.overtaBehandlinger(behandlingIder)
+
     fun ferdigstillBehandling(ferdigstillBehandling: FerdigstillBehandling) : FerdigstiltBehandlingDto = behandlingService.ferdigstillBehandling(ferdigstillBehandling)
     fun leggTilbakeBehandling(behandlingId: Long) : BehandlingDto = behandlingService.leggTilbakeBehandling(behandlingId)
 
