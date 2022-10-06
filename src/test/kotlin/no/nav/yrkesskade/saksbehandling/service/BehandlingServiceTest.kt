@@ -24,6 +24,7 @@ import org.junit.jupiter.api.assertThrows
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito
 import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.never
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -49,6 +50,9 @@ class BehandlingServiceTest : AbstractTest() {
     @MockBean
     lateinit var oppgaveClient: OppgaveClient
 
+    @MockBean
+    lateinit var kodeverkService: KodeverkService
+
     @Autowired
     lateinit var behandlingService: BehandlingService
 
@@ -68,6 +72,18 @@ class BehandlingServiceTest : AbstractTest() {
         resetDatabase()
         sak = SakEntityFactory.enSak()
         sak = sakRepository.save(sak)
+        mockKodeverk()
+    }
+
+    fun mockKodeverk() {
+        Mockito.`when`(kodeverkService.hentKodeverk(eq("behandlingstype"), eq(null), any())).thenReturn(behandlingstyper())
+        Mockito.`when`(kodeverkService.hentKodeverk(eq("behandlingsstatus"), eq(null), any())).thenReturn(
+            behandlingsstatus()
+        )
+        Mockito.`when`(kodeverkService.hentKodeverk(eq("framdriftsstatus"), eq(null), any())).thenReturn(
+            framdriftsstatus()
+        )
+        Mockito.`when`(kodeverkService.hentKodeverk(eq("dokumenttype"), eq(null), any())).thenReturn(dokumentkategori())
     }
 
     @Transactional

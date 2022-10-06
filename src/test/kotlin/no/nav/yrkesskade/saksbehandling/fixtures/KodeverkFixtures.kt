@@ -26,3 +26,9 @@ fun framdriftsstatus(): Map<String, KodeverdiDto> = mapOf(
     "paaVent" to KodeverdiDto("paaVent", "På vent"),
     "avventerSvar" to KodeverdiDto("avventerSvar", "Avventer svar")
 )
+
+fun dokumentkategori(): Map<String, KodeverdiDto> = mapOf(
+    "tannlegeerklaering" to KodeverdiDto("tannlegeerklaering", "Tannlegeerklæring"),
+    "veiledningsbrevTannlegeerklaering" to KodeverdiDto("veiledningsbrevTannlegeerklaering", "Veiledningsbrev Tannlegeerklæring"),
+    "veiledningsbrevArbeidstilsynsmelding" to KodeverdiDto("veiledningsbrevArbeidstilsynsmelding", "Veiledningsbrev Arbeidstilsynsmelding")
+)
