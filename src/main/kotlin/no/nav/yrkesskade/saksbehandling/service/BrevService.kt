@@ -34,6 +34,7 @@ class BrevService(
                 brevinnhold = brev.innhold,
                 tittel = tittel,
                 mottaker = Mottaker(foedselsnummer = behandling.brukerId),
+                enhet = behandling.behandlendeEnhet!!,
                 metadata = BrevutsendingMetadata(
                     tidspunktBestilt = Instant.now(),
                     navCallId = MDC.get(MDCConstants.MDC_CALL_ID)
