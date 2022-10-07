@@ -94,7 +94,8 @@ class BehandlingService(
             dokumentkategori = behandling.dokumentkategori,
             framdriftsstatus = behandling.framdriftsstatus,
             journalpostId = behandling.journalpostId,
-            systemreferanse = behandling.systemreferanse
+            systemreferanse = behandling.systemreferanse,
+            utgaaendeJournalpostId = behandling.utgaaendeJournalpostId
         )
     }
 

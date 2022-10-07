@@ -1,7 +1,7 @@
 package no.nav.yrkesskade.saksbehandling.model
 
 import com.expediagroup.graphql.generated.enums.BrukerIdType
-import net.datafaker.Faker
+import com.github.javafaker.Faker
 import no.nav.yrkesskade.saksbehandling.util.FristFerdigstillelseTimeManager
 import java.util.*
 import java.util.concurrent.TimeUnit

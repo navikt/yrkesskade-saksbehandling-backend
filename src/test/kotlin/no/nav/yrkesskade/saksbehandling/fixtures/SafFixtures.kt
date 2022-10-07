@@ -22,8 +22,12 @@ fun errorRespons(): GraphQLClientResponse<Journalpost.Result> {
 }
 
 fun okRespons(): GraphQLClientResponse<Journalpost.Result> {
+    return okRespons(gyldigJournalpostMedAktoerId())
+}
+
+fun okRespons(journalpost: com.expediagroup.graphql.generated.journalpost.Journalpost): GraphQLClientResponse<Journalpost.Result> {
     return JacksonGraphQLResponse(
-        data = Journalpost.Result(gyldigJournalpostMedAktoerId()),
+        data = Journalpost.Result(journalpost),
         errors = null,
         extensions = emptyMap()
     )

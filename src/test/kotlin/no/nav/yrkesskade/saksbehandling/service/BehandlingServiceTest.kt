@@ -1,10 +1,15 @@
 package no.nav.yrkesskade.saksbehandling.service
 
 import com.expediagroup.graphql.generated.enums.BrukerIdType
+import com.expediagroup.graphql.generated.enums.Journalposttype
 import no.nav.yrkesskade.saksbehandling.client.dokarkiv.DokarkivClient
 import no.nav.yrkesskade.saksbehandling.client.oppgave.OppgaveClient
 import no.nav.yrkesskade.saksbehandling.client.oppgave.OppgaveFactory
 import no.nav.yrkesskade.saksbehandling.fixtures.*
+import no.nav.yrkesskade.saksbehandling.graphql.client.saf.JournalpostFactory
+import no.nav.yrkesskade.saksbehandling.graphql.client.saf.JournalpostFactory.Companion.medDokumenter
+import no.nav.yrkesskade.saksbehandling.graphql.client.saf.JournalpostFactory.Companion.medJournalpostId
+import no.nav.yrkesskade.saksbehandling.graphql.client.saf.JournalpostFactory.Companion.medJournalposttype
 import no.nav.yrkesskade.saksbehandling.graphql.client.saf.SafClient
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.*
 import no.nav.yrkesskade.saksbehandling.model.*
@@ -25,6 +30,7 @@ import org.junit.jupiter.api.assertThrows
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito
 import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.never
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -115,9 +121,17 @@ class BehandlingServiceTest : AbstractTest() {
     @Test
     fun `hent behandling med inngående og utgående journalposter`() {
         // given
-        Mockito.`when`(safClient.hentOppdatertJournalpost(anyString())).thenReturn(okRespons().data)
+        val utgaaendeDokument = JournalpostFactory.ettDokument()
+        val utgaaendeJournalpost = JournalpostFactory.enJournalpost().medJournalposttype(Journalposttype.U).medDokumenter(listOf(utgaaendeDokument))
+        val utgaaendeJournalpostId =utgaaendeJournalpost.journalpostId
+        val dokument = JournalpostFactory.ettDokument()
+        val journalpost = JournalpostFactory.enJournalpost().medDokumenter(listOf(dokument)).medJournalposttype(Journalposttype.I)
+        val journalpostId = journalpost.journalpostId
+        val givenBehandling = BehandlingEntityFactory.enBehandling("test").medStatus(Behandlingsstatus.IKKE_PAABEGYNT).medSak(sak).medJournalpostId(journalpostId).medUtgaaendeJournalpostId(utgaaendeJournalpostId)
+
+        Mockito.`when`(safClient.hentOppdatertJournalpost(eq(journalpostId))).thenReturn(okRespons(journalpost).data)
+        Mockito.`when`(safClient.hentOppdatertJournalpost(eq(utgaaendeJournalpostId))).thenReturn(okRespons(utgaaendeJournalpost).data)
         Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
-        val givenBehandling = BehandlingEntityFactory.enBehandling("test").medStatus(Behandlingsstatus.IKKE_PAABEGYNT).medSak(sak).medUtgaaendeJournalpostId("10000")
         val behandling = behandlingRepository.save(givenBehandling)
 
         // when
@@ -125,6 +139,9 @@ class BehandlingServiceTest : AbstractTest() {
 
         // then
         assertThat(detaljertBehandling.dokumenter.size).isEqualTo(2)
+        assertThat(detaljertBehandling.dokumenter.filter { it.tittel == utgaaendeDokument.tittel }.size).isEqualTo(1)
+        assertThat(detaljertBehandling.dokumenter.filter { it.tittel == dokument.tittel }.size).isEqualTo(1)
+        assertThat(detaljertBehandling.utgaaendeJournalpostId).isEqualTo(utgaaendeJournalpostId)
     }
 
     @Test
