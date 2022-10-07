@@ -5,6 +5,7 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import no.nav.yrkesskade.saksbehandling.fixtures.behandlingsstatus
 import no.nav.yrkesskade.saksbehandling.fixtures.behandlingstyper
+import no.nav.yrkesskade.saksbehandling.fixtures.dokumentkategori
 import no.nav.yrkesskade.saksbehandling.fixtures.framdriftsstatus
 import no.nav.yrkesskade.saksbehandling.model.Behandlingsstatus
 import no.nav.yrkesskade.saksbehandling.model.Behandlingstype
@@ -30,6 +31,7 @@ internal class KodeverdiMapperTest {
         every { kodeverkServiceMock.hentKodeverk("behandlingstype", null) } returns behandlingstyper()
         every { kodeverkServiceMock.hentKodeverk("behandlingsstatus", null) } returns behandlingsstatus()
         every { kodeverkServiceMock.hentKodeverk("framdriftsstatus", null) } returns framdriftsstatus()
+        every { kodeverkServiceMock.hentKodeverk("dokumenttype", null) } returns dokumentkategori()
 
         kodeverkHolder = KodeverkHolder.init(kodeverkService = kodeverkServiceMock)
 
@@ -62,6 +64,13 @@ internal class KodeverdiMapperTest {
         assertThat(kodeverdiMapper.mapFramdriftsstatus(Framdriftsstatus.UNDER_ARBEID)).isEqualTo("Under arbeid")
         assertThat(kodeverdiMapper.mapFramdriftsstatus(Framdriftsstatus.PAA_VENT)).isEqualTo("På vent")
         assertThat(kodeverdiMapper.mapFramdriftsstatus(Framdriftsstatus.AVVENTER_SVAR)).isEqualTo("Avventer svar")
+    }
+
+    @Test
+    fun `skal mappe dokumentkategori`() {
+        assertThat(kodeverdiMapper.mapDokumentkategori("tannlegeerklaering")).isEqualTo("Tannlegeerklæring")
+        assertThat(kodeverdiMapper.mapDokumentkategori("veiledningsbrevTannlegeerklaering")).isEqualTo("Veiledningsbrev Tannlegeerklæring")
+        assertThat(kodeverdiMapper.mapDokumentkategori("veiledningsbrevArbeidstilsynsmelding")).isEqualTo("Veiledningsbrev Arbeidstilsynsmelding")
     }
 
 }

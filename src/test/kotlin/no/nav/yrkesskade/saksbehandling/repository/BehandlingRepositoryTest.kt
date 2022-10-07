@@ -1,14 +1,23 @@
 package no.nav.yrkesskade.saksbehandling.repository
 
+import no.nav.yrkesskade.saksbehandling.fixtures.behandlingsstatus
+import no.nav.yrkesskade.saksbehandling.fixtures.behandlingstyper
+import no.nav.yrkesskade.saksbehandling.fixtures.dokumentkategori
+import no.nav.yrkesskade.saksbehandling.fixtures.framdriftsstatus
 import no.nav.yrkesskade.saksbehandling.fixtures.genererBehandling
 import no.nav.yrkesskade.saksbehandling.fixtures.genererSak
 import no.nav.yrkesskade.saksbehandling.model.Behandlingsstatus
 import no.nav.yrkesskade.saksbehandling.model.Behandlingstype
+import no.nav.yrkesskade.saksbehandling.service.KodeverkService
 import no.nav.yrkesskade.saksbehandling.test.AbstractTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.domain.Pageable
 import org.springframework.transaction.annotation.Transactional
 
@@ -20,8 +29,12 @@ class BehandlingRepositoryTest : AbstractTest() {
     @Autowired
     lateinit var sakRepository: SakRepository
 
+    @MockBean
+    lateinit var kodeverkService: KodeverkService
+
     @BeforeEach
     fun setUp() {
+        mockKodeverk()
         resetDatabase()
         sakRepository.save(genererSak())
     }
@@ -30,6 +43,17 @@ class BehandlingRepositoryTest : AbstractTest() {
     fun resetDatabase() {
         behandlingRepository.deleteAll()
         sakRepository.deleteAll()
+    }
+
+    fun mockKodeverk() {
+        Mockito.`when`(kodeverkService.hentKodeverk(eq("behandlingstype"), eq(null), any())).thenReturn(behandlingstyper())
+        Mockito.`when`(kodeverkService.hentKodeverk(eq("behandlingsstatus"), eq(null), any())).thenReturn(
+            behandlingsstatus()
+        )
+        Mockito.`when`(kodeverkService.hentKodeverk(eq("framdriftsstatus"), eq(null), any())).thenReturn(
+            framdriftsstatus()
+        )
+        Mockito.`when`(kodeverkService.hentKodeverk(eq("dokumenttype"), eq(null), any())).thenReturn(dokumentkategori())
     }
 
     @Test

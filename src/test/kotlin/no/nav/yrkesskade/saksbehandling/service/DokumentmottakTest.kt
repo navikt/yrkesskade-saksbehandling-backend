@@ -4,7 +4,11 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import no.nav.yrkesskade.saksbehandling.client.bigquery.BigQueryClient
+import no.nav.yrkesskade.saksbehandling.fixtures.behandlingsstatus
+import no.nav.yrkesskade.saksbehandling.fixtures.behandlingstyper
 import no.nav.yrkesskade.saksbehandling.fixtures.dokumentTilSaksbehandlingHendelse
+import no.nav.yrkesskade.saksbehandling.fixtures.dokumentkategori
+import no.nav.yrkesskade.saksbehandling.fixtures.framdriftsstatus
 import no.nav.yrkesskade.saksbehandling.fixtures.journalpost.journalpostResultTannlegeerklaeringWithBrukerAktoerid
 import no.nav.yrkesskade.saksbehandling.fixtures.journalpost.journalpostResultTannlegeerklaeringWithBrukerFnr
 import no.nav.yrkesskade.saksbehandling.graphql.client.saf.SafClient
@@ -15,8 +19,12 @@ import no.nav.yrkesskade.saksbehandling.util.MDCConstants
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
@@ -31,6 +39,9 @@ class DokumentmottakTest : AbstractTest() {
     private val safClientMock: SafClient = mockk()
 
     private val pdlServiceMock: PdlService = mockk()
+
+    @MockBean
+    lateinit var kodeverkService: KodeverkService
 
     @Autowired
     lateinit var behandlingRepository: BehandlingRepository
@@ -49,12 +60,24 @@ class DokumentmottakTest : AbstractTest() {
         )
         every { pdlServiceMock.hentFoedselsnummerMedMaskinTilMaskinToken(any()) } returns "01010112345"
         every { safClientMock.hentOppdatertJournalpost(any()) } returns journalpostResultTannlegeerklaeringWithBrukerAktoerid()
+        mockKodeverk()
         klargjorDatabase()
     }
 
     @Transactional
     fun klargjorDatabase() {
         behandlingRepository.deleteAll()
+    }
+
+    fun mockKodeverk() {
+        Mockito.`when`(kodeverkService.hentKodeverk(eq("behandlingstype"), eq(null), any())).thenReturn(behandlingstyper())
+        Mockito.`when`(kodeverkService.hentKodeverk(eq("behandlingsstatus"), eq(null), any())).thenReturn(
+            behandlingsstatus()
+        )
+        Mockito.`when`(kodeverkService.hentKodeverk(eq("framdriftsstatus"), eq(null), any())).thenReturn(
+            framdriftsstatus()
+        )
+        Mockito.`when`(kodeverkService.hentKodeverk(eq("dokumenttype"), eq(null), any())).thenReturn(dokumentkategori())
     }
 
     @Test
