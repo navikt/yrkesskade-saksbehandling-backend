@@ -6,6 +6,7 @@ import no.nav.yrkesskade.saksbehandling.fixtures.hentIdenterResultMedFnrUtenHist
 import no.nav.yrkesskade.saksbehandling.client.JsonToPdfClient
 import no.nav.yrkesskade.saksbehandling.fixtures.behandlingsstatus
 import no.nav.yrkesskade.saksbehandling.fixtures.behandlingstyper
+import no.nav.yrkesskade.saksbehandling.fixtures.dokumentkategori
 import no.nav.yrkesskade.saksbehandling.fixtures.framdriftsstatus
 import no.nav.yrkesskade.saksbehandling.fixtures.genererBehandling
 import no.nav.yrkesskade.saksbehandling.fixtures.genererSak
@@ -75,12 +76,10 @@ internal class BehandlingControllerTest : AbstractTest() {
         behandlingId = behandlingEntity.behandlingId
 
         Mockito.`when`(kodeverkService.hentKodeverk(eq("behandlingstype"), eq(null), any())).thenReturn(behandlingstyper())
-        Mockito.`when`(kodeverkService.hentKodeverk(eq("behandlingsstatus"), eq(null), any())).thenReturn(
-            behandlingsstatus()
-        )
-        Mockito.`when`(kodeverkService.hentKodeverk(eq("framdriftsstatus"), eq(null), any())).thenReturn(
-            framdriftsstatus()
-        )
+        Mockito.`when`(kodeverkService.hentKodeverk(eq("behandlingsstatus"), eq(null), any())).thenReturn(behandlingsstatus())
+        Mockito.`when`(kodeverkService.hentKodeverk(eq("framdriftsstatus"), eq(null), any())).thenReturn(framdriftsstatus())
+        Mockito.`when`(kodeverkService.hentKodeverk(eq("dokumenttype"), eq(null), any())).thenReturn(dokumentkategori())
+
         Mockito.`when`(pdlClient.hentIdenter(
             eq("12345"),
             eq(listOf(IdentGruppe.FOLKEREGISTERIDENT)),

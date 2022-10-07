@@ -1,15 +1,17 @@
 package no.nav.yrkesskade.saksbehandling.api.v1.brev
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import no.nav.security.mock.oauth2.MockOAuth2Server
-import no.nav.security.mock.oauth2.token.DefaultOAuth2TokenCallback
 import no.nav.yrkesskade.saksbehandling.client.JsonToPdfClient
-import no.nav.yrkesskade.saksbehandling.model.Brev
+import no.nav.yrkesskade.saksbehandling.fixtures.behandlingsstatus
+import no.nav.yrkesskade.saksbehandling.fixtures.behandlingstyper
+import no.nav.yrkesskade.saksbehandling.fixtures.dokumentkategori
+import no.nav.yrkesskade.saksbehandling.fixtures.framdriftsstatus
+import no.nav.yrkesskade.saksbehandling.service.KodeverkService
 import no.nav.yrkesskade.saksbehandling.test.AbstractTest
-import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -34,6 +36,25 @@ class BrevControllerTest : AbstractTest() {
 
     @MockBean
     lateinit var jsonToPdfClient: JsonToPdfClient
+
+    @MockBean
+    lateinit var kodeverkService: KodeverkService
+
+    @BeforeEach
+    fun setUp() {
+        mockKodeverk()
+    }
+
+    fun mockKodeverk() {
+        Mockito.`when`(kodeverkService.hentKodeverk(eq("behandlingstype"), eq(null), any())).thenReturn(behandlingstyper())
+        Mockito.`when`(kodeverkService.hentKodeverk(eq("behandlingsstatus"), eq(null), any())).thenReturn(
+            behandlingsstatus()
+        )
+        Mockito.`when`(kodeverkService.hentKodeverk(eq("framdriftsstatus"), eq(null), any())).thenReturn(
+            framdriftsstatus()
+        )
+        Mockito.`when`(kodeverkService.hentKodeverk(eq("dokumenttype"), eq(null), any())).thenReturn(dokumentkategori())
+    }
 
     @Test
     fun `generer brev`() {

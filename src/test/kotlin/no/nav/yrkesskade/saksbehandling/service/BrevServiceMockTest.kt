@@ -8,11 +8,16 @@ import io.mockk.mockk
 import io.mockk.verify
 import no.nav.yrkesskade.saksbehandling.client.BrevutsendingClient
 import no.nav.yrkesskade.saksbehandling.client.JsonToPdfClient
+import no.nav.yrkesskade.saksbehandling.fixtures.behandlingsstatus
+import no.nav.yrkesskade.saksbehandling.fixtures.behandlingstyper
+import no.nav.yrkesskade.saksbehandling.fixtures.dokumentkategori
+import no.nav.yrkesskade.saksbehandling.fixtures.framdriftsstatus
 import no.nav.yrkesskade.saksbehandling.fixtures.genererBehandling
 import no.nav.yrkesskade.saksbehandling.fixtures.genererSak
 import no.nav.yrkesskade.saksbehandling.model.Behandlingsstatus
 import no.nav.yrkesskade.saksbehandling.model.Brev
 import no.nav.yrkesskade.saksbehandling.util.MDCConstants
+import no.nav.yrkesskade.saksbehandling.util.kodeverk.KodeverdiMapper
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.BeforeEach
@@ -27,14 +32,11 @@ internal class BrevServiceMockTest {
     private val brevutsendingClientMock: BrevutsendingClient = mockk()
     private val jsonToPdfClientMock: JsonToPdfClient = mockk()
     private val behandlingServiceMock: BehandlingService = mockk()
+    private val kodeverkServiceMock: KodeverkService = mockk()
 
     private val brev = jacksonObjectMapper().readValue(tannlegeerklaeringVeiledningbrev(), Brev::class.java)
 
-    private val brevService = BrevService(
-        brevutsendingClient = brevutsendingClientMock,
-        jsonToPdfClient = jsonToPdfClientMock,
-        behandlingService = behandlingServiceMock
-    )
+    private lateinit var brevService: BrevService
 
     @BeforeEach
     fun setup() {
@@ -43,6 +45,20 @@ internal class BrevServiceMockTest {
             genererBehandling(1, "123", Behandlingsstatus.FERDIG, genererSak())
         }
         justRun { brevutsendingClientMock.sendTilBrevutsending(any()) }
+        mockKodeverk()
+        brevService  = BrevService(
+            brevutsendingClient = brevutsendingClientMock,
+            jsonToPdfClient = jsonToPdfClientMock,
+            behandlingService = behandlingServiceMock,
+            kodeverkService = kodeverkServiceMock
+        )
+    }
+
+    private fun mockKodeverk() {
+        every { kodeverkServiceMock.hentKodeverk("behandlingstype", null) } returns behandlingstyper()
+        every { kodeverkServiceMock.hentKodeverk("behandlingsstatus", null) } returns behandlingsstatus()
+        every { kodeverkServiceMock.hentKodeverk("framdriftsstatus", null) } returns framdriftsstatus()
+        every { kodeverkServiceMock.hentKodeverk("dokumenttype", null) } returns dokumentkategori()
     }
 
     @Test

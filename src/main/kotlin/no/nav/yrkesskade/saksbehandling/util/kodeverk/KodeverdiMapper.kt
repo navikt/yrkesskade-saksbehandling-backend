@@ -7,6 +7,7 @@ import no.nav.yrkesskade.saksbehandling.model.Framdriftsstatus
 private const val TYPE_BEHANDLINGSTYPE = "behandlingstype"
 private const val TYPE_BEHANDLINGSSTATUS = "behandlingsstatus"
 private const val TYPE_FRAMDRIFTSSTATUS = "framdriftsstatus"
+private const val TYPE_DOKUMENTKATEGORI = "dokumenttype"
 
 class KodeverdiMapper(val kodeverkHolder: KodeverkHolder) {
 
@@ -19,13 +20,11 @@ class KodeverdiMapper(val kodeverkHolder: KodeverkHolder) {
     }
 
     fun mapFramdriftsstatus(framdriftsstatus: Framdriftsstatus): String {
-        val kode = when (framdriftsstatus) {
-            Framdriftsstatus.IKKE_PAABEGYNT -> "ikkePaabegynt"
-            Framdriftsstatus.UNDER_ARBEID -> "underArbeid"
-            Framdriftsstatus.PAA_VENT -> "paaVent"
-            Framdriftsstatus.AVVENTER_SVAR -> "avventerSvar"
-        }
-        return kodeverkHolder.mapKodeTilVerdi(kode, TYPE_FRAMDRIFTSSTATUS)
+        return kodeverkHolder.mapKodeTilVerdi(framdriftsstatus.kode, TYPE_FRAMDRIFTSSTATUS)
+    }
+
+    fun mapDokumentkategori(dokumentkategori: String): String {
+        return kodeverkHolder.mapKodeTilVerdi(dokumentkategori, TYPE_DOKUMENTKATEGORI)
     }
 
 }
