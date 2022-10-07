@@ -71,7 +71,7 @@ class BehandlingService(
 
         // dersom vi har inngående og utgående journalpost, må vi hente alle dokumenter
         var utgaaendeDokumenter = if (behandling.utgaaendeJournalpostId != null) {
-            val journalpostResult = safClient.hentOppdatertJournalpost(behandling.journalpostId)
+            val journalpostResult = safClient.hentOppdatertJournalpost(behandling.utgaaendeJournalpostId)
             hentDokumenterFraJournalpostResultat(journalpostResult)
         } else emptyList()
 
