@@ -202,9 +202,9 @@
         </dependency>
 
         <dependency>
-            <groupId>net.datafaker</groupId>
-            <artifactId>datafaker</artifactId>
-            <version>1.4.0</version>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <version>1.0.2</version>
             <!--
                skal i utgangspunktet brukes i test, men vi bruker den i lokal utvikling
                for å kunne emulere 3. parts integrasjoner

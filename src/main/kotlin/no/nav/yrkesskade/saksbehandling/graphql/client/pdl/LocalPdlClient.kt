@@ -7,7 +7,7 @@ import com.expediagroup.graphql.generated.enums.KjoennType
 import com.expediagroup.graphql.generated.hentidenter.IdentInformasjon
 import com.expediagroup.graphql.generated.hentidenter.Identliste
 import com.expediagroup.graphql.generated.hentperson.*
-import net.datafaker.Faker
+import com.github.javafaker.Faker
 import no.nav.yrkesskade.saksbehandling.util.Tokentype
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Profile
@@ -47,7 +47,7 @@ class LocalPdlClient : IPdlClient {
             bostedsadresse = listOf(
                 Bostedsadresse(
                     vegadresse = Vegadresse(
-                        matrikkelId = faker.number().positive().toString()
+                        matrikkelId = faker.number().numberBetween(1, 1000).toString()
                     )
                 )
             ),

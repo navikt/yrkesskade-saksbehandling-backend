@@ -3,6 +3,7 @@ package no.nav.yrkesskade.saksbehandling.service
 import DetaljertBehandling
 import com.expediagroup.graphql.generated.enums.BrukerIdType
 import com.expediagroup.graphql.generated.journalpost.Bruker
+import com.expediagroup.graphql.generated.journalpost.Journalpost
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -66,16 +67,12 @@ class BehandlingService(
         val behandling = hentBehandling(behandlingId)
 
         val journalpostResult = safClient.hentOppdatertJournalpost(behandling.journalpostId)
-        val dokumenter = if (journalpostResult?.journalpost?.dokumenter != null) {
-            val journalpost = journalpostResult.journalpost
-            journalpost.dokumenter!!.map {
-                val dokument = it!!
-                val journalstatus = if (journalpost.journalstatus != null) journalpost.journalstatus.name  else "Status ikke satt"
-                val journalposttype = if (journalpost.journalposttype != null) journalpost.journalposttype.name else "Type ikke satt"
+        val dokumenter = hentDokumenterFraJournalpostResultat(journalpostResult)
 
-                DokumentInfo(dokumentinfoId = dokument.dokumentInfoId, tittel = dokument.tittel.orEmpty(), opprettetTidspunkt = journalpost.datoOpprettet.toInstant(
-                    ZoneOffset.UTC), status = journalstatus, type = journalposttype)
-            }
+        // dersom vi har inngående og utgående journalpost, må vi hente alle dokumenter
+        var utgaaendeDokumenter = if (behandling.utgaaendeJournalpostId != null) {
+            val journalpostResult = safClient.hentOppdatertJournalpost(behandling.utgaaendeJournalpostId)
+            hentDokumenterFraJournalpostResultat(journalpostResult)
         } else emptyList()
 
         return DetaljertBehandling(
@@ -87,7 +84,7 @@ class BehandlingService(
             saksbehandlingsansvarligIdent = behandling.saksbehandlingsansvarligIdent,
             opprettetAv = behandling.opprettetAv,
             sak = behandling.sak,
-            dokumenter = dokumenter,
+            dokumenter = dokumenter.plus(utgaaendeDokumenter),
             endretAv = behandling.endretAv,
             behandlendeEnhet = behandling.behandlendeEnhet,
             behandlingsfrist = behandling.behandlingsfrist,
@@ -97,7 +94,8 @@ class BehandlingService(
             dokumentkategori = behandling.dokumentkategori,
             framdriftsstatus = behandling.framdriftsstatus,
             journalpostId = behandling.journalpostId,
-            systemreferanse = behandling.systemreferanse
+            systemreferanse = behandling.systemreferanse,
+            utgaaendeJournalpostId = behandling.utgaaendeJournalpostId
         )
     }
 
@@ -396,4 +394,17 @@ class BehandlingService(
         )
     }
 
+    private fun hentDokumenterFraJournalpostResultat(journalpostResult : com.expediagroup.graphql.generated.Journalpost.Result?): List<DokumentInfo> {
+        return if (journalpostResult?.journalpost?.dokumenter != null) {
+            val journalpost = journalpostResult.journalpost
+            journalpost.dokumenter!!.map {
+                val dokument = it!!
+                val journalstatus = if (journalpost.journalstatus != null) journalpost.journalstatus.name  else "Status ikke satt"
+                val journalposttype = if (journalpost.journalposttype != null) journalpost.journalposttype.name else "Type ikke satt"
+
+                DokumentInfo(dokumentinfoId = dokument.dokumentInfoId, journalpostId = journalpost.journalpostId, tittel = dokument.tittel.orEmpty(), opprettetTidspunkt = journalpost.datoOpprettet.toInstant(
+                    ZoneOffset.UTC), status = journalstatus, type = journalposttype)
+            }
+        } else emptyList()
+    }
 }
