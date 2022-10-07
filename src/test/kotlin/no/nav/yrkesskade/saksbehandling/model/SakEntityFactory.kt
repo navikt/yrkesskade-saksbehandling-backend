@@ -1,12 +1,12 @@
 package no.nav.yrkesskade.saksbehandling.model
 
-import net.datafaker.Faker
+import com.github.javafaker.Faker
 import java.util.concurrent.TimeUnit
 
 class SakEntityFactory {
 
     companion object {
-        val faker = Faker()
+        private val faker = Faker()
 
         fun enSak(): SakEntity {
             return SakEntity(

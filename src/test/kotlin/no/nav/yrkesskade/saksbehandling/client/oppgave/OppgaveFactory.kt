@@ -1,6 +1,6 @@
 package no.nav.yrkesskade.saksbehandling.client.oppgave
 
-import net.datafaker.Faker
+import com.github.javafaker.Faker
 import java.time.LocalDate
 import java.time.OffsetDateTime
 
@@ -17,7 +17,7 @@ class OppgaveFactory {
                 endretAvEnhetsnr = faker.regexify("[0-9]{4}"),
                 status = faker.options().nextElement(Status.values()),
                 tema = "YRK",
-                versjon = faker.number().positive(),
+                versjon = faker.number().numberBetween(0, 1000),
                 opprettetAv = faker.funnyName().name(),
                 prioritet = faker.options().nextElement(Prioritet.values()),
                 opprettetTidspunkt = OffsetDateTime.now(),

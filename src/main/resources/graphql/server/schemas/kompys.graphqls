@@ -60,6 +60,7 @@ type DetaljertBehandling {
 
 type DokumentInfo {
     dokumentinfoId: ID!
+    journalpostId: String!
     tittel: String
     type: String
     opprettetTidspunkt: Instant!
