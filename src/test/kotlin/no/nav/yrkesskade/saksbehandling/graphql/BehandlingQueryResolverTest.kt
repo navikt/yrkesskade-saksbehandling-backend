@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.mockito.kotlin.any
+import org.mockito.kotlin.isNull
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
 import org.springframework.data.domain.PageImpl
@@ -53,7 +54,7 @@ class BehandlingQueryResolverTest : AbstractTest() {
     fun `hent egne behandlinger`() {
         val behandling = genererBehandling(1, "test", Behandlingsstatus.UNDER_BEHANDLING, genererSak())
         Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
-        Mockito.`when`(behandlingRepository.findBySaksbehandlingsansvarligIdentAndStatus(any(), any(), any())).thenReturn(PageImpl(listOf(behandling)))
+        Mockito.`when`(behandlingRepository.findBySaksbehandlingsansvarligIdentAndStatus(any(), any(), isNull(), isNull(), any())).thenReturn(PageImpl(listOf(behandling)))
 
         val response = graphQLTestTemplate.postForResource("graphql/behandling/hent_egne_behandlinger.graphql")
         assertThat(response.statusCode.is2xxSuccessful).isTrue
@@ -64,9 +65,20 @@ class BehandlingQueryResolverTest : AbstractTest() {
     fun `hent egne behandlinger med sortering`() {
         val behandling = genererBehandling(1, "test", Behandlingsstatus.UNDER_BEHANDLING, genererSak())
         Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
-        Mockito.`when`(behandlingRepository.findBySaksbehandlingsansvarligIdentAndStatus(any(), any(), any())).thenReturn(PageImpl(listOf(behandling)))
+        Mockito.`when`(behandlingRepository.findBySaksbehandlingsansvarligIdentAndStatus(any(), any(), isNull(), isNull(), any())).thenReturn(PageImpl(listOf(behandling)))
 
         val response = graphQLTestTemplate.postForResource("graphql/behandling/hent_egne_behandlinger_med_sortering.graphql")
+        assertThat(response.statusCode.is2xxSuccessful).isTrue
+        assertThat(response.get("$.data.hentEgneBehandlinger.behandlinger.length()")).isEqualTo("1")
+    }
+
+    @Test
+    fun `hent egne ferdigstilte behandlinger tidsfilter`() {
+        val behandling = genererBehandling(1, "test", Behandlingsstatus.UNDER_BEHANDLING, genererSak())
+        Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
+        Mockito.`when`(behandlingRepository.findBySaksbehandlingsansvarligIdentAndStatus(any(), any(), isNull(), any(), any())).thenReturn(PageImpl(listOf(behandling)))
+
+        val response = graphQLTestTemplate.postForResource("graphql/behandling/hent_egne_behandlinger_med_sortering_tidsfilter.graphql")
         assertThat(response.statusCode.is2xxSuccessful).isTrue
         assertThat(response.get("$.data.hentEgneBehandlinger.behandlinger.length()")).isEqualTo("1")
     }

@@ -5,7 +5,8 @@ package no.nav.yrkesskade.saksbehandling.graphql.common.model.sorting
  */
 enum class BehandlingSortFieldType : SortFieldType {
     opprettetTidspunkt,
-    behandlingsfrist;
+    behandlingsfrist,
+    endretTidspunkt;
 
     override fun thisName(): String {
         return this.name;

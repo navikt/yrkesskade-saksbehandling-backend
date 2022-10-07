@@ -1,0 +1,21 @@
+query {
+  hentEgneBehandlinger(
+    page: {
+        size: 10,
+        page: 1
+    },
+    behandlingSortering: {
+        sortDirection: DESC,
+        sortFields: [
+            behandlingsfrist
+        ]
+    },
+    tidsfilter: {
+        endretSiden: "2022-09-30T11:21:41.268Z"
+    }
+  ) {
+    behandlinger {
+        behandlingId
+    }
+  }
+}

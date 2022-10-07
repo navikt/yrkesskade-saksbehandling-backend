@@ -6,6 +6,7 @@ import no.nav.yrkesskade.saksbehandling.graphql.common.PageRequestBuilder
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.BehandlingsPage
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.Behandlingsfilter
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.Page
+import no.nav.yrkesskade.saksbehandling.graphql.common.model.Tidsfilter
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.sorting.BehandlingSortFieldType
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.sorting.BehandlingSortering
 import no.nav.yrkesskade.saksbehandling.model.dto.BehandlingDto
@@ -28,9 +29,9 @@ class BehandlingQueryResolver(
         return behandlingService.hentAapneBehandlinger(behandlingsfilter, pageRequestBuilder.build<BehandlingSortFieldType>())
     }
 
-    fun hentEgneBehandlinger(behandlingsstatus: String?, page: Page, behandlingSortering: BehandlingSortering?): BehandlingsPage {
+    fun hentEgneBehandlinger(behandlingsstatus: String?, page: Page, behandlingSortering: BehandlingSortering?, tidsfilter: Tidsfilter?): BehandlingsPage {
         val pageRequestBuilder = PageRequestBuilder(page, behandlingSortering)
-        return behandlingService.hentEgneBehandlinger(page = pageRequestBuilder.build<BehandlingSortFieldType>(), behandlingsstatus = behandlingsstatus)
+        return behandlingService.hentEgneBehandlinger(page = pageRequestBuilder.build<BehandlingSortFieldType>(), behandlingsstatus = behandlingsstatus, tidsfilter = tidsfilter)
     }
 
     fun hentBehandling(behandlingId: Long) : DetaljertBehandling {
