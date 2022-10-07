@@ -399,8 +399,8 @@ class BehandlingService(
             val journalpost = journalpostResult.journalpost
             journalpost.dokumenter!!.map {
                 val dokument = it!!
-                val journalstatus = if (journalpost.journalstatus != null) journalpost.journalstatus.name  else "Status ikke satt"
-                val journalposttype = if (journalpost.journalposttype != null) journalpost.journalposttype.name else "Type ikke satt"
+                val journalstatus = journalpost.journalstatus?.name ?: "Status ikke satt"
+                val journalposttype = journalpost.journalposttype?.name ?: "Type ikke satt"
 
                 DokumentInfo(dokumentinfoId = dokument.dokumentInfoId, journalpostId = journalpost.journalpostId, tittel = dokument.tittel.orEmpty(), opprettetTidspunkt = journalpost.datoOpprettet.toInstant(
                     ZoneOffset.UTC), status = journalstatus, type = journalposttype)
