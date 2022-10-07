@@ -15,12 +15,16 @@ class BehandlingEntityFactory {
             val opprettetTidspunkt = ettTidspunkt()
             val behandlingstype = enBehandlingstype()
             val behandlingsfrist = FristFerdigstillelseTimeManager.nesteGyldigeFristForFerdigstillelseInstant(behandlingstype, opprettetTidspunkt)
+            val status = enStatus()
+            val endretTispunkt = if (status != Behandlingsstatus.IKKE_PAABEGYNT) {
+                ettTidspunkt()
+            } else null
 
             return BehandlingEntity(
                 sak = SakEntityFactory.enSak(),
                 behandlingId = enBehandlingId(),
                 endretAv = enBrukerIdent(),
-                status = enStatus(),
+                status = status,
                 opprettetAv = enSystemId(),
                 opprettetTidspunkt = opprettetTidspunkt,
                 tema = ettTema(),
@@ -35,7 +39,8 @@ class BehandlingEntityFactory {
                 behandlingsfrist = behandlingsfrist,
                 behandlendeEnhet = enBehandledeEnhet(),
                 saksbehandlingsansvarligIdent = saksbehandlingsansvarligIdent ?: enBrukerIdent(),
-                utgaaendeJournalpostId = null
+                utgaaendeJournalpostId = null,
+                endretTidspunkt = endretTispunkt
             )
         }
 

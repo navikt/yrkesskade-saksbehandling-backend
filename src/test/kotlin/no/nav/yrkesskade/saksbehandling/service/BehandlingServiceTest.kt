@@ -112,9 +112,28 @@ class BehandlingServiceTest : AbstractTest() {
 
         val egneBehandlingerPage = behandlingService.hentEgneBehandlinger(
             page = PageRequest.of(0, 10),
-            behandlingsstatus = Behandlingsstatus.UNDER_BEHANDLING.name
+            behandlingsstatus = Behandlingsstatus.UNDER_BEHANDLING.name,
+            tidsfilter = null
         )
         assertThat(egneBehandlingerPage.behandlinger.size).isEqualTo(1)
+    }
+
+    @Test
+    fun `hent egne ferdigstilte behandlinger siste 30 dager`() {
+        Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
+        val nyereSiden = Instant.now().minus(30, ChronoUnit.DAYS)
+        val behandlinger = mutableListOf<BehandlingEntity>()
+        repeat(50) {
+            val behandling = behandlingRepository.save(BehandlingEntityFactory.enBehandling("test").medSak(sak))
+            val endretTidspunkt = behandling.endretTidspunkt
+            if ((endretTidspunkt != null && endretTidspunkt.isAfter(nyereSiden)) && (behandling.status == Behandlingsstatus.FERDIG)) {
+                behandlinger.add(behandling)
+            }
+
+        }
+
+        val egneBehandlingerPage = behandlingService.hentEgneBehandlinger(Behandlingsstatus.FERDIG.name, page = PageRequest.of(0, 100), Tidsfilter(endretSiden = nyereSiden, opprettetSiden = null))
+        assertThat(egneBehandlingerPage.totaltAntallBehandlinger).isEqualTo(behandlinger.size.toLong())
     }
 
     @Test

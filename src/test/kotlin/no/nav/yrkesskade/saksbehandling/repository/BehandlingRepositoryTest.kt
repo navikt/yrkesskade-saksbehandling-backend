@@ -64,7 +64,7 @@ class BehandlingRepositoryTest : AbstractTest() {
         behandlingRepository.save(genererBehandling(1L, "test", Behandlingsstatus.UNDER_BEHANDLING, sak))
 
         assertThat(behandlingRepository.count()).isEqualTo(3)
-        val behandlinger = behandlingRepository.findBySaksbehandlingsansvarligIdentAndStatus("test", Behandlingsstatus.UNDER_BEHANDLING, Pageable.ofSize(10))
+        val behandlinger = behandlingRepository.findBySaksbehandlingsansvarligIdentAndStatus("test", Behandlingsstatus.UNDER_BEHANDLING, null, null, Pageable.ofSize(10))
         assertThat(behandlinger.numberOfElements).isEqualTo(1)
         val behandling = behandlinger.first()
         assertThat(behandling.status).isEqualTo(Behandlingsstatus.UNDER_BEHANDLING)
@@ -79,7 +79,7 @@ class BehandlingRepositoryTest : AbstractTest() {
 
         behandlingRepository.save(behandling)
 
-        val behandlinger = behandlingRepository.findBySaksbehandlingsansvarligIdentAndStatus("test", Behandlingsstatus.FERDIG, Pageable.ofSize(10))
+        val behandlinger = behandlingRepository.findBySaksbehandlingsansvarligIdentAndStatus("test", Behandlingsstatus.FERDIG, null, null, Pageable.ofSize(10))
         assertThat(behandlinger.numberOfElements).isEqualTo(1)
     }
 
@@ -90,7 +90,7 @@ class BehandlingRepositoryTest : AbstractTest() {
 
         behandlingRepository.save(behandling)
 
-        val behandlinger = behandlingRepository.findBySaksbehandlingsansvarligIdentAndStatus("test", Behandlingsstatus.UNDER_BEHANDLING, Pageable.ofSize(10))
+        val behandlinger = behandlingRepository.findBySaksbehandlingsansvarligIdentAndStatus("test", Behandlingsstatus.UNDER_BEHANDLING, null, null, Pageable.ofSize(10))
         assertThat(behandlinger.numberOfElements).isEqualTo(1)
     }
 
@@ -101,7 +101,7 @@ class BehandlingRepositoryTest : AbstractTest() {
 
         behandlingRepository.save(behandling)
 
-        val behandlinger = behandlingRepository.findBySaksbehandlingsansvarligIdentAndStatus("test", Behandlingsstatus.UNDER_BEHANDLING, Pageable.ofSize(10))
+        val behandlinger = behandlingRepository.findBySaksbehandlingsansvarligIdentAndStatus("test", Behandlingsstatus.UNDER_BEHANDLING, null, null, Pageable.ofSize(10))
         assertThat(behandlinger.numberOfElements).isEqualTo(0)
     }
 
