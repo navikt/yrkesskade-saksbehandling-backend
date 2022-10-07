@@ -64,5 +64,6 @@ class BehandlingEntityFactory {
         fun BehandlingEntity.medBehandlingstype(behandlingstype: Behandlingstype) = this.copy(behandlingstype = behandlingstype)
         fun BehandlingEntity.medFramdriftsstatus(framdriftsstatus: Framdriftsstatus) = this.copy(framdriftsstatus = framdriftsstatus)
         fun BehandlingEntity.medSaksbehandlingsansvarligIdent(saksbehandlingsansvarligIdent: String?) = this.copy(saksbehandlingsansvarligIdent = saksbehandlingsansvarligIdent)
+
     }
 }

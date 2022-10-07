@@ -12,6 +12,7 @@ import no.nav.yrkesskade.saksbehandling.model.BehandlingEntityFactory.Companion.
 import no.nav.yrkesskade.saksbehandling.model.BehandlingEntityFactory.Companion.medJournalpostId
 import no.nav.yrkesskade.saksbehandling.model.BehandlingEntityFactory.Companion.medSak
 import no.nav.yrkesskade.saksbehandling.model.BehandlingEntityFactory.Companion.medStatus
+import no.nav.yrkesskade.saksbehandling.model.BehandlingEntityFactory.Companion.medUtgaaendeJournalpostId
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingRepository
 import no.nav.yrkesskade.saksbehandling.repository.BehandlingsoverfoeringLogRepository
 import no.nav.yrkesskade.saksbehandling.repository.SakRepository
@@ -109,6 +110,21 @@ class BehandlingServiceTest : AbstractTest() {
 
         val detaljertBehandling = behandlingService.hentDetaljertBehandling(behandling.behandlingId)
         assertThat(detaljertBehandling.dokumenter.size).isEqualTo(1)
+    }
+
+    @Test
+    fun `hent behandling med inngående og utgående journalposter`() {
+        // given
+        Mockito.`when`(safClient.hentOppdatertJournalpost(anyString())).thenReturn(okRespons().data)
+        Mockito.`when`(autentisertBruker.preferredUsername).thenReturn("test")
+        val givenBehandling = BehandlingEntityFactory.enBehandling("test").medStatus(Behandlingsstatus.IKKE_PAABEGYNT).medSak(sak).medUtgaaendeJournalpostId("10000")
+        val behandling = behandlingRepository.save(givenBehandling)
+
+        // when
+        val detaljertBehandling = behandlingService.hentDetaljertBehandling(behandling.behandlingId)
+
+        // then
+        assertThat(detaljertBehandling.dokumenter.size).isEqualTo(2)
     }
 
     @Test
