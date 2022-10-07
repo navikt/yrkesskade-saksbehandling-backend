@@ -19,6 +19,7 @@ import no.nav.yrkesskade.saksbehandling.graphql.client.saf.ISafClient
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.BehandlingsPage
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.Behandlingsfilter
 import no.nav.yrkesskade.saksbehandling.graphql.common.model.FerdigstillBehandling
+import no.nav.yrkesskade.saksbehandling.graphql.common.model.Tidsfilter
 import no.nav.yrkesskade.saksbehandling.model.*
 import no.nav.yrkesskade.saksbehandling.model.dto.BehandlingDto
 import no.nav.yrkesskade.saksbehandling.model.dto.FerdigstiltBehandlingDto
@@ -119,9 +120,9 @@ class BehandlingService(
 
     fun hentAntallBehandlinger(): Long = behandlingRepository.count()
 
-    fun hentEgneBehandlinger(behandlingsstatus: String?, page: Pageable) : BehandlingsPage {
+    fun hentEgneBehandlinger(behandlingsstatus: String?, page: Pageable, tidsfilter: Tidsfilter?) : BehandlingsPage {
         val status = Behandlingsstatus.valueOfOrNull(behandlingsstatus.orEmpty()) ?: Behandlingsstatus.UNDER_BEHANDLING
-        val behandlingEntities = behandlingRepository.findBySaksbehandlingsansvarligIdentAndStatus(autentisertBruker.preferredUsername, status, page)
+        val behandlingEntities = behandlingRepository.findBySaksbehandlingsansvarligIdentAndStatus(autentisertBruker.preferredUsername, status, tidsfilter?.opprettetSiden, tidsfilter?.endretSiden, page)
 
         return BehandlingsPage(
             behandlinger = behandlingEntities.content.map { BehandlingDto.fromEntity(it)},

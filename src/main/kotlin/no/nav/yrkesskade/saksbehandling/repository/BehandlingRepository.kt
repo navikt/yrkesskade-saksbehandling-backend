@@ -9,19 +9,33 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
+import java.time.Instant
 
 interface BehandlingRepository : JpaRepository<BehandlingEntity, Long> {
 
     fun findBySak(sak: SakEntity): List<BehandlingEntity>
 
-    fun findByJournalpostIdAndBehandlingstype(journalpostId: String, behandlingstype: Behandlingstype): BehandlingEntity?
+    fun findByJournalpostIdAndBehandlingstype(
+        journalpostId: String,
+        behandlingstype: Behandlingstype
+    ): BehandlingEntity?
 
-    @Query("""
+    @Query(
+        """
         SELECT b FROM BehandlingEntity b
         WHERE b.status = :status
         AND b.saksbehandlingsansvarligIdent = :ident
-    """)
-    fun findBySaksbehandlingsansvarligIdentAndStatus(@Param("ident") ident: String, @Param("status") status: Behandlingsstatus, pageable: Pageable): Page<BehandlingEntity>
+        AND (b.opprettetTidspunkt >= :opprettetSiden OR CAST(:opprettetSiden as java.time.Instant) IS NULL)
+        AND (b.endretTidspunkt >= :endretSiden OR CAST(:endretSiden as java.time.Instant) IS NULL)
+    """
+    )
+    fun findBySaksbehandlingsansvarligIdentAndStatus(
+        @Param("ident") ident: String,
+        @Param("status") status: Behandlingsstatus,
+        @Param("opprettetSiden") opprettetSiden: Instant?,
+        @Param("endretSiden") endretSiden: Instant?,
+        pageable: Pageable
+    ): Page<BehandlingEntity>
 
     @Query(
         """

@@ -21,6 +21,7 @@ type Behandling {
     behandlingId: ID!
     behandlingsfrist: Instant
     opprettetTidspunkt: Instant
+    endretTidspunkt: Instant
     behandlingstype: String!
     saksbehandlingsansvarligIdent: String
     dokumentkategori: String
@@ -85,6 +86,7 @@ enum SortDirectionType {
 enum BehandlingSortFieldType {
     opprettetTidspunkt
     behandlingsfrist
+    endretTidspunkt
 }
 
 input Behandlingsfilter {
@@ -107,9 +109,14 @@ input Journalfoeringdetaljer {
     avsender: String!
 }
 
+input Tidsfilter {
+    endretSiden: Instant
+    opprettetSiden: Instant
+}
+
 type Query {
     hentBehandlinger(page: Page!, behandlingSortering: BehandlingSortering): [Behandling]!
-    hentEgneBehandlinger(status: String, page: Page!, behandlingSortering: BehandlingSortering): BehandlingsPage!
+    hentEgneBehandlinger(status: String, page: Page!, behandlingSortering: BehandlingSortering, tidsfilter: Tidsfilter): BehandlingsPage!
     hentAapneBehandlinger(behandlingsfilter: Behandlingsfilter, page: Page!, behandlingSortering: BehandlingSortering): BehandlingsPage!
     antallBehandlinger: Int!
     hentBehandling(behandlingId: ID!): DetaljertBehandling
