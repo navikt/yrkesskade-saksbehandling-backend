@@ -22,6 +22,7 @@ fun brevutsendingBestiltHendelse(): BrevutsendingBestiltHendelse {
                 align = "left"
             ),
         ),
+        enhet = "4849",
         behandlingId = 1234,
         mottaker = Mottaker(foedselsnummer = "012345678910"),
         metadata = BrevutsendingMetadata(
