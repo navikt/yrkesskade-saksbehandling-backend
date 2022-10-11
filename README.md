@@ -1,3 +1,5 @@
+Repo flyttet til https://github.com/navikt/yrkesskade
+
 # yrkesskade-saksbehandling-backend
 
 ## Lokal kjøring
